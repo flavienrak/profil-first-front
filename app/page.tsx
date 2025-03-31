@@ -1,4 +1,4 @@
-import HomeComponent from '@/components/home/HomeComponent';
+import LandingComponent from '@/components/landing/LandingComponent';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -6,10 +6,10 @@ export const metadata: Metadata = {
   description: 'Accueil Profil First',
 };
 
-export default function Home() {
+export default function Landing() {
   return (
     <div className="relative w-full min-h-screen">
-      <HomeComponent />
+      <LandingComponent />
     </div>
   );
 }
