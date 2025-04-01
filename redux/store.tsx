@@ -2,10 +2,11 @@
 
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
-import persistSlice from './slices/persistSlice';
+import persistSlice from './slices/persist.slice';
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
+import userSlice from './slices/user.slice';
 
 const createNoopStorage = (): {
   getItem: () => Promise<null>;
@@ -37,6 +38,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
+  user: userSlice,
   persistInfos: persistSlice,
 });
 

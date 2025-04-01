@@ -1,5 +1,5 @@
 import React from 'react';
-import RegisterComponent from '@/components/auth/register/RegisterComponent';
+import RegisterComponent from '@/components/inscription/RegisterComponent';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: 'Inscription Profil First',
 };
 
-export default function Register() {
+export default function Inscription() {
   return (
     <div>
       <RegisterComponent />

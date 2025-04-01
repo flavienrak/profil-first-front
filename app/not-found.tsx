@@ -20,11 +20,10 @@ export default function NotFound() {
             <p className="py-6">
               Pour revenir à la page d'accueil, cliquer sur ce bouton.
             </p>
-            <div className="flex justify-center">
+            <div>
               <Link
                 href="/"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center py-2.5 ps-3 pe-6 font-semibold rounded-lg text-white gap-4 button-style"
+                className="flex justify-center gap-4 py-4 rounded-xl text-white bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +39,7 @@ export default function NotFound() {
                   <path d="m12 19-7-7 7-7" />
                   <path d="M19 12H5" />
                 </svg>
-                <span>Accueil</span>
+                <span className="font-semibold text-lg">Accueil</span>
               </Link>
             </div>
           </div>

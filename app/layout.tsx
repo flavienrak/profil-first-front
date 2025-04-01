@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import ReduxProvider from '@/components/redux/ReduxProvider';
+import UidProvider from '@/providers/UidProvider';
+import ToastProvider from '@/providers/ToastProvider';
+import ReduxProvider from '@/providers/ReduxProvider';
 
 export const metadata: Metadata = {
   title: 'Profil First',
@@ -15,7 +17,11 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body cz-shortcut-listen="true">
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          <ToastProvider>
+            <UidProvider>{children}</UidProvider>
+          </ToastProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

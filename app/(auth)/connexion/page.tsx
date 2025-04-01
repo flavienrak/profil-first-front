@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginComponent from '@/components/auth/login/LoginComponent';
+import LoginComponent from '@/components/connexion/LoginComponent';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: 'Connexion Profil First',
 };
 
-export default function Login() {
+export default function Connexion() {
   return (
     <div>
       <LoginComponent />
