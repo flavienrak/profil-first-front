@@ -1,7 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import Popup from '../utils/Popup';
+import AuthComponent from '../auth/AuthComponent';
+
 import {
   Users,
   Building2,
@@ -19,9 +23,6 @@ import {
   Heart,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Popup from '../utils/Popup';
-import AuthComponent from '../auth/AuthComponent';
 import { UserInterface } from '@/interfaces/user.interface';
 
 const fadeIn = {
@@ -39,8 +40,8 @@ const staggerContainer = {
 };
 
 export default function LandingComponent() {
-  const [showAuth, setShowAuth] = useState(false);
-  const [role, setRole] = useState<UserInterface['role']>('user');
+  const [showAuth, setShowAuth] = React.useState(false);
+  const [role, setRole] = React.useState<UserInterface['role']>('user');
 
   const handleShowAuth = (value: UserInterface['role']) => {
     setRole(value);

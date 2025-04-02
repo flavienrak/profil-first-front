@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
+
 import { Card } from '@/components/ui/card';
 import { UserInterface } from '@/interfaces/user.interface';
 
@@ -11,7 +12,7 @@ export default function AuthComponent({
 }: {
   role: UserInterface['role'];
 }) {
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = React.useState(false);
 
   return (
     <div className="w-full bg-white">

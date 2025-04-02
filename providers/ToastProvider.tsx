@@ -1,7 +1,7 @@
 'use client';
 
+import React from 'react';
 import { Toaster } from '@/components/ui/sonner';
-import React, { useState } from 'react';
 
 type Position =
   | 'top-left'
@@ -24,7 +24,8 @@ export default function ToastProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [toastPosition, setToastPosition] = useState<Position>('top-center');
+  const [toastPosition, setToastPosition] =
+    React.useState<Position>('top-center');
 
   return (
     <ToastContext.Provider value={{ setToastPosition }}>

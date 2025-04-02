@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -29,8 +30,8 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginForm({ role }: { role: UserInterface['role'] }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [showForgot, setShowForgot] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [showForgot, setShowForgot] = React.useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),

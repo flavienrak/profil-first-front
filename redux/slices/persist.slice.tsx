@@ -5,10 +5,10 @@ const initialState = {
 };
 
 const persistSlice = createSlice({
-  name: 'persistInfos',
+  name: 'persist',
   initialState,
   reducers: {
-    updatePersistInfos: (state, action) => {
+    updatePersistReducer: (state, action) => {
       const { mode } = action.payload;
       if (mode) {
         state.mode = mode;
@@ -17,5 +17,5 @@ const persistSlice = createSlice({
   },
 });
 
-export const { updatePersistInfos } = persistSlice.actions;
+export const { updatePersistReducer } = persistSlice.actions;
 export default persistSlice.reducer;

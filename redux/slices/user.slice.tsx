@@ -1,24 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { UserInterface } from '@/interfaces/user.interface';
 
-const initialState = {
-  user: {},
+const initialState: { user: UserInterface | null } = {
+  user: null,
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    fetchUserInfos: (state, action) => {
+    setUserReducer: (state, action) => {
       const { user } = action.payload;
       state.user = user;
     },
-    updateUserInfos: (state, action) => {
+    updateUserReducer: (state, action) => {
       const { user } = action.payload;
       state.user = { ...state.user, ...user };
     },
   },
 });
 
-export const { fetchUserInfos, updateUserInfos } = userSlice.actions;
+export const { setUserReducer, updateUserReducer } = userSlice.actions;
 
 export default userSlice.reducer;

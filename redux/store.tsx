@@ -3,10 +3,11 @@
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import persistSlice from './slices/persist.slice';
+import userSlice from './slices/user.slice';
+import cvMinuteSlice from './slices/cvMinute.slice';
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
-import userSlice from './slices/user.slice';
 
 const createNoopStorage = (): {
   getItem: () => Promise<null>;
@@ -39,6 +40,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: userSlice,
+  cvMinute: cvMinuteSlice,
   persistInfos: persistSlice,
 });
 
