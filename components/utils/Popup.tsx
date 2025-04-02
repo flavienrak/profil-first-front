@@ -1,15 +1,21 @@
 import React from 'react';
 
 export default function Popup({
+  full,
   onClose,
   children,
 }: {
+  full?: boolean;
   onClose: () => void;
   children: React.ReactNode;
 }) {
   return (
     <div className="fixed top-0 left-0 z-50 w-screen h-screen bg-black/50 flex justify-center items-center">
-      <div className="max-w-[32rem] bg-white p-5 rounded-xl relative border-gray-500 shadow">
+      <div
+        className={`bg-white p-5 rounded-xl relative border-gray-500 shadow ${
+          full ? '' : 'max-w-[32rem]'
+        }`}
+      >
         {children}
         <i
           onClick={onClose}

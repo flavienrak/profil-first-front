@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   Users,
@@ -20,6 +20,9 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Popup from '../utils/Popup';
+import AuthComponent from '../auth/AuthComponent';
+import { UserInterface } from '@/interfaces/user.interface';
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -36,6 +39,14 @@ const staggerContainer = {
 };
 
 export default function LandingComponent() {
+  const [showAuth, setShowAuth] = useState(false);
+  const [role, setRole] = useState<UserInterface['role']>('user');
+
+  const handleShowAuth = (value: UserInterface['role']) => {
+    setRole(value);
+    setShowAuth(true);
+  };
+
   return (
     <div className="min-h-screen bg-[#faf7f5] p-6">
       <div className="container max-w-6xl mx-auto">
@@ -176,99 +187,101 @@ export default function LandingComponent() {
           initial="initial"
           animate="animate"
         >
-          {/* Candidate Section */}
-          <motion.div
-            className="group bg-gradient-to-br from-[#6B2CF5] to-[#8B5CF6] rounded-xl p-6 hover:opacity-95 transition-all duration-300 cursor-pointer shadow-lg"
-            variants={fadeIn}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="p-4 bg-[#6B2CF5]/20 rounded-full">
-                <Users className="w-12 h-12 text-white" />
+          <div className="flex flex-col items-center gap-8">
+            {/* Candidate Section */}
+            <motion.div
+              className="group bg-gradient-to-br from-[#6B2CF5] to-[#8B5CF6] rounded-xl p-6 hover:opacity-95 transition-all duration-300 cursor-pointer shadow-lg"
+              variants={fadeIn}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="p-4 bg-[#6B2CF5]/20 rounded-full">
+                  <Users className="w-12 h-12 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-white">
+                  Je suis Candidat
+                </h2>
+                <div className="space-y-4 text-white/80">
+                  <div className="flex items-center gap-3">
+                    <Upload className="w-5 h-5 text-[#D8B4FE]" />
+                    <span>Déposez votre CV</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-5 h-5 text-[#D8B4FE]" />
+                    <span>Découvrez son score</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-[#D8B4FE]" />
+                    <span>Optimisez le avec l'IA</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Star className="w-5 h-5 text-[#D8B4FE]" />
+                    <span>Décrochez des rendez-vous sans candidater</span>
+                  </div>
+                </div>
+                <Link
+                  href="/candidat"
+                  className="mt-6 px-8 py-3 bg-white text-[#6B2CF5] rounded-full font-semibold hover:bg-purple-50 transition-colors duration-300 shadow-lg inline-block"
+                >
+                  Démarrer gratuitement
+                </Link>
               </div>
-              <h2 className="text-3xl font-bold text-white">
-                Je suis Candidat
-              </h2>
-              <div className="space-y-4 text-white/80">
-                <div className="flex items-center gap-3">
-                  <Upload className="w-5 h-5 text-[#D8B4FE]" />
-                  <span>Déposez votre CV</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Sparkles className="w-5 h-5 text-[#D8B4FE]" />
-                  <span>Découvrez son score</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-[#D8B4FE]" />
-                  <span>Optimisez le avec l'IA</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Star className="w-5 h-5 text-[#D8B4FE]" />
-                  <span>Décrochez des rendez-vous sans candidater</span>
-                </div>
-              </div>
-              <Link
-                href="/candidat"
-                className="mt-6 px-8 py-3 bg-white text-[#6B2CF5] rounded-full font-semibold hover:bg-purple-50 transition-colors duration-300 shadow-lg inline-block"
-              >
-                Démarrer gratuitement
-              </Link>
-            </div>
-          </motion.div>
+            </motion.div>
+            <button
+              onClick={() => handleShowAuth('user')}
+              className="px-8 py-3 bg-[#6B2CF5] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300 cursor-pointer"
+            >
+              Je me connecte
+            </button>
+          </div>
 
-          {/* Recruiter Section */}
-          <motion.div
-            className="group bg-gradient-to-br from-[#06B6D4] to-[#22D3EE] rounded-xl p-6 hover:opacity-95 transition-all duration-300 cursor-pointer shadow-lg"
-            variants={fadeIn}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="p-4 bg-[#06B6D4]/20 rounded-full">
-                <Building2 className="w-12 h-12 text-white" />
+          <div className="flex flex-col items-center gap-8">
+            {/* Recruiter Section */}
+            <motion.div
+              className="group bg-gradient-to-br from-[#06B6D4] to-[#22D3EE] rounded-xl p-6 hover:opacity-95 transition-all duration-300 cursor-pointer shadow-lg"
+              variants={fadeIn}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="p-4 bg-[#06B6D4]/20 rounded-full">
+                  <Building2 className="w-12 h-12 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-white">
+                  Je suis Recruteur
+                </h2>
+                <div className="space-y-4 text-white/80">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-[#A5F3FC]" />
+                    <span>Accédez aux meilleurs profils pré-qualifiés</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Target className="w-5 h-5 text-[#A5F3FC]" />
+                    <span>Sourcez avec l'IA</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-5 h-5 text-[#A5F3FC]" />
+                    <span>Proposez un rendez-vous</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Star className="w-5 h-5 text-[#A5F3FC]" />
+                    <span>Accélérez vos recrutements</span>
+                  </div>
+                </div>
+                <button className="mt-6 px-8 py-3 bg-white text-[#06B6D4] rounded-full font-semibold hover:bg-cyan-50 transition-colors duration-300 shadow-lg">
+                  Démarrer gratuitement
+                </button>
               </div>
-              <h2 className="text-3xl font-bold text-white">
-                Je suis Recruteur
-              </h2>
-              <div className="space-y-4 text-white/80">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-[#A5F3FC]" />
-                  <span>Accédez aux meilleurs profils pré-qualifiés</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Target className="w-5 h-5 text-[#A5F3FC]" />
-                  <span>Sourcez avec l'IA</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Sparkles className="w-5 h-5 text-[#A5F3FC]" />
-                  <span>Proposez un rendez-vous</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Star className="w-5 h-5 text-[#A5F3FC]" />
-                  <span>Accélérez vos recrutements</span>
-                </div>
-              </div>
-              <button className="mt-6 px-8 py-3 bg-white text-[#06B6D4] rounded-full font-semibold hover:bg-cyan-50 transition-colors duration-300 shadow-lg">
-                Démarrer gratuitement
-              </button>
-            </div>
-          </motion.div>
+            </motion.div>
+            <button
+              onClick={() => handleShowAuth('recruiter')}
+              className="px-8 py-3 bg-[#06B6D4] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300 cursor-pointer"
+            >
+              Je me connecte
+            </button>
+          </div>
         </motion.div>
-
-        {/* Login Buttons */}
-        <div className="grid md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto mt-6">
-          <div className="flex justify-center">
-            <button className="px-8 py-3 bg-[#6B2CF5] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300">
-              Je me connecte
-            </button>
-          </div>
-          <div className="flex justify-center">
-            <button className="px-8 py-3 bg-[#06B6D4] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300">
-              Je me connecte
-            </button>
-          </div>
-        </div>
 
         {/* How it Works Section */}
         <div className="mt-24 w-full">
@@ -562,6 +575,12 @@ export default function LandingComponent() {
           </div>
         </footer>
       </div>
+
+      {showAuth && (
+        <Popup full onClose={() => setShowAuth(false)}>
+          <AuthComponent role={role} />
+        </Popup>
+      )}
     </div>
   );
 }

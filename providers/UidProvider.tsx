@@ -1,13 +1,11 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import { jwtIdService } from '@/services/auth.service';
-import { usePathname } from 'next/navigation';
-import React, { useEffect } from 'react';
-
-const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+import { usePathname, useRouter } from 'next/navigation';
 
 interface UidContextType {
-  apiUrl: string;
+  isLoading: boolean;
 }
 
 export const UidContext = React.createContext<UidContextType | undefined>(
@@ -20,15 +18,23 @@ export default function UidProvider({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const notProtectedPaths = ['/'];
 
   useEffect(() => {
     (async () => {
       const res = await jwtIdService();
-      console.log('res:', res);
+      setIsLoading(false);
+
+      if (res.notAuthenticated && !notProtectedPaths.includes(pathname)) {
+        router.push('/');
+      }
     })();
-  }, []);
+  }, [pathname]);
 
   return (
-    <UidContext.Provider value={{ apiUrl }}>{children}</UidContext.Provider>
+    <UidContext.Provider value={{ isLoading }}>{children}</UidContext.Provider>
   );
 }

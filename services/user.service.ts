@@ -1,5 +1,4 @@
-import axios from 'axios';
-const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
+import api from '@/axios/axios.instance';
 
 const uploadCvService = async ({
   cv,
@@ -9,7 +8,7 @@ const uploadCvService = async ({
   position: string;
 }) => {
   try {
-    const res = await axios.post(`${backendUri}/api/user/upload-cv`, {
+    const res = await api.post('/user/upload-cv', {
       cv,
       position,
     });

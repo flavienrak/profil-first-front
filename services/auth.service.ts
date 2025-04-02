@@ -1,9 +1,9 @@
-import axios from 'axios';
-const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
+import api from '@/axios/axios.instance';
+import { UserInterface } from '@/interfaces/user.interface';
 
 const jwtIdService = async () => {
   try {
-    const res = await axios.get(`${backendUri}/api/jwtid`);
+    const res = await api.get('/jwtid');
     return res.data;
   } catch (error) {
     return { error: `JWTID ERROR: ${error}` };
@@ -14,17 +14,24 @@ const loginService = async ({
   email,
   password,
   remember,
+  role,
 }: {
   email: string;
   password: string;
   remember: boolean;
+  role: UserInterface['role'];
 }) => {
   try {
-    const res = await axios.post(`${backendUri}/api/auth/login`, {
-      email,
-      password,
-      remember,
-    });
+    const res = await api.post(
+      '/auth/login',
+      {
+        email,
+        password,
+        remember,
+        role,
+      },
+      { withCredentials: true },
+    );
     return res.data;
   } catch (error) {
     return { error: `LOGIN ERROR: ${error}` };
@@ -43,7 +50,7 @@ const registerService = async ({
   role: string;
 }) => {
   try {
-    const res = await axios.post(`${backendUri}/api/auth/register`, {
+    const res = await api.post('/auth/register', {
       name,
       email,
       password,
@@ -57,7 +64,7 @@ const registerService = async ({
 
 const logoutService = async () => {
   try {
-    const res = await axios.get(`${backendUri}/api/auth/logout`);
+    const res = await api.get('/auth/logout');
     return res.data;
   } catch (error) {
     return { error: `LOGOUT ERROR: ${error}` };
