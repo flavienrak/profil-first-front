@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function CvMinute() {
   return (
-    <div>
+    <>
       <CvMinuteComponent />
-    </div>
+    </>
   );
 }

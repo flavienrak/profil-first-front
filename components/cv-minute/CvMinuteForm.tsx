@@ -7,15 +7,12 @@ import qs from 'query-string';
 import { motion } from 'framer-motion';
 import { Upload } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { cvMinuteService } from '@/services/user.service';
-import { useDispatch } from 'react-redux';
-import { setCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
+import { addCvMinuteService } from '@/services/cvMinute.service';
 
 export default function CvMinuteForm() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const dispatch = useDispatch();
 
   const [file, setFile] = React.useState<File | null>(null);
   const [message, setMessage] = React.useState('');
@@ -42,26 +39,21 @@ export default function CvMinuteForm() {
     if (file && position.trim().length > 5) {
       formData.append('file', file);
       formData.append('position', position.trim());
-      const res = await cvMinuteService(formData);
+      const res = await addCvMinuteService(formData);
 
-      if (res.cvMinute) {
+      if (res.cvMinuteId) {
         currentQuery = qs.parse(params.toString());
         const updateQuery = {
           ...currentQuery,
-          cvMinute: res.cvMinute.id,
+          cvMinute: res.cvMinuteId,
         };
         const url = qs.stringifyUrl({
           url: pathname,
           query: updateQuery,
         });
 
-        dispatch(
-          setCvMinuteReducer({
-            cvMinute: res.cvMinute,
-            count: res.cvMinuteCount,
-          }),
-        );
         router.push(url);
+        router.refresh();
       } else if (res.invalidDocument) {
         setMessage('Le CV doit être en format PDF ou WORD seulement');
       }
@@ -73,12 +65,12 @@ export default function CvMinuteForm() {
   };
 
   return (
-    <div className="py-8">
+    <div className="h-full w-full flex justify-center items-center px-16">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex flex-col gap-14 bg-white rounded-2xl p-8 shadow-lg"
+        className="w-full flex flex-col gap-14 bg-white rounded-2xl p-8 shadow-lg"
       >
         <div className="flex justify-center">
           <h1 className="text-4xl font-bold max-w-[32rem] text-center bg-gradient-to-r from-[#4461F2] to-[#6B7FFF] bg-clip-text text-transparent">

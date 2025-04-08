@@ -1,5 +1,5 @@
 export interface UserInterface {
-  id: string | number;
+  id: number;
   name: string;
   email: string;
   acceptConditions: boolean;

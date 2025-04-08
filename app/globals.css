@@ -129,6 +129,15 @@
   box-sizing: border-box;
 }
 
+*::selection {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+}
+
+.word-spacing {
+  word-spacing: 0.4em;
+}
+
 .text-style {
   background-clip: text;
   color: #fff;
@@ -164,4 +173,9 @@
 .button-style:active,
 .button-style:hover {
   outline: 0;
+}
+
+.tiptap.ProseMirror {
+  padding: 0.7em;
+  font-size: 1em;
 }

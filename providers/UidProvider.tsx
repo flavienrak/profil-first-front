@@ -9,10 +9,15 @@ import { getUserService } from '@/services/user.service';
 import { useDispatch } from 'react-redux';
 import { setUserReducer } from '@/redux/slices/user.slice';
 import { setCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
+import { getCvMinuteService } from '@/services/cvMinute.service';
 
+interface CurrentQueryInterface {
+  cvMinute?: string | number;
+  [key: string]: string | number | boolean | null | undefined;
+}
 interface UidContextType {
   isLoading: boolean;
-  currentQuery: { cvMinute: string | number };
+  currentQuery: CurrentQueryInterface | null;
   handleVideo: (value: string) => string;
 }
 
@@ -30,7 +35,8 @@ export default function UidProvider({
   const params = useSearchParams();
   const router = useRouter();
 
-  const [currentQuery, setCurrentQuery] = React.useState({});
+  const [currentQuery, setCurrentQuery] =
+    React.useState<CurrentQueryInterface | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [userId, setUserId] = React.useState<string | number | null>(null);
 
@@ -59,7 +65,6 @@ export default function UidProvider({
         const res = await getUserService();
         if (res.user) {
           dispatch(setUserReducer({ user: res.user }));
-          dispatch(setCvMinuteReducer({ count: res.cvMinuteCount }));
         }
       })();
     }
@@ -67,17 +72,41 @@ export default function UidProvider({
 
   React.useEffect(() => {
     const updateQuery = qs.parse(params.toString());
-    if (updateQuery.cvMinute && isNaN(Number(updateQuery.cvMinute))) {
-      delete updateQuery.cvMinute;
-    }
-
-    setCurrentQuery(updateQuery);
-    const url = qs.stringifyUrl({
-      url: pathname,
-      query: updateQuery,
-    });
-    router.push(url);
+    setCurrentQuery(updateQuery as CurrentQueryInterface);
   }, [params]);
+
+  React.useEffect(() => {
+    const updateQuery = currentQuery;
+
+    if (updateQuery?.cvMinute) {
+      const cvMinute = updateQuery.cvMinute;
+
+      if (isNaN(Number(updateQuery.cvMinute))) {
+        delete updateQuery.cvMinute;
+
+        const url = qs.stringifyUrl({
+          url: pathname,
+          query: updateQuery,
+        });
+        router.push(url);
+      } else {
+        (async () => {
+          const res = await getCvMinuteService(cvMinute);
+          console.log('res:', res);
+          if (res.cvMinute) {
+            dispatch(
+              setCvMinuteReducer({
+                cvMinute: res.cvMinute,
+                sections: res.sections,
+                cvMinuteSections: res.cvMinuteSections,
+                files: res.files,
+              }),
+            );
+          }
+        })();
+      }
+    }
+  }, [currentQuery?.cvMinute]);
 
   const handleVideo = (link: string) => {
     let newLink = link;

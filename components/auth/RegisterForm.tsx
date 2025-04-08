@@ -73,7 +73,7 @@ export default function RegisterForm({
       });
       setIsLoading(false);
 
-      if (res.user) {
+      if (res.userId) {
         toast.success('Inscription réussie!', {
           description:
             "Veuillez vous connecter afin d'accéder à la plateforme.",

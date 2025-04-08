@@ -62,7 +62,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
       });
       setIsLoading(false);
 
-      if (res.user) {
+      if (res.userId) {
         toast.success('Connexion réussie!', {
           description: 'Accès à la plateforme',
         });

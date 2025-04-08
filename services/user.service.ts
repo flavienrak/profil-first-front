@@ -9,17 +9,6 @@ const getUserService = async () => {
   }
 };
 
-const cvMinuteService = async (formData: FormData) => {
-  try {
-    const res = await api.post('/user/cv-minute', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return res.data;
-  } catch (error) {
-    return { error: `CV MINUTE ERROR: ${error}` };
-  }
-};
-
 const acceptConditionsService = async () => {
   try {
     const res = await api.get('/user/accept-conditions');
@@ -29,4 +18,4 @@ const acceptConditionsService = async () => {
   }
 };
 
-export { getUserService, cvMinuteService, acceptConditionsService };
+export { getUserService, acceptConditionsService };
