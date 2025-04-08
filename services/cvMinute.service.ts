@@ -20,10 +20,19 @@ const addCvMinuteService = async (formData: FormData) => {
   }
 };
 
+const updateCvMinuteProfileService = async (id: number, formData: FormData) => {
+  try {
+    const res = await api.post(`/cv-minute/${id}/profile`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return res.data;
+  } catch (error) {
+    return { error: `UPDATE CV MINUTE PROFILE ERROR: ${error}` };
+  }
+};
+
 const updateCvMinuteSectionService = async ({
   id,
-  sectionId,
-  sectionInfoId,
   content,
   sectionTitle,
   title,
@@ -32,23 +41,33 @@ const updateCvMinuteSectionService = async ({
   contrat,
   conseil,
   suggestion,
+  sectionId,
+  sectionOrder,
+  sectionInfoId,
+  sectionInfoOrder,
+  cvMinuteSectionId,
 }: {
   id: number;
-  sectionId: number;
-  sectionInfoId?: number;
   content?: string;
   sectionTitle?: string;
   title?: string;
   company?: string;
   date?: string;
   contrat?: string;
-  conseil: string;
-  suggestion: string;
+  conseil?: string;
+  suggestion?: string;
+  sectionId?: number;
+  sectionOrder?: number;
+  sectionInfoId?: number;
+  sectionInfoOrder?: number;
+  cvMinuteSectionId?: number;
 }) => {
   try {
     const res = await api.put(`/cv-minute/${id}/section`, {
       sectionId,
+      sectionOrder,
       sectionInfoId,
+      sectionInfoOrder,
       content,
       sectionTitle,
       title,
@@ -57,6 +76,7 @@ const updateCvMinuteSectionService = async ({
       contrat,
       conseil,
       suggestion,
+      cvMinuteSectionId,
     });
     return res.data;
   } catch (error) {
@@ -64,4 +84,9 @@ const updateCvMinuteSectionService = async ({
   }
 };
 
-export { getCvMinuteService, addCvMinuteService, updateCvMinuteSectionService };
+export {
+  getCvMinuteService,
+  addCvMinuteService,
+  updateCvMinuteProfileService,
+  updateCvMinuteSectionService,
+};

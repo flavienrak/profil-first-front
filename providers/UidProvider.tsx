@@ -48,6 +48,9 @@ export default function UidProvider({
 
       if (res.userId) {
         setUserId(res.userId);
+        if (notProtectedPaths.includes(pathname)) {
+          window.location.href = '/cv-minute';
+        }
       } else if (
         res.notAuthenticated &&
         !notProtectedPaths.includes(pathname)

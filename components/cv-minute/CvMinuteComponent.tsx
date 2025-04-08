@@ -91,9 +91,13 @@ export default function CvMinuteComponent() {
                     </button>
                     <button
                       onClick={handleAcceptConditions}
-                      className="flex-1 px-8 py-1 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-lg hover:opacity-90 transition-opacity duration-300 shadow cursor-pointer"
+                      className={`flex-1 px-8 py-1 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-lg transition-opacity duration-300 shadow ${
+                        isLoading
+                          ? 'opacity-80'
+                          : 'hover:opacity-90 cursor-pointer'
+                      }`}
                     >
-                      <p>
+                      <p className="flex justify-center items-center gap-2 text-white">
                         {isLoading && (
                           <svg
                             aria-hidden="true"

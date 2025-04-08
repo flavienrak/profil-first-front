@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { FieldInterface } from './CvPreview';
+import { FieldInterface, PopupInterface } from './CvPreview';
 import { updateCvMinuteSectionService } from '@/services/cvMinute.service';
 import { isSameData } from '@/lib/utils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,18 +28,8 @@ import { DynamicIcon } from 'lucide-react/dynamic';
 import { RootState } from '@/redux/store';
 
 interface EditPopupInterface {
+  popup: PopupInterface;
   cvMinuteId: number;
-  align?: 'left' | 'right';
-  hidden?: boolean;
-  title?: string;
-  conseil?: string;
-  suggestionTitle?: string;
-  suggestion?: string;
-  deleteLabel?: string;
-  sectionId: number;
-  sectionInfoId?: number;
-  editable: boolean;
-  fields: FieldInterface[];
   currentPosition: { x: number; y: number };
   handleClosePopup: () => void;
   handleMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -48,18 +38,8 @@ interface EditPopupInterface {
 }
 
 export default function EditPopup({
+  popup,
   cvMinuteId,
-  align = 'left',
-  hidden = true,
-  title,
-  conseil,
-  suggestionTitle,
-  suggestion,
-  deleteLabel,
-  sectionId,
-  sectionInfoId,
-  editable,
-  fields,
   currentPosition,
   handleClosePopup,
   handleMouseDown,
@@ -82,10 +62,10 @@ export default function EditPopup({
     return z.object(shape);
   };
 
-  const formSchema = dynamicSchema(fields);
+  const formSchema = dynamicSchema(popup.fields);
   type FormValues = z.infer<typeof formSchema>;
   const defaultValues = Object.fromEntries(
-    fields.map((field) => [field.key, field.initialValue]),
+    popup.fields.map((field) => [field.key, field.initialValue]),
   );
 
   const form = useForm<FormValues>({
@@ -96,7 +76,7 @@ export default function EditPopup({
   const onSubmit = async (data: FormValues) => {
     const parseRes = formSchema.safeParse(data);
 
-    if (parseRes.success) {
+    if (parseRes.success && (popup.sectionId || popup.cvMinuteSectionId)) {
       // API CALL
 
       if (isSameData(defaultValues, parseRes.data)) {
@@ -118,8 +98,6 @@ export default function EditPopup({
 
       const res = await updateCvMinuteSectionService({
         id: cvMinuteId,
-        sectionId,
-        sectionInfoId,
         content,
         sectionTitle,
         title,
@@ -128,6 +106,11 @@ export default function EditPopup({
         contrat,
         conseil,
         suggestion,
+        sectionId: popup.sectionId,
+        sectionOrder: popup.sectionOrder,
+        sectionInfoId: popup.sectionInfoId,
+        sectionInfoOrder: popup.sectionInfoOrder,
+        cvMinuteSectionId: popup.cvMinuteSectionId,
       });
       if (res.cvMinuteSection) {
         dispatch(
@@ -138,9 +121,6 @@ export default function EditPopup({
       setIsLoading(false);
     }
   };
-  //  ${
-  //       align === 'left' ? 'left-0' : 'right-0'
-  //     }
 
   return (
     <div
@@ -165,25 +145,23 @@ export default function EditPopup({
 
       <div
         className={`flex flex-col gap-[1em] p-[0.75em] max-h-[calc(100vh-8rem)] ${
-          hidden ? 'overflow-y-auto overflow-x-hidden' : 'overflow-y-visible'
+          popup.hidden
+            ? 'overflow-y-auto overflow-x-hidden'
+            : 'overflow-y-visible'
         }`}
       >
-        {title && (
-          <h3 className="text-center text-[1.125em] font-semibold tracking-wide px-[1em]">
-            {title}
+        {popup.title && (
+          <h3 className="text-center text-[1.125em] font-semibold tracking-wide px-[1em] select-none">
+            {popup.title}
           </h3>
         )}
-        {conseil && (
+        {popup.openly && popup.conseil && (
           <div className="flex flex-col gap-[0.25em]">
             <p className="text-[0.875em]">Nos conseils :</p>
-            <p className="text-[0.6875em]">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
-              quidem ducimus nisi molestiae ex iusto, voluptatem dolorum nemo
-              commodi.
-            </p>
+            <p className="text-[0.6875em]">{popup.conseil}</p>
           </div>
         )}
-        {deleteLabel && <PrimaryButton label={deleteLabel} />}
+        {popup.deleteLabel && <PrimaryButton label={popup.deleteLabel} />}
 
         <Form {...form}>
           <form
@@ -191,7 +169,7 @@ export default function EditPopup({
             className="flex flex-col gap-[0.5em]"
           >
             <div className="flex flex-col gap-[0.25em]">
-              {fields.map((field) => (
+              {popup.fields.map((field) => (
                 <FormField
                   key={field.key}
                   name={field.key}
@@ -212,7 +190,7 @@ export default function EditPopup({
                         <div className="flex flex-col gap-[0.5em]">
                           <div className="flex gap-[0.5em]">
                             {field.icon && field.size && (
-                              <div className="relative w-[3em] h-[2.5em]">
+                              <div className="relative">
                                 {showIcons && (
                                   <SelectIcon
                                     icon={field.icon}
@@ -221,7 +199,7 @@ export default function EditPopup({
                                 )}
                                 <i
                                   onClick={() => setShowIcons((prev) => !prev)}
-                                  className={`w-full h-full flex justify-center items-center text-gray-700 border rounded-[0.25em] cursor-pointer ${
+                                  className={`h-[2.5em] w-[2.5em] flex justify-center items-center text-[0.875em] text-gray-700 border rounded-[0.25em] cursor-pointer ${
                                     showIcons
                                       ? 'bg-[var(--primary-color)] text-white'
                                       : 'hover:bg-gray-200'
@@ -236,6 +214,7 @@ export default function EditPopup({
                             )}
                             {field.type === 'textarea' ? (
                               <Textarea
+                                {...formField}
                                 autoComplete="off"
                                 className="flex-1 h-[3em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
                                 placeholder={field.placeholder}
@@ -264,7 +243,7 @@ export default function EditPopup({
               ))}
             </div>
 
-            {suggestion && (
+            {popup.openly && (
               <div className="flex flex-col gap-[0.5em]">
                 <PrimaryButton
                   label={'Génerer des suggestions'}
@@ -276,26 +255,23 @@ export default function EditPopup({
                   Cliquer sur 'Génerer des suggestions pour obtenir des
                   propositions personnalisées'
                 </p>
-                <div className="flex flex-col gap-[0.5em]">
-                  <h3 className="text-[0.875em] text-center font-medium">
-                    {suggestionTitle}
-                  </h3>
-                  <div className="border p-[0.5em] rounded-sm">
-                    <p className="text-[0.75em]">
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                      Odio repudiandae numquam magni ratione distinctio iste id
-                      dolorum sit maiores sunt ea modi quae et, quibusdam
-                      asperiores labore doloremque deserunt animi.
-                    </p>
+                {popup.suggestion && (
+                  <div className="flex flex-col gap-[0.5em]">
+                    <h3 className="text-[0.875em] text-center font-medium">
+                      {popup.suggestionTitle}
+                    </h3>
+                    <div className="border p-[0.5em] rounded-sm">
+                      <p className="text-[0.75em]">{popup.suggestion}</p>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
 
             <PrimaryButton
               label={`Enregistrer ${
-                fields.length > 1 ? 'les' : 'la'
-              } modification${fields.length > 1 ? 's' : ''}`}
+                popup.fields.length > 1 ? 'les' : 'la'
+              } modification${popup.fields.length > 1 ? 's' : ''}`}
               type="submit"
               isLoading={isLoading}
             />

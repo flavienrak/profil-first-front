@@ -14,7 +14,7 @@ export default function Popup({
   children: React.ReactNode;
 }) {
   return (
-    <div className="fixed top-0 left-0 z-50 w-screen h-screen bg-black/40 flex justify-center items-center">
+    <div className="fixed top-0 left-0 z-[100] w-screen h-screen bg-black/40 flex justify-center items-center">
       <div
         className={`bg-white p-5 rounded-xl relative border-gray-500 shadow ${
           full ? '' : large ? 'max-w-[52rem] h-4/5' : 'max-w-[32rem]'

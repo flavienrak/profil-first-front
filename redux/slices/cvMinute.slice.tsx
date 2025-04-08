@@ -49,17 +49,15 @@ const cvMinuteSlice = createSlice({
     updateCvMinuteReducer: (state, action) => {
       const {
         cvMinuteSection,
-        sectionInfo,
+        file,
       }: {
         cvMinuteSection: CvMinuteSectionInterface;
-        sectionInfo: SectionInterface;
+        file: FileInterface;
       } = action.payload;
 
       if (cvMinuteSection) {
         const index = state.cvMinuteSections.findIndex(
-          (c) =>
-            c.cvMinuteId === cvMinuteSection.cvMinuteId &&
-            c.sectionId === cvMinuteSection.sectionId,
+          (c) => c.id === cvMinuteSection.id,
         );
 
         if (index !== -1) {
@@ -68,8 +66,14 @@ const cvMinuteSlice = createSlice({
           state.cvMinuteSections.push(cvMinuteSection);
         }
       }
+      if (file) {
+        const index = state.files.findIndex((f) => f.id === file.id);
 
-      if (sectionInfo) {
+        if (index !== -1) {
+          state.files[index] = file;
+        } else {
+          state.files.push(file);
+        }
       }
     },
   },

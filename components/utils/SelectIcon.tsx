@@ -81,8 +81,8 @@ export default function SelectIcon({
     <div className="absolute bottom-[110%] left-0 w-[17.85em] h-[15em] shadow border bg-white p-[0.5em] flex flex-wrap rounded-[0.25em]">
       <div className="w-full h-max flex justify-between items-center border-b-[0.0625em] gap-[0.5em] pb-[0.375em]">
         <div className="relative flex items-center">
-          <i className="absolute left-[0.5em] text-gray-400">
-            <Search className="h-[1.25em]" />
+          <i className="absolute left-[0.5em] h-[2.5em] w-[2.5em] flex justify-center items-center text-gray-400">
+            <Search size={size * (fontSize / 16)} />
           </i>
           <Input
             value={filter}
@@ -98,7 +98,6 @@ export default function SelectIcon({
           />
         </div>
         <div className="flex items-center gap-[0.5em]">
-          {/* <Globe /> */}
           <Input
             type="number"
             onChange={() => {}}
