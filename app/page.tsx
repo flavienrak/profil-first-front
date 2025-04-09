@@ -1,4 +1,5 @@
 import LandingComponent from '@/components/landing/LandingComponent';
+import ProtectedRoute from '@/components/utils/ProtectedRoute';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
 export default function Landing() {
   return (
     <div className="relative w-full min-h-screen">
-      <LandingComponent />
+      <ProtectedRoute>
+        <LandingComponent />
+      </ProtectedRoute>
     </div>
   );
 }

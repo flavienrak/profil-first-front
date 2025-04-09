@@ -95,7 +95,6 @@ export default function UidProvider({
       } else {
         (async () => {
           const res = await getCvMinuteService(cvMinute);
-          console.log('res:', res);
           if (res.cvMinute) {
             dispatch(
               setCvMinuteReducer({

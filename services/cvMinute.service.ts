@@ -1,4 +1,5 @@
 import api from '@/axios/axios.instance';
+import { PopupInterface } from '@/components/cv-minute/CvPreview';
 
 const getCvMinuteService = async (id: string | number) => {
   try {
@@ -33,50 +34,56 @@ const updateCvMinuteProfileService = async (id: number, formData: FormData) => {
 
 const updateCvMinuteSectionService = async ({
   id,
-  content,
-  sectionTitle,
   title,
+  sectionTitle,
+  content,
   company,
   date,
   contrat,
-  conseil,
-  suggestion,
   sectionId,
   sectionOrder,
   sectionInfoId,
   sectionInfoOrder,
   cvMinuteSectionId,
+
+  newSection,
+  updateExperience,
+  updateCvMinuteSection,
 }: {
   id: number;
-  content?: string;
-  sectionTitle?: string;
   title?: string;
+  sectionTitle?: string;
+  content: string;
   company?: string;
   date?: string;
   contrat?: string;
-  conseil?: string;
-  suggestion?: string;
-  sectionId?: number;
-  sectionOrder?: number;
-  sectionInfoId?: number;
-  sectionInfoOrder?: number;
-  cvMinuteSectionId?: number;
+  sectionId?: PopupInterface['sectionId'];
+  sectionOrder?: PopupInterface['sectionOrder'];
+  sectionInfoId?: PopupInterface['sectionInfoId'];
+  sectionInfoOrder?: PopupInterface['sectionInfoOrder'];
+  cvMinuteSectionId?: PopupInterface['cvMinuteSectionId'];
+
+  newSection?: PopupInterface['newSection'];
+  updateExperience?: PopupInterface['updateExperience'];
+  updateCvMinuteSection?: PopupInterface['updateCvMinuteSection'];
 }) => {
   try {
     const res = await api.put(`/cv-minute/${id}/section`, {
+      title,
+      sectionTitle,
+      content,
+      company,
+      date,
+      contrat,
       sectionId,
       sectionOrder,
       sectionInfoId,
       sectionInfoOrder,
-      content,
-      sectionTitle,
-      title,
-      company,
-      date,
-      contrat,
-      conseil,
-      suggestion,
       cvMinuteSectionId,
+
+      newSection,
+      updateExperience,
+      updateCvMinuteSection,
     });
     return res.data;
   } catch (error) {

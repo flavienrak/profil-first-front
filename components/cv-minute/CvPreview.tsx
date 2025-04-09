@@ -20,11 +20,11 @@ import { IconInterface } from '@/interfaces/icon.interface';
 import { Tooltip, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { TooltipContent } from '@radix-ui/react-tooltip';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
-import { FileInterface } from '@/interfaces/file.interface';
 import { updateCvMinuteProfileService } from '@/services/cvMinute.service';
 import { updateCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
 
 export interface FieldInterface {
+  key: string;
   label: string;
   placeholder: string;
   description?: string;
@@ -34,7 +34,8 @@ export interface FieldInterface {
   size?: number;
   type: 'input' | 'textarea' | 'text';
   initialValue: string | number;
-  key: string;
+  requiredError: string;
+  trim?: boolean;
 }
 
 export interface PopupInterface {
@@ -46,13 +47,17 @@ export interface PopupInterface {
   suggestionTitle?: string;
   suggestion?: string;
   deleteLabel?: string;
-  editable?: boolean;
+  compare?: boolean;
   fields: FieldInterface[];
   sectionId?: number;
   sectionOrder?: number;
   sectionInfoId?: number;
   sectionInfoOrder?: number;
   cvMinuteSectionId?: number;
+
+  newSection?: boolean;
+  updateExperience?: boolean;
+  updateCvMinuteSection?: boolean;
 }
 
 const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
@@ -75,7 +80,6 @@ export default function CvPreview() {
   };
 
   const contactsSection = getSection('contacts');
-  const experiencesSection = getSection('experiences');
 
   const profile = getCvMinuteSection('profile');
   const name = getCvMinuteSection('name');
@@ -257,7 +261,7 @@ export default function CvPreview() {
               </div>
             </div>
 
-            <div className="relative flex bg-white w-[50em] min-h-[50em] rounded-[0.75em] shadow-md">
+            <div className="relative flex bg-white w-[50em] min-h-[70em] rounded-[0.75em] shadow-md">
               <div className="absolute -left-[3.5em] top-0 flex flex-col gap-[0.5em]">
                 <TooltipProvider>
                   <Tooltip delayDuration={700}>
@@ -267,39 +271,36 @@ export default function CvPreview() {
                           const data: PopupInterface = {
                             title: 'Ajouter une rubrique',
                             openly: true,
-                            conseil: '',
+                            conseil:
+                              contacts?.advices && contacts.advices.length > 0
+                                ? contacts.advices[0].content
+                                : '',
                             suggestionTitle: 'Idées de rubrique',
                             suggestion: '',
-                            editable: false,
-                            sectionId: contactsSection?.id,
-                            sectionInfoId: contacts?.sectionInfos[0]?.id,
+                            newSection: true,
                             sectionOrder:
-                              contacts?.sectionInfos &&
-                              contacts.sectionInfos.length > 0
-                                ? contacts.sectionInfos.length + 1
+                              editableSections.length > 0
+                                ? editableSections.length + 1
                                 : 1,
                             fields: [
                               {
                                 label: 'Nom de la rubrique',
                                 type: 'input',
                                 key: 'title',
-                                placeholder:
-                                  contacts?.sectionInfos[0]?.content ??
-                                  'Nom...',
-                                value: contacts?.sectionInfos[0]?.content ?? '',
-                                initialValue:
-                                  contacts?.sectionInfos[0]?.content ?? '',
+                                placeholder: 'Nom...',
+                                requiredError: 'Nom de la rubrique requise',
+                                value: '',
+                                initialValue: '',
                               },
                               {
                                 label: 'Description',
                                 type: 'textarea',
                                 key: 'content',
-                                placeholder:
-                                  contacts?.sectionInfos[0]?.content ??
-                                  'Description...',
-                                value: contacts?.sectionInfos[0]?.content ?? '',
-                                initialValue:
-                                  contacts?.sectionInfos[0]?.content ?? '',
+                                placeholder: 'Description...',
+                                requiredError:
+                                  'Description de la rubrique requise',
+                                value: '',
+                                initialValue: '',
                               },
                             ],
                           };
@@ -334,7 +335,6 @@ export default function CvPreview() {
                           const data: PopupInterface = {
                             title: 'Ajouter vos contacts, liens, adresse...',
                             hidden: false,
-                            editable: false,
                             sectionId: contactsSection?.id,
                             sectionInfoId: contacts?.sectionInfos[0]?.id,
                             fields: [
@@ -344,6 +344,7 @@ export default function CvPreview() {
                                 icon: 'globe',
                                 size: 16,
                                 key: 'content',
+                                requiredError: '',
                                 placeholder:
                                   contacts?.sectionInfos[0]?.content ??
                                   'https://...',
@@ -421,14 +422,15 @@ export default function CvPreview() {
                         <h2
                           onClick={(event) => {
                             const data: PopupInterface = {
-                              editable: false,
                               sectionInfoId: firstname.sectionInfos[0]?.id,
                               cvMinuteSectionId: firstname.id,
+                              updateCvMinuteSection: true,
                               fields: [
                                 {
                                   label: 'Votre prénom',
                                   type: 'input',
                                   key: 'content',
+                                  requiredError: 'Prénom requis',
                                   placeholder:
                                     firstname?.sectionInfos[0]?.content ??
                                     'Prénom',
@@ -457,14 +459,15 @@ export default function CvPreview() {
                         <h1
                           onClick={(event) => {
                             const data: PopupInterface = {
-                              editable: false,
                               sectionInfoId: name.sectionInfos[0]?.id,
                               cvMinuteSectionId: name.id,
+                              updateCvMinuteSection: true,
                               fields: [
                                 {
                                   label: 'Votre nom',
                                   type: 'input',
                                   key: 'content',
+                                  requiredError: 'Nom requis',
                                   placeholder:
                                     name?.sectionInfos[0]?.content ?? 'Nom',
                                   value: name?.sectionInfos[0]?.content ?? '',
@@ -517,8 +520,8 @@ export default function CvPreview() {
 
                   {editableSections.length > 0 &&
                     editableSections.map((s) => {
-                      const section = getCvMinuteSection(s.name);
-                      if (section)
+                      const cvMinuteSection = getCvMinuteSection(s.name);
+                      if (cvMinuteSection)
                         return (
                           <div
                             key={s.id}
@@ -527,35 +530,39 @@ export default function CvPreview() {
                                 title: 'Modifier ou supprimer la rubrique',
                                 conseil: 'Nos conseils',
                                 suggestionTitle: 'Idées de rubrique',
-                                suggestion: ' ',
+                                suggestion: '',
                                 deleteLabel: 'Supprimer la rubrique',
-                                editable: true,
-                                sectionInfoId: section.sectionInfos[0]?.id,
-                                cvMinuteSectionId: section.id,
+                                updateCvMinuteSection: true,
+                                cvMinuteSectionId: cvMinuteSection.id,
+                                sectionInfoId:
+                                  cvMinuteSection?.sectionInfos[0]?.id,
                                 fields: [
                                   {
                                     label: 'Nom de la rubrique',
                                     type: 'input',
-                                    key: 'title',
+                                    key: 'sectionTitle',
+                                    requiredError: 'Nom de la rubrique requis',
                                     placeholder:
-                                      section?.sectionInfos[0]?.content ??
-                                      'Nom...',
-                                    value:
-                                      section?.sectionInfos[0]?.content ?? '',
+                                      cvMinuteSection.sectionTitle ?? 'Nom...',
+                                    value: cvMinuteSection.sectionTitle ?? '',
                                     initialValue:
-                                      section?.sectionInfos[0]?.content ?? '',
+                                      cvMinuteSection.sectionTitle ?? '',
                                   },
                                   {
                                     label: 'Description',
                                     type: 'textarea',
                                     key: 'content',
+                                    requiredError:
+                                      'Description de la rubrique requise',
                                     placeholder:
-                                      section?.sectionInfos[0]?.content ??
-                                      'Description...',
+                                      cvMinuteSection?.sectionInfos[0]
+                                        ?.content ?? 'Description...',
                                     value:
-                                      section?.sectionInfos[0]?.content ?? '',
+                                      cvMinuteSection?.sectionInfos[0]
+                                        ?.content ?? '',
                                     initialValue:
-                                      section?.sectionInfos[0]?.content ?? '',
+                                      cvMinuteSection?.sectionInfos[0]
+                                        ?.content ?? '',
                                   },
                                 ],
                               };
@@ -568,15 +575,18 @@ export default function CvPreview() {
                                 handleOpenPopup(data);
                               }
                             }}
-                            className="relative w-full mt-[1em] hover:bg-gray-100/25 p-[0.25em]"
+                            style={{ order: cvMinuteSection.sectionOrder }}
+                            className="relative w-full mt-[1em] hover:bg-gray-100/25 p-[0.25em] transition-[order] duration-500"
                           >
                             <h3 className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.75em] font-semibold mb-[0.5em] text-[0.875em] select-none">
-                              {section?.sectionTitle}
+                              {cvMinuteSection?.sectionTitle}
                             </h3>
                             <div className="pl-[0.5em] text-[0.875em]">
-                              {section?.sectionInfos &&
-                              section?.sectionInfos.length > 0 ? (
-                                <p>{section.sectionInfos[0].content}</p>
+                              {cvMinuteSection?.sectionInfos &&
+                              cvMinuteSection?.sectionInfos.length > 0 ? (
+                                <p className="whitespace-pre-line">
+                                  {cvMinuteSection.sectionInfos[0].content}
+                                </p>
                               ) : (
                                 <p className="text-[0.875em] italic">
                                   Aucun diplôme ajouté
@@ -619,15 +629,19 @@ export default function CvPreview() {
                         title: 'Titre du CV',
                         conseil: 'Nos conseils',
                         suggestionTitle: 'Idées de titre du CV',
-                        suggestion: ' ',
+                        suggestion: '',
                         deleteLabel: 'Supprimer le titre',
                         sectionInfoId: title.sectionInfos[0]?.id,
                         cvMinuteSectionId: title.id,
+                        updateCvMinuteSection: true,
+                        compare: false,
                         fields: [
                           {
                             label: 'Ajouter le titre du CV',
+                            requiredError: 'Titre du CV requis',
                             type: 'input',
                             key: 'content',
+                            trim: false,
                             description:
                               'Si vous souhaitez un CV sans titre, mettez un espace',
                             placeholder:
@@ -660,18 +674,19 @@ export default function CvPreview() {
                       const data: PopupInterface = {
                         align: 'right',
                         title: 'Ajouter une presentation',
-                        conseil: 'Nos conseils',
+                        conseil: '',
+                        openly: true,
                         suggestionTitle: 'Idées de présentation',
-                        suggestion: ' ',
+                        suggestion: '',
                         sectionInfoId: presentation.sectionInfos[0]?.id,
                         cvMinuteSectionId: presentation.id,
+                        updateCvMinuteSection: true,
                         fields: [
                           {
                             label: 'Présentation',
                             type: 'textarea',
                             key: 'content',
-                            description:
-                              'Si vous souhaitez un CV sans titre, mettez un espace',
+                            requiredError: 'Présentation requise',
                             placeholder:
                               presentation?.sectionInfos[0]?.content ??
                               'Présentation...',
@@ -706,15 +721,14 @@ export default function CvPreview() {
                         const data: PopupInterface = {
                           align: 'right',
                           title: "Informations de l'expérience",
-                          editable: false,
-                          sectionId: experiencesSection?.id,
-                          sectionInfoId: experiences?.sectionInfos[0]?.id,
                           cvMinuteSectionId: experiences.id,
+                          updateExperience: true,
                           fields: [
                             {
                               label: 'Titre du poste',
                               type: 'input',
                               key: 'title',
+                              requiredError: 'Titre du poste requis',
                               placeholder:
                                 experiences?.sectionInfos[0]?.content ??
                                 'Titre...',
@@ -727,6 +741,7 @@ export default function CvPreview() {
                               label: "Nom de l'entreprise",
                               type: 'input',
                               key: 'company',
+                              requiredError: "Nom de l'entreprise requis",
                               placeholder:
                                 experiences?.sectionInfos[0]?.content ??
                                 'Entreprise...',
@@ -740,6 +755,7 @@ export default function CvPreview() {
                               example: 'Ex : 03-2023 05-2025',
                               type: 'input',
                               key: 'date',
+                              requiredError: 'Mois requis',
                               placeholder:
                                 experiences?.sectionInfos[0]?.content ??
                                 'Mois...',
@@ -753,6 +769,7 @@ export default function CvPreview() {
                               example: 'Ex : CDI, CDD, Intérim...',
                               type: 'input',
                               key: 'contrat',
+                              requiredError: 'Type de contrat requis',
                               placeholder:
                                 experiences?.sectionInfos[0]?.content ??
                                 'Contrat...',
@@ -765,6 +782,7 @@ export default function CvPreview() {
                               label: 'Description',
                               type: 'text',
                               key: 'content',
+                              requiredError: 'Description requise',
                               placeholder:
                                 experiences?.sectionInfos[0]?.content ??
                                 'Description...',
@@ -815,27 +833,97 @@ export default function CvPreview() {
                     {experiences?.sectionInfos &&
                     experiences.sectionInfos.length > 0 ? (
                       <div className="flex flex-col gap-[0.375em]">
-                        <div className="flex flex-col gap-[0.25em] p-[0.25em] hover:bg-gray-100">
-                          <div className="flex gap-[0.5em] font-semibold">
-                            <p className="text-nowrap text-[0.875em] text-[#2A7F8B] word-spacing">
-                              05-2022 06-2024 :
-                            </p>
-                            <h3>Ingénieur structure - stage</h3>
-                          </div>
-                          <p className="text-[0.875em] tracking-wide p-[0.25em] bg-blue-200">
-                            Apro Tank - <span>(CDI)</span>
-                          </p>
+                        {experiences.sectionInfos.map((item) => (
                           <div
-                            className="text-[0.65em]"
-                            dangerouslySetInnerHTML={{
-                              __html:
-                                DOMPurify.sanitize(`<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Perspiciatis eveniet, nam atque doloribus nostrum quaerat
-                mollitia rem ab dolor perferendis facilis odit nulla explicabo,
-                nisi tenetur unde! Nam, aliquam tempore.</p>`),
+                            key={item.id}
+                            onClick={(event) => {
+                              const data: PopupInterface = {
+                                align: 'right',
+                                title: "Modifier ou supprimer l'expérience",
+                                deleteLabel: "Supprimer l'expérience",
+                                sectionInfoId: item.id,
+                                cvMinuteSectionId: experiences.id,
+                                updateExperience: true,
+                                fields: [
+                                  {
+                                    label: 'Titre du poste',
+                                    type: 'input',
+                                    key: 'title',
+                                    requiredError: 'Titre du poste requis',
+                                    placeholder: item.title ?? 'Titre...',
+                                    value: item.title ?? '',
+                                    initialValue: item.title ?? '',
+                                  },
+                                  {
+                                    label: "Nom de l'entreprise",
+                                    type: 'input',
+                                    key: 'company',
+                                    requiredError: "Nom de l'entreprise requis",
+                                    placeholder:
+                                      item.company ?? 'Entreprise...',
+                                    value: item.company ?? '',
+                                    initialValue: item.company ?? '',
+                                  },
+                                  {
+                                    label: 'Mois début - Mois fin',
+                                    example: 'Ex : 03-2023 05-2025',
+                                    type: 'input',
+                                    key: 'date',
+                                    requiredError: 'Mois requis',
+                                    placeholder: item.date ?? 'Mois...',
+                                    value: item.date ?? '',
+                                    initialValue: item.date ?? '',
+                                  },
+                                  {
+                                    label: 'Type de contrat',
+                                    example: 'Ex : CDI, CDD, Intérim...',
+                                    type: 'input',
+                                    key: 'contrat',
+                                    requiredError: 'Type de contrat requis',
+                                    placeholder: item.contrat ?? 'Contrat...',
+                                    value: item.contrat ?? '',
+                                    initialValue: item.contrat ?? '',
+                                  },
+                                  {
+                                    label: 'Description',
+                                    type: 'text',
+                                    key: 'content',
+                                    requiredError: 'Description requise',
+                                    placeholder:
+                                      item.content ?? 'Description...',
+                                    value: item.content ?? '',
+                                    initialValue: item.content ?? '',
+                                  },
+                                ],
+                              };
+
+                              handleGetPosition(event, 'right', { y: 80 });
+                              if (isOpen) {
+                                handleClosePopup();
+                                setTempData(data);
+                              } else {
+                                handleOpenPopup(data);
+                              }
                             }}
-                          />
-                        </div>
+                            className="flex flex-col gap-[0.25em] p-[0.25em] hover:bg-gray-100"
+                          >
+                            <div className="flex items-end gap-[0.5em] font-semibold">
+                              <p className="text-nowrap text-[0.875em] text-[#2A7F8B] word-spacing">
+                                {item.date} :
+                              </p>
+                              <h3>{item.title}</h3>
+                            </div>
+                            <p className="text-[0.75em] tracking-[0.025em] p-[0.25em] bg-blue-200">
+                              {item.company} - <span>({item.contrat})</span>
+                            </p>
+                            <div
+                              className="text-[0.7em]"
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(item.content),
+                              }}
+                            />
+                          </div>
+                        ))}
                       </div>
                     ) : (
                       <p className="text-gray-500 italic text-[0.875em] p-[0.25em]">
@@ -851,7 +939,9 @@ export default function CvPreview() {
           {cvMinute &&
             isOpen &&
             popup &&
-            (popup.cvMinuteSectionId || popup.sectionId) && (
+            (((popup.updateCvMinuteSection || popup.updateExperience) &&
+              popup.cvMinuteSectionId) ||
+              popup.newSection) && (
               <EditPopup
                 popup={popup}
                 cvMinuteId={cvMinute.id}

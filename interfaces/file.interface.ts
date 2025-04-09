@@ -7,6 +7,7 @@ export interface FileInterface {
   userId: number;
   cvMinuteId?: number;
   sectionInfoId?: number;
+
   createdAt: Date;
   updatedAt: Date;
 }

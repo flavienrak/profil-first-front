@@ -8,7 +8,7 @@ import PrimaryButton from '@/components/utils/PrimaryButton';
 import { X } from 'lucide-react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { FieldError, useForm } from 'react-hook-form';
 import {
   Form,
   FormControl,
@@ -16,6 +16,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -56,7 +57,17 @@ export default function EditPopup({
 
     fields.forEach((field) => {
       const key = field.key;
-      shape[key] = z.string().trim().min(1, `${field.label} requis`);
+      // Base validator
+      let validator = z.string();
+
+      // Appliquer trim si field.trim est true ou non défini
+      if (field.trim !== false) {
+        validator = validator.trim();
+      }
+
+      // Appliquer min(1) avec le message d'erreur personnalisé
+      validator = validator.min(1, field.requiredError);
+      shape[key] = validator;
     });
 
     return z.object(shape);
@@ -76,47 +87,55 @@ export default function EditPopup({
   const onSubmit = async (data: FormValues) => {
     const parseRes = formSchema.safeParse(data);
 
-    if (parseRes.success && (popup.sectionId || popup.cvMinuteSectionId)) {
+    if (
+      parseRes.success &&
+      (((popup.updateCvMinuteSection || popup.updateExperience) &&
+        popup.cvMinuteSectionId) ||
+        popup.newSection)
+    ) {
       // API CALL
 
-      if (isSameData(defaultValues, parseRes.data)) {
+      if (popup.compare !== false && isSameData(defaultValues, parseRes.data)) {
         handleClosePopup();
         return;
       }
 
       setIsLoading(true);
-      const {
-        content,
-        sectionTitle,
-        title,
-        company,
-        date,
-        contrat,
-        conseil,
-        suggestion,
-      } = parseRes.data;
+      const { content, sectionTitle, title, company, date, contrat } =
+        parseRes.data;
 
       const res = await updateCvMinuteSectionService({
         id: cvMinuteId,
-        content,
-        sectionTitle,
         title,
+        sectionTitle,
+        content,
         company,
         date,
         contrat,
-        conseil,
-        suggestion,
         sectionId: popup.sectionId,
         sectionOrder: popup.sectionOrder,
         sectionInfoId: popup.sectionInfoId,
         sectionInfoOrder: popup.sectionInfoOrder,
         cvMinuteSectionId: popup.cvMinuteSectionId,
+
+        newSection: popup.newSection,
+        updateExperience: popup.updateExperience,
+        updateCvMinuteSection: popup.updateCvMinuteSection,
       });
+
       if (res.cvMinuteSection) {
         dispatch(
-          updateCvMinuteReducer({ cvMinuteSection: res.cvMinuteSection }),
+          updateCvMinuteReducer({
+            section: res.section,
+            cvMinuteSection: res.cvMinuteSection,
+          }),
         );
         handleClosePopup();
+      } else if (res.sectionAlreadyExist) {
+        form.setError('title', {
+          type: 'manual',
+          message: 'La rubrique existe déjà',
+        });
       }
       setIsLoading(false);
     }
@@ -146,8 +165,8 @@ export default function EditPopup({
       <div
         className={`flex flex-col gap-[1em] p-[0.75em] max-h-[calc(100vh-8rem)] ${
           popup.hidden
-            ? 'overflow-y-auto overflow-x-hidden'
-            : 'overflow-y-visible'
+            ? 'overflow-y-visible'
+            : 'overflow-y-auto overflow-x-hidden'
         }`}
       >
         {popup.title && (
@@ -216,12 +235,15 @@ export default function EditPopup({
                               <Textarea
                                 {...formField}
                                 autoComplete="off"
-                                className="flex-1 h-[3em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
+                                className="flex-1 min-h-[5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
                                 placeholder={field.placeholder}
                                 required
                               />
                             ) : field.type === 'text' ? (
-                              <TextEditor />
+                              <TextEditor
+                                onChange={formField.onChange}
+                                content={field.value.toString()}
+                              />
                             ) : (
                               <Input
                                 {...formField}
@@ -232,6 +254,12 @@ export default function EditPopup({
                               />
                             )}
                           </div>
+                          <FormMessage className="text-xs">
+                            {
+                              (form.formState.errors[field.key] as FieldError)
+                                ?.message
+                            }
+                          </FormMessage>
                           <FormDescription className="text-[0.75em]">
                             {field.description}
                           </FormDescription>
@@ -269,10 +297,10 @@ export default function EditPopup({
             )}
 
             <PrimaryButton
+              type="submit"
               label={`Enregistrer ${
                 popup.fields.length > 1 ? 'les' : 'la'
               } modification${popup.fields.length > 1 ? 's' : ''}`}
-              type="submit"
               isLoading={isLoading}
             />
           </form>

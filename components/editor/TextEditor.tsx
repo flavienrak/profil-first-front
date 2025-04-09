@@ -20,7 +20,10 @@ const MenuBar = () => {
   return (
     <div className="flex items-center gap-[0.25em] justify-between bg-gray-100 p-[0.5em] rounded-t-[0.25em]">
       <button
-        onClick={() => editor.chain().focus().toggleBold().run()}
+        onClick={(event) => {
+          event.preventDefault();
+          editor.chain().focus().toggleBold().run();
+        }}
         disabled={!editor.can().chain().focus().toggleBold().run()}
         className={cn(
           'h-[2em] w-[2em] flex justify-center items-center cursor-pointer rounded-[0.125em]',
@@ -30,7 +33,10 @@ const MenuBar = () => {
         <Bold size={fontSize} />
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleItalic().run()}
+        onClick={(event) => {
+          event.preventDefault();
+          editor.chain().focus().toggleItalic().run();
+        }}
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         className={cn(
           'h-[2em] w-[2em] flex justify-center items-center cursor-pointer rounded-[0.125em]',
@@ -40,7 +46,10 @@ const MenuBar = () => {
         <Italic size={fontSize} />
       </button>
       <button
-        onClick={() => editor.chain().focus().setParagraph().run()}
+        onClick={(event) => {
+          event.preventDefault();
+          editor.chain().focus().setParagraph().run();
+        }}
         className={cn(
           'h-[2em] w-[2em] flex justify-center items-center cursor-pointer rounded-[0.125em]',
           editor.isActive('paragraph') ? 'bg-gray-300' : 'hover:bg-gray-200',
@@ -49,7 +58,10 @@ const MenuBar = () => {
         <p className="font-medium text-[1.125em]">P</p>
       </button>
       <button
-        onClick={() => editor.chain().focus().undo().run()}
+        onClick={(event) => {
+          event.preventDefault();
+          editor.chain().focus().undo().run();
+        }}
         disabled={!editor.can().chain().focus().undo().run()}
         className={cn(
           'h-[2em] w-[2em] p-[0.25em] flex justify-center items-center rounded-[0.125em]',
@@ -61,7 +73,10 @@ const MenuBar = () => {
         <Undo size={fontSize + 6} />
       </button>
       <button
-        onClick={() => editor.chain().focus().redo().run()}
+        onClick={(event) => {
+          event.preventDefault();
+          editor.chain().focus().redo().run();
+        }}
         disabled={!editor.can().chain().focus().redo().run()}
         className={cn(
           'h-[2em] w-[2em] p-[0.25em] flex justify-center items-center rounded-[0.125em]',
@@ -84,13 +99,23 @@ function MyEditorContent() {
   return <EditorContent editor={editor} />;
 }
 
-export default function TextEditor() {
+export default function TextEditor({
+  content,
+  onChange,
+}: {
+  content: string;
+  onChange: (content: string) => void;
+}) {
   return (
     <div className="w-full flex flex-col text-[0.875em] border rounded-sm cursor-text">
       <EditorProvider
         slotBefore={<MenuBar />}
         extensions={[StarterKit]}
-        content={''}
+        onUpdate={({ editor }) => {
+          const htmlContent = editor.getHTML();
+          onChange(htmlContent);
+        }}
+        content={content}
       >
         <MyEditorContent />
       </EditorProvider>

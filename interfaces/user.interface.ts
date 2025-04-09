@@ -4,6 +4,7 @@ export interface UserInterface {
   email: string;
   acceptConditions: boolean;
   role: 'user' | 'recruiter' | 'admin';
+
   createdAt: Date;
   updatedAt: Date;
 }

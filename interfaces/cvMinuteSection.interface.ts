@@ -5,8 +5,9 @@ export interface CvMinuteSectionInterface {
   id: number;
   sectionOrder?: number;
   sectionTitle?: string;
-  sectionInfos: SectionInfoInterface[];
-  advices?: AdviceInterface[];
   cvMinuteId: number;
   sectionId: number;
+
+  sectionInfos: SectionInfoInterface[];
+  advices: AdviceInterface[];
 }
