@@ -1,5 +1,6 @@
 import api from '@/axios/axios.instance';
 import { PopupInterface } from '@/components/cv-minute/CvPreview';
+import { IconInterface } from '@/interfaces/icon.interface';
 
 const getCvMinuteService = async (id: string | number) => {
   try {
@@ -40,6 +41,8 @@ const updateCvMinuteSectionService = async ({
   company,
   date,
   contrat,
+  icon,
+  iconSize,
   sectionId,
   sectionOrder,
   sectionInfoId,
@@ -48,6 +51,7 @@ const updateCvMinuteSectionService = async ({
 
   newSection,
   updateExperience,
+  updateContactSection,
   updateCvMinuteSection,
 }: {
   id: number;
@@ -57,6 +61,8 @@ const updateCvMinuteSectionService = async ({
   company?: string;
   date?: string;
   contrat?: string;
+  icon?: IconInterface;
+  iconSize?: number;
   sectionId?: PopupInterface['sectionId'];
   sectionOrder?: PopupInterface['sectionOrder'];
   sectionInfoId?: PopupInterface['sectionInfoId'];
@@ -65,6 +71,7 @@ const updateCvMinuteSectionService = async ({
 
   newSection?: PopupInterface['newSection'];
   updateExperience?: PopupInterface['updateExperience'];
+  updateContactSection?: PopupInterface['updateContactSection'];
   updateCvMinuteSection?: PopupInterface['updateCvMinuteSection'];
 }) => {
   try {
@@ -75,6 +82,8 @@ const updateCvMinuteSectionService = async ({
       company,
       date,
       contrat,
+      icon,
+      iconSize,
       sectionId,
       sectionOrder,
       sectionInfoId,
@@ -83,6 +92,7 @@ const updateCvMinuteSectionService = async ({
 
       newSection,
       updateExperience,
+      updateContactSection,
       updateCvMinuteSection,
     });
     return res.data;

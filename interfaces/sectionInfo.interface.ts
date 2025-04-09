@@ -1,4 +1,5 @@
 import { AdviceInterface } from './advice.interface';
+import { IconInterface } from './icon.interface';
 
 export interface SectionInfoInterface {
   id: number;
@@ -7,11 +8,12 @@ export interface SectionInfoInterface {
   font: string;
   color: string;
   background: string;
+  order?: number;
   title?: string;
   company?: string;
   date?: string;
   contrat?: string;
-  icon?: string;
+  icon?: IconInterface;
   iconColor?: string;
   iconSize?: number;
   cvMinuteId: number;

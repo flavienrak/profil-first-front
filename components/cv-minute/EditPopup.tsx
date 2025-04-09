@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
 import { DynamicIcon } from 'lucide-react/dynamic';
 import { RootState } from '@/redux/store';
+import { IconInterface } from '@/interfaces/icon.interface';
 
 interface EditPopupInterface {
   popup: PopupInterface;
@@ -49,6 +50,12 @@ export default function EditPopup({
 }: EditPopupInterface) {
   const dispatch = useDispatch();
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
+  const [icon, setIcon] = React.useState(
+    popup.fields.find((f) => f.icon)?.icon,
+  );
+  const [iconSize, setIconSize] = React.useState(
+    popup.fields.find((f) => f.iconSize)?.iconSize,
+  );
   const [showIcons, setShowIcons] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -89,13 +96,18 @@ export default function EditPopup({
 
     if (
       parseRes.success &&
-      (((popup.updateCvMinuteSection || popup.updateExperience) &&
+      (((popup.updateCvMinuteSection ||
+        popup.updateExperience ||
+        popup.updateContactSection) &&
         popup.cvMinuteSectionId) ||
         popup.newSection)
     ) {
       // API CALL
-
-      if (popup.compare !== false && isSameData(defaultValues, parseRes.data)) {
+      if (
+        !icon &&
+        popup.compare !== false &&
+        isSameData(defaultValues, parseRes.data)
+      ) {
         handleClosePopup();
         return;
       }
@@ -112,6 +124,8 @@ export default function EditPopup({
         company,
         date,
         contrat,
+        icon,
+        iconSize,
         sectionId: popup.sectionId,
         sectionOrder: popup.sectionOrder,
         sectionInfoId: popup.sectionInfoId,
@@ -120,6 +134,7 @@ export default function EditPopup({
 
         newSection: popup.newSection,
         updateExperience: popup.updateExperience,
+        updateContactSection: popup.updateContactSection,
         updateCvMinuteSection: popup.updateCvMinuteSection,
       });
 
@@ -143,17 +158,19 @@ export default function EditPopup({
 
   return (
     <div
-      className={`z-50 fixed bg-white rounded-[0.5em] shadow-xl cursor-move border-[0.0625em] border-gray-200 w-[20em]`}
+      className={`z-50 fixed bg-white rounded-[0.5em] shadow-xl border-[0.0625em] border-gray-200 w-[20em]`}
       style={{
         left: `${currentPosition.x}px`,
         top: `${currentPosition.y}px`,
       }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
     >
-      <div className="p-[0.625em] border-b-[0.0625em] border-gray-200 flex items-center justify-end bg-[#F3EAFD] rounded-t-[0.5em]">
+      <div
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        className="p-[0.625em] border-b-[0.0625em] border-gray-200 flex items-center justify-end bg-[#F3EAFD] rounded-t-[0.5em] cursor-move"
+      >
         <button
           onClick={handleClosePopup}
           className="text-gray-500 hover:text-gray-700 cursor-pointer"
@@ -164,7 +181,7 @@ export default function EditPopup({
 
       <div
         className={`flex flex-col gap-[1em] p-[0.75em] max-h-[calc(100vh-8rem)] ${
-          popup.hidden
+          popup.hidden === false
             ? 'overflow-y-visible'
             : 'overflow-y-auto overflow-x-hidden'
         }`}
@@ -208,12 +225,19 @@ export default function EditPopup({
                       <FormControl>
                         <div className="flex flex-col gap-[0.5em]">
                           <div className="flex gap-[0.5em]">
-                            {field.icon && field.size && (
+                            {icon && iconSize && (
                               <div className="relative">
                                 {showIcons && (
                                   <SelectIcon
-                                    icon={field.icon}
-                                    size={field.size}
+                                    icon={icon}
+                                    size={iconSize}
+                                    onChange={(value: IconInterface) => {
+                                      setIcon(value);
+                                      setShowIcons(false);
+                                    }}
+                                    onChangeSize={(value: number) =>
+                                      setIconSize(value)
+                                    }
                                   />
                                 )}
                                 <i
@@ -225,8 +249,8 @@ export default function EditPopup({
                                   }`}
                                 >
                                   <DynamicIcon
-                                    name={field.icon}
-                                    size={field.size}
+                                    name={icon}
+                                    size={iconSize * (fontSize / 16)}
                                   />
                                 </i>
                               </div>

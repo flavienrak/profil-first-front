@@ -13,9 +13,13 @@ import { RootState } from '@/redux/store';
 export default function SelectIcon({
   icon,
   size,
+  onChange,
+  onChangeSize,
 }: {
   icon: IconInterface;
   size: number;
+  onChange: (value: IconInterface) => void;
+  onChangeSize: (value: number) => void;
 }) {
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
   const [visibleIcons, setVisibleIcons] = React.useState<IconInterface[]>([]);
@@ -81,7 +85,7 @@ export default function SelectIcon({
     <div className="absolute bottom-[110%] left-0 w-[17.85em] h-[15em] shadow border bg-white p-[0.5em] flex flex-wrap rounded-[0.25em]">
       <div className="w-full h-max flex justify-between items-center border-b-[0.0625em] gap-[0.5em] pb-[0.375em]">
         <div className="relative flex items-center">
-          <i className="absolute left-[0.5em] h-[2.5em] w-[2.5em] flex justify-center items-center text-gray-400">
+          <i className="absolute h-[2.5em] w-[2.5em] flex justify-center items-center text-gray-400">
             <Search size={size * (fontSize / 16)} />
           </i>
           <Input
@@ -94,15 +98,17 @@ export default function SelectIcon({
             }}
             type="search"
             placeholder="Rechercher..."
-            className="ps-[2.5em] !text-[1em] !placeholder:text-[1em] px-[0.75em] py-[0.25em]"
+            className="!text-[0.875em] !placeholder:text-[0.875em] ps-[2.5em] pe-[0.75em] py-[0.25em]"
           />
         </div>
         <div className="flex items-center gap-[0.5em]">
           <Input
             type="number"
-            onChange={() => {}}
+            onChange={(event) => {
+              onChangeSize(Number(event.target.value));
+            }}
             value={size}
-            className="w-[4.5em] !text-[1em] px-[0.75em] py-[0.25em]"
+            className="w-[4.5em] !text-[0.875em] px-[0.75em] py-[0.25em]"
           />
         </div>
       </div>
@@ -114,6 +120,7 @@ export default function SelectIcon({
           {visibleIcons.map((i) => (
             <i
               key={i}
+              onClick={() => onChange(i)}
               className={`h-[2em] w-[2em] min-h-[2em] min-w-[2em] flex justify-center items-center rounded-[0.25em] ${
                 icon === i
                   ? 'bg-[var(--primary-color)] text-white'

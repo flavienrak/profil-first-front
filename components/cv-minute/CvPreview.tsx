@@ -22,6 +22,7 @@ import { TooltipContent } from '@radix-ui/react-tooltip';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import { updateCvMinuteProfileService } from '@/services/cvMinute.service';
 import { updateCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
+import { DynamicIcon } from 'lucide-react/dynamic';
 
 export interface FieldInterface {
   key: string;
@@ -31,7 +32,7 @@ export interface FieldInterface {
   example?: string;
   value: string | number;
   icon?: IconInterface;
-  size?: number;
+  iconSize?: number;
   type: 'input' | 'textarea' | 'text';
   initialValue: string | number;
   requiredError: string;
@@ -57,6 +58,7 @@ export interface PopupInterface {
 
   newSection?: boolean;
   updateExperience?: boolean;
+  updateContactSection?: boolean;
   updateCvMinuteSection?: boolean;
 }
 
@@ -70,16 +72,10 @@ export default function CvPreview() {
     (state: RootState) => state.cvMinute,
   );
 
-  const getSection = (value: string) => {
-    return sections.find((s) => s.name === value);
-  };
-
   const getCvMinuteSection = (value: string) => {
     const section = sections.find((s) => s.name === value);
     return cvMinuteSections.find((c) => c.sectionId === section?.id);
   };
-
-  const contactsSection = getSection('contacts');
 
   const profile = getCvMinuteSection('profile');
   const name = getCvMinuteSection('name');
@@ -335,22 +331,24 @@ export default function CvPreview() {
                           const data: PopupInterface = {
                             title: 'Ajouter vos contacts, liens, adresse...',
                             hidden: false,
-                            sectionId: contactsSection?.id,
-                            sectionInfoId: contacts?.sectionInfos[0]?.id,
+                            cvMinuteSectionId: contacts?.id,
+                            updateContactSection: true,
+                            sectionInfoOrder:
+                              contacts?.sectionInfos &&
+                              contacts.sectionInfos.length > 0
+                                ? contacts.sectionInfos.length + 1
+                                : 1,
                             fields: [
                               {
                                 label: 'Contacts / Liens / Adresse',
                                 type: 'input',
                                 icon: 'globe',
-                                size: 16,
+                                iconSize: 16,
                                 key: 'content',
                                 requiredError: '',
-                                placeholder:
-                                  contacts?.sectionInfos[0]?.content ??
-                                  'https://...',
-                                value: contacts?.sectionInfos[0]?.content ?? '',
-                                initialValue:
-                                  contacts?.sectionInfos[0]?.content ?? '',
+                                placeholder: 'https://...',
+                                value: '',
+                                initialValue: '',
                               },
                             ],
                           };
@@ -495,79 +493,35 @@ export default function CvPreview() {
 
                   {contacts?.sectionInfos &&
                     contacts.sectionInfos.length > 0 && (
-                      <div className="relative w-full text-[0.875em] p-[0.25em]">
+                      <div className="relative w-full flex flex-col text-[0.875em] px-[0.25em]">
                         {contacts.sectionInfos.map((c) => (
                           <div
                             key={c.id}
-                            className="flex items-center gap-[0.375em] group relative"
-                          >
-                            {c.icon && (
-                              <div
-                                style={{
-                                  height: c.iconSize,
-                                  width: c.iconSize,
-                                }}
-                                dangerouslySetInnerHTML={{
-                                  __html: DOMPurify.sanitize(c.icon),
-                                }}
-                              />
-                            )}
-                            <p className="flex-1 cursor-pointer">{c.content}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                  {editableSections.length > 0 &&
-                    editableSections.map((s) => {
-                      const cvMinuteSection = getCvMinuteSection(s.name);
-                      if (cvMinuteSection)
-                        return (
-                          <div
-                            key={s.id}
                             onClick={(event) => {
                               const data: PopupInterface = {
-                                title: 'Modifier ou supprimer la rubrique',
-                                conseil: 'Nos conseils',
-                                suggestionTitle: 'Idées de rubrique',
-                                suggestion: '',
-                                deleteLabel: 'Supprimer la rubrique',
-                                updateCvMinuteSection: true,
-                                cvMinuteSectionId: cvMinuteSection.id,
-                                sectionInfoId:
-                                  cvMinuteSection?.sectionInfos[0]?.id,
+                                title:
+                                  'Ajouter vos contacts, liens, adresse...',
+                                hidden: false,
+                                sectionInfoId: c.id,
+                                cvMinuteSectionId: contacts?.id,
+                                updateContactSection: true,
+                                sectionInfoOrder: c.order,
                                 fields: [
                                   {
-                                    label: 'Nom de la rubrique',
+                                    label: 'Contacts / Liens / Adresse',
                                     type: 'input',
-                                    key: 'sectionTitle',
-                                    requiredError: 'Nom de la rubrique requis',
-                                    placeholder:
-                                      cvMinuteSection.sectionTitle ?? 'Nom...',
-                                    value: cvMinuteSection.sectionTitle ?? '',
-                                    initialValue:
-                                      cvMinuteSection.sectionTitle ?? '',
-                                  },
-                                  {
-                                    label: 'Description',
-                                    type: 'textarea',
+                                    icon: c.icon,
+                                    iconSize: c.iconSize,
                                     key: 'content',
-                                    requiredError:
-                                      'Description de la rubrique requise',
-                                    placeholder:
-                                      cvMinuteSection?.sectionInfos[0]
-                                        ?.content ?? 'Description...',
-                                    value:
-                                      cvMinuteSection?.sectionInfos[0]
-                                        ?.content ?? '',
-                                    initialValue:
-                                      cvMinuteSection?.sectionInfos[0]
-                                        ?.content ?? '',
+                                    requiredError: '',
+                                    placeholder: 'https://...',
+                                    value: c.content,
+                                    initialValue: c.content,
                                   },
                                 ],
                               };
 
-                              handleGetPosition(event, 'left', { y: 80 });
+                              handleGetPosition(event, 'left');
                               if (isOpen) {
                                 handleClosePopup();
                                 setTempData(data);
@@ -575,48 +529,125 @@ export default function CvPreview() {
                                 handleOpenPopup(data);
                               }
                             }}
-                            style={{ order: cvMinuteSection.sectionOrder }}
-                            className="relative w-full mt-[1em] hover:bg-gray-100/25 p-[0.25em] transition-[order] duration-500"
+                            className="flex items-center gap-[0.375em] p-[0.25em] group relative hover:bg-gray-100/25"
+                            style={{ order: c.order }}
                           >
-                            <h3 className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.75em] font-semibold mb-[0.5em] text-[0.875em] select-none">
-                              {cvMinuteSection?.sectionTitle}
-                            </h3>
-                            <div className="pl-[0.5em] text-[0.875em]">
-                              {cvMinuteSection?.sectionInfos &&
-                              cvMinuteSection?.sectionInfos.length > 0 ? (
-                                <p className="whitespace-pre-line">
-                                  {cvMinuteSection.sectionInfos[0].content}
-                                </p>
-                              ) : (
-                                <p className="text-[0.875em] italic">
-                                  Aucun diplôme ajouté
-                                </p>
-                              )}
-                            </div>
-
-                            <div className="absolute -left-[4em] top-0 flex flex-col gap-[0.5em]">
-                              <TooltipProvider>
-                                <Tooltip delayDuration={700}>
-                                  <TooltipTrigger asChild>
-                                    <i className="text-[#2A7F8B] hover:opacity-90 cursor-pointer">
-                                      <Zap
-                                        fill={'currentColor'}
-                                        size={fontSize + 12}
-                                      />
-                                    </i>
-                                  </TooltipTrigger>
-                                  <TooltipContent
-                                    side="left"
-                                    className="bg-[#2A7F8B] text-white text-[0.875em] shadow px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
-                                  >
-                                    <p>Modifier</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
+                            {c.icon && c.iconSize && (
+                              <DynamicIcon
+                                name={c.icon}
+                                size={c.iconSize * (fontSize / 16)}
+                              />
+                            )}
+                            <p className="flex-1">{c.content}</p>
                           </div>
-                        );
-                    })}
+                        ))}
+                      </div>
+                    )}
+
+                  {editableSections.length > 0 && (
+                    <div className="flex flex-col">
+                      {editableSections.map((s) => {
+                        const cvMinuteSection = getCvMinuteSection(s.name);
+                        if (cvMinuteSection)
+                          return (
+                            <div
+                              key={s.id}
+                              onClick={(event) => {
+                                const data: PopupInterface = {
+                                  title: 'Modifier ou supprimer la rubrique',
+                                  conseil: 'Nos conseils',
+                                  suggestionTitle: 'Idées de rubrique',
+                                  suggestion: '',
+                                  deleteLabel: 'Supprimer la rubrique',
+                                  updateCvMinuteSection: true,
+                                  cvMinuteSectionId: cvMinuteSection.id,
+                                  sectionInfoId:
+                                    cvMinuteSection?.sectionInfos[0]?.id,
+                                  fields: [
+                                    {
+                                      label: 'Nom de la rubrique',
+                                      type: 'input',
+                                      key: 'sectionTitle',
+                                      requiredError:
+                                        'Nom de la rubrique requis',
+                                      placeholder:
+                                        cvMinuteSection.sectionTitle ??
+                                        'Nom...',
+                                      value: cvMinuteSection.sectionTitle ?? '',
+                                      initialValue:
+                                        cvMinuteSection.sectionTitle ?? '',
+                                    },
+                                    {
+                                      label: 'Description',
+                                      type: 'textarea',
+                                      key: 'content',
+                                      requiredError:
+                                        'Description de la rubrique requise',
+                                      placeholder:
+                                        cvMinuteSection?.sectionInfos[0]
+                                          ?.content ?? 'Description...',
+                                      value:
+                                        cvMinuteSection?.sectionInfos[0]
+                                          ?.content ?? '',
+                                      initialValue:
+                                        cvMinuteSection?.sectionInfos[0]
+                                          ?.content ?? '',
+                                    },
+                                  ],
+                                };
+
+                                handleGetPosition(event, 'left', { y: 80 });
+                                if (isOpen) {
+                                  handleClosePopup();
+                                  setTempData(data);
+                                } else {
+                                  handleOpenPopup(data);
+                                }
+                              }}
+                              style={{ order: cvMinuteSection.sectionOrder }}
+                              className="relative w-full mt-[1em] hover:bg-gray-100/25 p-[0.25em] transition-[order] duration-500"
+                            >
+                              <h3 className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.75em] font-semibold mb-[0.5em] text-[0.875em] select-none">
+                                {cvMinuteSection?.sectionTitle}
+                              </h3>
+                              <div className="pl-[0.5em] text-[0.875em]">
+                                {cvMinuteSection?.sectionInfos &&
+                                cvMinuteSection?.sectionInfos.length > 0 ? (
+                                  <p className="whitespace-pre-line">
+                                    {cvMinuteSection.sectionInfos[0].content}
+                                  </p>
+                                ) : (
+                                  <p className="text-[0.875em] italic">
+                                    Aucun diplôme ajouté
+                                  </p>
+                                )}
+                              </div>
+
+                              <div className="absolute -left-[4em] top-0 flex flex-col gap-[0.5em]">
+                                <TooltipProvider>
+                                  <Tooltip delayDuration={700}>
+                                    <TooltipTrigger asChild>
+                                      <i className="text-[#2A7F8B] hover:opacity-90 cursor-pointer">
+                                        <Zap
+                                          fill={'currentColor'}
+                                          size={fontSize + 12}
+                                        />
+                                      </i>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                      side="left"
+                                      className="bg-[#2A7F8B] text-white text-[0.875em] shadow px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                                    >
+                                      <p>Modifier</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+                            </div>
+                          );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -705,7 +736,7 @@ export default function CvPreview() {
                         handleOpenPopup(data);
                       }
                     }}
-                    className="flex justify-between text-gray-700 hover:bg-gray-100 p-[0.5em] rounded text-[0.875em]"
+                    className="flex justify-between text-gray-700 hover:bg-gray-100 p-[0.5em] rounded text-[0.875em] whitespace-pre-line"
                   >
                     <p>
                       {presentation?.sectionInfos[0]?.content ??
@@ -723,6 +754,11 @@ export default function CvPreview() {
                           title: "Informations de l'expérience",
                           cvMinuteSectionId: experiences.id,
                           updateExperience: true,
+                          sectionInfoOrder:
+                            experiences.sectionInfos &&
+                            experiences.sectionInfos.length > 0
+                              ? experiences.sectionInfos.length + 1
+                              : 1,
                           fields: [
                             {
                               label: 'Titre du poste',
@@ -906,6 +942,7 @@ export default function CvPreview() {
                               }
                             }}
                             className="flex flex-col gap-[0.25em] p-[0.25em] hover:bg-gray-100"
+                            style={{ order: item.order }}
                           >
                             <div className="flex items-end gap-[0.5em] font-semibold">
                               <p className="text-nowrap text-[0.875em] text-[#2A7F8B] word-spacing">
@@ -939,7 +976,9 @@ export default function CvPreview() {
           {cvMinute &&
             isOpen &&
             popup &&
-            (((popup.updateCvMinuteSection || popup.updateExperience) &&
+            (((popup.updateCvMinuteSection ||
+              popup.updateExperience ||
+              popup.updateContactSection) &&
               popup.cvMinuteSectionId) ||
               popup.newSection) && (
               <EditPopup
