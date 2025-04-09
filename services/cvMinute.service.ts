@@ -101,9 +101,47 @@ const updateCvMinuteSectionService = async ({
   }
 };
 
+const updateSectionInfoOrderService = async ({
+  sectionInfoId,
+  targetSectionInfoId,
+}: {
+  sectionInfoId: number;
+  targetSectionInfoId: number;
+}) => {
+  try {
+    const res = await api.put('/cv-minute/section-info-order', {
+      sectionInfoId,
+      targetSectionInfoId,
+    });
+    return res.data;
+  } catch (error) {
+    return { error: `UPDATE SECTIONINFO ORDER ERROR: ${error}` };
+  }
+};
+
+const updateCvMinuteSectionOrderService = async ({
+  cvMinuteSectionId,
+  targetCvMinuteSectionId,
+}: {
+  cvMinuteSectionId: number;
+  targetCvMinuteSectionId: number;
+}) => {
+  try {
+    const res = await api.put('/cv-minute/section-order', {
+      cvMinuteSectionId,
+      targetCvMinuteSectionId,
+    });
+    return res.data;
+  } catch (error) {
+    return { error: `UPDATE CVMINUTE SECTION ORDER ERROR: ${error}` };
+  }
+};
+
 export {
   getCvMinuteService,
   addCvMinuteService,
   updateCvMinuteProfileService,
   updateCvMinuteSectionService,
+  updateSectionInfoOrderService,
+  updateCvMinuteSectionOrderService,
 };

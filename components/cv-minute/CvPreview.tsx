@@ -20,8 +20,16 @@ import { IconInterface } from '@/interfaces/icon.interface';
 import { Tooltip, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { TooltipContent } from '@radix-ui/react-tooltip';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
-import { updateCvMinuteProfileService } from '@/services/cvMinute.service';
-import { updateCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
+import {
+  updateCvMinuteProfileService,
+  updateCvMinuteSectionOrderService,
+  updateSectionInfoOrderService,
+} from '@/services/cvMinute.service';
+import {
+  updateSectionInfoOrderReducer,
+  updateCvMinuteReducer,
+  updateCvMinuteSectionOrderReducer,
+} from '@/redux/slices/cvMinute.slice';
 import { DynamicIcon } from 'lucide-react/dynamic';
 
 export interface FieldInterface {
@@ -62,6 +70,8 @@ export interface PopupInterface {
   updateCvMinuteSection?: boolean;
 }
 
+type SectionType = 'contact' | 'cvMinuteSection' | 'experience';
+
 const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
 
 export default function CvPreview() {
@@ -87,6 +97,76 @@ export default function CvPreview() {
 
   const profileImg = files.filter((f) => f.usage === 'cv-profile');
   const editableSections = sections.filter((s) => s.editable);
+
+  const [sectionType, setSectionType] = React.useState<SectionType | null>(
+    null,
+  );
+  const [draggingItem, setDraggingItem] = React.useState<number | null>(null);
+
+  const handleDragStart = ({
+    dragId,
+    type,
+  }: {
+    dragId: number;
+    type: SectionType;
+  }) => {
+    setSectionType(type);
+    setDraggingItem(dragId);
+  };
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+  const handleDrop = async ({
+    event,
+    dropId,
+    type,
+    cvMinuteSectionId,
+  }: {
+    event: React.DragEvent<HTMLDivElement>;
+    dropId: number;
+    type: SectionType;
+    cvMinuteSectionId?: number;
+  }) => {
+    event.preventDefault();
+
+    if (dropId && draggingItem) {
+      if (
+        (sectionType === 'contact' || sectionType === 'experience') &&
+        sectionType === type &&
+        cvMinuteSectionId
+      ) {
+        const res = await updateSectionInfoOrderService({
+          sectionInfoId: draggingItem,
+          targetSectionInfoId: dropId,
+        });
+
+        if (res.section) {
+          dispatch(
+            updateSectionInfoOrderReducer({
+              section: res.section,
+              targetSection: res.targetSection,
+              cvMinuteSectionId,
+            }),
+          );
+        }
+      } else if (sectionType === 'cvMinuteSection' && sectionType === type) {
+        const res = await updateCvMinuteSectionOrderService({
+          cvMinuteSectionId: draggingItem,
+          targetCvMinuteSectionId: dropId,
+        });
+
+        if (res.cvMinuteSection) {
+          dispatch(
+            updateCvMinuteSectionOrderReducer({
+              cvMinuteSection: res.cvMinuteSection,
+              targetCvMinuteSection: res.targetCvMinuteSection,
+            }),
+          );
+        }
+      }
+      setDraggingItem(null);
+    }
+  };
 
   const [popup, setPopup] = React.useState<PopupInterface | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -497,6 +577,22 @@ export default function CvPreview() {
                         {contacts.sectionInfos.map((c) => (
                           <div
                             key={c.id}
+                            draggable
+                            onDragStart={() =>
+                              handleDragStart({
+                                dragId: c.id,
+                                type: 'contact',
+                              })
+                            }
+                            onDragOver={handleDragOver}
+                            onDrop={(event) =>
+                              handleDrop({
+                                event,
+                                dropId: c.id,
+                                type: 'contact',
+                                cvMinuteSectionId: contacts.id,
+                              })
+                            }
                             onClick={(event) => {
                               const data: PopupInterface = {
                                 title:
@@ -552,6 +648,21 @@ export default function CvPreview() {
                           return (
                             <div
                               key={s.id}
+                              draggable
+                              onDragStart={() =>
+                                handleDragStart({
+                                  dragId: cvMinuteSection.id,
+                                  type: 'cvMinuteSection',
+                                })
+                              }
+                              onDragOver={handleDragOver}
+                              onDrop={(event) =>
+                                handleDrop({
+                                  event,
+                                  dropId: cvMinuteSection.id,
+                                  type: 'cvMinuteSection',
+                                })
+                              }
                               onClick={(event) => {
                                 const data: PopupInterface = {
                                   title: 'Modifier ou supprimer la rubrique',
@@ -765,26 +876,18 @@ export default function CvPreview() {
                               type: 'input',
                               key: 'title',
                               requiredError: 'Titre du poste requis',
-                              placeholder:
-                                experiences?.sectionInfos[0]?.content ??
-                                'Titre...',
-                              value:
-                                experiences?.sectionInfos[0]?.content ?? '',
-                              initialValue:
-                                experiences?.sectionInfos[0]?.content ?? '',
+                              placeholder: 'Titre...',
+                              value: '',
+                              initialValue: '',
                             },
                             {
                               label: "Nom de l'entreprise",
                               type: 'input',
                               key: 'company',
                               requiredError: "Nom de l'entreprise requis",
-                              placeholder:
-                                experiences?.sectionInfos[0]?.content ??
-                                'Entreprise...',
-                              value:
-                                experiences?.sectionInfos[0]?.content ?? '',
-                              initialValue:
-                                experiences?.sectionInfos[0]?.content ?? '',
+                              placeholder: 'Entreprise...',
+                              value: '',
+                              initialValue: '',
                             },
                             {
                               label: 'Mois début - Mois fin',
@@ -792,13 +895,9 @@ export default function CvPreview() {
                               type: 'input',
                               key: 'date',
                               requiredError: 'Mois requis',
-                              placeholder:
-                                experiences?.sectionInfos[0]?.content ??
-                                'Mois...',
-                              value:
-                                experiences?.sectionInfos[0]?.content ?? '',
-                              initialValue:
-                                experiences?.sectionInfos[0]?.content ?? '',
+                              placeholder: 'Mois...',
+                              value: '',
+                              initialValue: '',
                             },
                             {
                               label: 'Type de contrat',
@@ -806,26 +905,18 @@ export default function CvPreview() {
                               type: 'input',
                               key: 'contrat',
                               requiredError: 'Type de contrat requis',
-                              placeholder:
-                                experiences?.sectionInfos[0]?.content ??
-                                'Contrat...',
-                              value:
-                                experiences?.sectionInfos[0]?.content ?? '',
-                              initialValue:
-                                experiences?.sectionInfos[0]?.content ?? '',
+                              placeholder: 'Contrat...',
+                              value: '',
+                              initialValue: '',
                             },
                             {
                               label: 'Description',
                               type: 'text',
                               key: 'content',
                               requiredError: 'Description requise',
-                              placeholder:
-                                experiences?.sectionInfos[0]?.content ??
-                                'Description...',
-                              value:
-                                experiences?.sectionInfos[0]?.content ?? '',
-                              initialValue:
-                                experiences?.sectionInfos[0]?.content ?? '',
+                              placeholder: 'Description...',
+                              value: '',
+                              initialValue: '',
                             },
                           ],
                         };
@@ -872,6 +963,22 @@ export default function CvPreview() {
                         {experiences.sectionInfos.map((item) => (
                           <div
                             key={item.id}
+                            draggable
+                            onDragStart={() =>
+                              handleDragStart({
+                                dragId: item.id,
+                                type: 'experience',
+                              })
+                            }
+                            onDragOver={handleDragOver}
+                            onDrop={(event) =>
+                              handleDrop({
+                                event,
+                                dropId: item.id,
+                                type: 'experience',
+                                cvMinuteSectionId: experiences.id,
+                              })
+                            }
                             onClick={(event) => {
                               const data: PopupInterface = {
                                 align: 'right',

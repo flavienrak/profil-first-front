@@ -2,6 +2,7 @@ import { CvMinuteInterface } from '@/interfaces/cvMinute.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/cvMinuteSection.interface';
 import { FileInterface } from '@/interfaces/file.interface';
 import { SectionInterface } from '@/interfaces/section.interface';
+import { SectionInfoInterface } from '@/interfaces/sectionInfo.interface';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: {
@@ -89,10 +90,56 @@ const cvMinuteSlice = createSlice({
         }
       }
     },
+    updateSectionInfoOrderReducer: (state, action) => {
+      const {
+        section,
+        targetSection,
+        cvMinuteSectionId,
+      }: {
+        section?: SectionInfoInterface;
+        targetSection?: SectionInfoInterface;
+        cvMinuteSectionId?: number;
+      } = action.payload;
+
+      state.cvMinuteSections.forEach((c) => {
+        if (c.id === cvMinuteSectionId) {
+          c.sectionInfos = c.sectionInfos.map((s) => {
+            if (s.id === section?.id) {
+              return { ...s, order: section.order };
+            } else if (s.id === targetSection?.id) {
+              return { ...s, order: targetSection.order };
+            }
+            return s;
+          });
+        }
+      });
+    },
+    updateCvMinuteSectionOrderReducer: (state, action) => {
+      const {
+        cvMinuteSection,
+        targetCvMinuteSection,
+      }: {
+        cvMinuteSection?: CvMinuteSectionInterface;
+        targetCvMinuteSection?: CvMinuteSectionInterface;
+      } = action.payload;
+
+      state.cvMinuteSections = state.cvMinuteSections.map((c) => {
+        if (c.id === cvMinuteSection?.id) {
+          return { ...c, sectionOrder: cvMinuteSection.sectionOrder };
+        } else if (c.id === targetCvMinuteSection?.id) {
+          return { ...c, sectionOrder: targetCvMinuteSection.sectionOrder };
+        }
+        return c;
+      });
+    },
   },
 });
 
-export const { setCvMinuteReducer, updateCvMinuteReducer } =
-  cvMinuteSlice.actions;
+export const {
+  setCvMinuteReducer,
+  updateCvMinuteReducer,
+  updateSectionInfoOrderReducer,
+  updateCvMinuteSectionOrderReducer,
+} = cvMinuteSlice.actions;
 
 export default cvMinuteSlice.reducer;
