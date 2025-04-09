@@ -43,12 +43,16 @@ const updateCvMinuteSectionService = async ({
   contrat,
   icon,
   iconSize,
+  primaryBg,
+  secondaryBg,
+  tertiaryBg,
   sectionId,
   sectionOrder,
   sectionInfoId,
   sectionInfoOrder,
   cvMinuteSectionId,
 
+  updateBg,
   newSection,
   updateExperience,
   updateContactSection,
@@ -63,12 +67,16 @@ const updateCvMinuteSectionService = async ({
   contrat?: string;
   icon?: IconInterface;
   iconSize?: number;
+  primaryBg?: string;
+  secondaryBg?: string;
+  tertiaryBg?: string;
   sectionId?: PopupInterface['sectionId'];
   sectionOrder?: PopupInterface['sectionOrder'];
   sectionInfoId?: PopupInterface['sectionInfoId'];
   sectionInfoOrder?: PopupInterface['sectionInfoOrder'];
   cvMinuteSectionId?: PopupInterface['cvMinuteSectionId'];
 
+  updateBg?: PopupInterface['updateBg'];
   newSection?: PopupInterface['newSection'];
   updateExperience?: PopupInterface['updateExperience'];
   updateContactSection?: PopupInterface['updateContactSection'];
@@ -84,12 +92,16 @@ const updateCvMinuteSectionService = async ({
       contrat,
       icon,
       iconSize,
+      primaryBg,
+      secondaryBg,
+      tertiaryBg,
       sectionId,
       sectionOrder,
       sectionInfoId,
       sectionInfoOrder,
       cvMinuteSectionId,
 
+      updateBg,
       newSection,
       updateExperience,
       updateContactSection,

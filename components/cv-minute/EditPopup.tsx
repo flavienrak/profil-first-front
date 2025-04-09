@@ -100,6 +100,7 @@ export default function EditPopup({
         popup.updateExperience ||
         popup.updateContactSection) &&
         popup.cvMinuteSectionId) ||
+        popup.updateBg ||
         popup.newSection)
     ) {
       // API CALL
@@ -113,8 +114,17 @@ export default function EditPopup({
       }
 
       setIsLoading(true);
-      const { content, sectionTitle, title, company, date, contrat } =
-        parseRes.data;
+      const {
+        content,
+        sectionTitle,
+        title,
+        company,
+        date,
+        contrat,
+        primaryBg,
+        secondaryBg,
+        tertiaryBg,
+      } = parseRes.data;
 
       const res = await updateCvMinuteSectionService({
         id: cvMinuteId,
@@ -126,19 +136,25 @@ export default function EditPopup({
         contrat,
         icon,
         iconSize,
+        primaryBg,
+        secondaryBg,
+        tertiaryBg,
         sectionId: popup.sectionId,
         sectionOrder: popup.sectionOrder,
         sectionInfoId: popup.sectionInfoId,
         sectionInfoOrder: popup.sectionInfoOrder,
         cvMinuteSectionId: popup.cvMinuteSectionId,
 
+        updateBg: popup.updateBg,
         newSection: popup.newSection,
         updateExperience: popup.updateExperience,
         updateContactSection: popup.updateContactSection,
         updateCvMinuteSection: popup.updateCvMinuteSection,
       });
 
-      if (res.cvMinuteSection) {
+      if (res.cvMinute) {
+        dispatch(updateCvMinuteReducer({ cvMinute: res.cvMinute }));
+      } else if (res.cvMinuteSection) {
         dispatch(
           updateCvMinuteReducer({
             section: res.section,
@@ -267,6 +283,12 @@ export default function EditPopup({
                               <TextEditor
                                 onChange={formField.onChange}
                                 content={field.value.toString()}
+                              />
+                            ) : field.type === 'color' ? (
+                              <Input
+                                {...formField}
+                                type="color"
+                                className="flex-1 h-[2.5em] px-[0.5em] py-[0.25em] rounded-[0.325em]"
                               />
                             ) : (
                               <Input
