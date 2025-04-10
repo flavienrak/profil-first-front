@@ -61,7 +61,10 @@ export default function Sidebar({ showMenu }: { showMenu: boolean }) {
       <nav className="flex-1 p-4">
         <ul className="flex flex-col gap-2">
           {menuItems.map((item) => (
-            <li key={item.name}>
+            <li
+              key={item.name}
+              onClick={() => dispatch(updatePersistReducer({ showMenu: true }))}
+            >
               <Link
                 href={item.href}
                 className={`flex items-center gap-3 h-12 rounded-lg transition-colors duration-200 group select-none ${

@@ -34,9 +34,9 @@ interface EditPopupInterface {
   cvMinuteId: number;
   currentPosition: { x: number; y: number };
   handleClosePopup: () => void;
-  handleMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
-  handleMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
-  handleMouseUp: (e: React.MouseEvent<HTMLDivElement>) => void;
+  handleMouseDown: (event: React.MouseEvent<HTMLDivElement>) => void;
+  handleMouseMove: (event: React.MouseEvent<HTMLDivElement>) => void;
+  handleMouseUp: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export default function EditPopup({
@@ -139,7 +139,6 @@ export default function EditPopup({
         primaryBg,
         secondaryBg,
         tertiaryBg,
-        sectionId: popup.sectionId,
         sectionOrder: popup.sectionOrder,
         sectionInfoId: popup.sectionInfoId,
         sectionInfoOrder: popup.sectionInfoOrder,
@@ -154,6 +153,7 @@ export default function EditPopup({
 
       if (res.cvMinute) {
         dispatch(updateCvMinuteReducer({ cvMinute: res.cvMinute }));
+        handleClosePopup();
       } else if (res.cvMinuteSection) {
         dispatch(
           updateCvMinuteReducer({
@@ -213,7 +213,13 @@ export default function EditPopup({
             <p className="text-[0.6875em]">{popup.conseil}</p>
           </div>
         )}
-        {popup.deleteLabel && <PrimaryButton label={popup.deleteLabel} />}
+        {popup.deleteLabel && popup.onDelete && (
+          <PrimaryButton
+            label={popup.deleteLabel}
+            onClick={popup.onDelete}
+            isLoading={popup.deleteLoading}
+          />
+        )}
 
         <Form {...form}>
           <form

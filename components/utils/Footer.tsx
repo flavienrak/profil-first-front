@@ -4,7 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import Logo from './Logo';
 
-import { ChevronDown, ChevronUp, Heart, Linkedin } from 'lucide-react';
+import { Airplay, Heart, Linkedin } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
@@ -74,9 +74,9 @@ export default function Footer() {
 
       <i
         onClick={toggleShowFooter}
-        className="z-50 absolute -top-8 h-8 w-8 flex justify-center items-center bg-gray-50 border rounded-t-sm hover:bg-gray-100 cursor-pointer"
+        className="z-50 absolute right-0 -top-8 h-8 w-8 flex justify-center items-center bg-gray-50 border rounded-t-sm hover:bg-gray-100 cursor-pointer"
       >
-        {showFooter ? <ChevronUp /> : <ChevronDown />}
+        <Airplay />
       </i>
     </footer>
   );

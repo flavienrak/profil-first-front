@@ -22,6 +22,8 @@ import { Tooltip, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { TooltipContent } from '@radix-ui/react-tooltip';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import {
+  deleteCvMinuteSectionService,
+  deleteSectionInfoService,
   updateCvMinuteProfileService,
   updateCvMinuteSectionOrderService,
   updateSectionInfoOrderService,
@@ -30,6 +32,8 @@ import {
   updateSectionInfoOrderReducer,
   updateCvMinuteReducer,
   updateCvMinuteSectionOrderReducer,
+  deleteSectionInfoReducer,
+  deleteCvMinuteSectionReducer,
 } from '@/redux/slices/cvMinute.slice';
 import { DynamicIcon } from 'lucide-react/dynamic';
 
@@ -59,11 +63,12 @@ export interface PopupInterface {
   deleteLabel?: string;
   compare?: boolean;
   fields: FieldInterface[];
-  sectionId?: number;
   sectionOrder?: number;
   sectionInfoId?: number;
   sectionInfoOrder?: number;
   cvMinuteSectionId?: number;
+  deleteLoading?: boolean;
+  onDelete?: () => void;
 
   updateBg?: boolean;
   newSection?: boolean;
@@ -105,73 +110,9 @@ export default function CvPreview() {
   );
   const [draggingItem, setDraggingItem] = React.useState<number | null>(null);
 
-  const handleDragStart = ({
-    dragId,
-    type,
-  }: {
-    dragId: number;
-    type: SectionType;
-  }) => {
-    setSectionType(type);
-    setDraggingItem(dragId);
-  };
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-  const handleDrop = async ({
-    event,
-    dropId,
-    type,
-    cvMinuteSectionId,
-  }: {
-    event: React.DragEvent<HTMLDivElement>;
-    dropId: number;
-    type: SectionType;
-    cvMinuteSectionId?: number;
-  }) => {
-    event.preventDefault();
-
-    if (dropId && draggingItem) {
-      if (
-        (sectionType === 'contact' || sectionType === 'experience') &&
-        sectionType === type &&
-        cvMinuteSectionId
-      ) {
-        const res = await updateSectionInfoOrderService({
-          sectionInfoId: draggingItem,
-          targetSectionInfoId: dropId,
-        });
-
-        if (res.section) {
-          dispatch(
-            updateSectionInfoOrderReducer({
-              section: res.section,
-              targetSection: res.targetSection,
-              cvMinuteSectionId,
-            }),
-          );
-        }
-      } else if (sectionType === 'cvMinuteSection' && sectionType === type) {
-        const res = await updateCvMinuteSectionOrderService({
-          cvMinuteSectionId: draggingItem,
-          targetCvMinuteSectionId: dropId,
-        });
-
-        if (res.cvMinuteSection) {
-          dispatch(
-            updateCvMinuteSectionOrderReducer({
-              cvMinuteSection: res.cvMinuteSection,
-              targetCvMinuteSection: res.targetCvMinuteSection,
-            }),
-          );
-        }
-      }
-      setDraggingItem(null);
-    }
-  };
-
   const [popup, setPopup] = React.useState<PopupInterface | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
   const [tempData, setTempData] = React.useState<PopupInterface | null>(null);
   const [currentPosition, setCurrentPosition] = React.useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = React.useState(false);
@@ -252,6 +193,87 @@ export default function CvPreview() {
     }
   }, [tempData]);
 
+  const handleDragStart = ({
+    dragId,
+    type,
+  }: {
+    dragId: number;
+    type: SectionType;
+  }) => {
+    setSectionType(type);
+    setDraggingItem(dragId);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDropSectionInfo = async ({
+    event,
+    dropId,
+    type,
+    cvMinuteSectionId,
+  }: {
+    event: React.DragEvent<HTMLDivElement>;
+    dropId: number;
+    type: SectionType;
+    cvMinuteSectionId: number;
+  }) => {
+    event.preventDefault();
+
+    if (
+      cvMinute &&
+      draggingItem &&
+      (sectionType === 'contact' || sectionType === 'experience') &&
+      sectionType === type
+    ) {
+      const res = await updateSectionInfoOrderService({
+        id: cvMinute.id,
+        sectionInfoId: draggingItem,
+        targetSectionInfoId: dropId,
+      });
+
+      if (res.section) {
+        dispatch(
+          updateSectionInfoOrderReducer({
+            section: res.section,
+            targetSection: res.targetSection,
+            cvMinuteSectionId,
+          }),
+        );
+      }
+      setDraggingItem(null);
+    }
+  };
+
+  const handleDropCvMinuteSection = async ({
+    event,
+    dropId,
+  }: {
+    event: React.DragEvent<HTMLDivElement>;
+    dropId: number;
+  }) => {
+    event.preventDefault();
+
+    if (cvMinute && draggingItem) {
+      const res = await updateCvMinuteSectionOrderService({
+        id: cvMinute.id,
+        cvMinuteSectionId: draggingItem,
+        targetCvMinuteSectionId: dropId,
+      });
+
+      if (res.cvMinuteSection) {
+        dispatch(
+          updateCvMinuteSectionOrderReducer({
+            cvMinuteSection: res.cvMinuteSection,
+            targetCvMinuteSection: res.targetCvMinuteSection,
+          }),
+        );
+      }
+      setDraggingItem(null);
+    }
+  };
+
   const handleChangeProfile = async ({
     event,
     sectionInfoId,
@@ -279,6 +301,44 @@ export default function CvPreview() {
           }),
         );
       }
+    }
+  };
+
+  const handleDeleteSectionInfo = async (
+    sectionInfoId: number,
+    cvMinuteSectionId: number,
+  ) => {
+    if (cvMinute) {
+      setDeleteLoading(true);
+      const res = await deleteSectionInfoService(cvMinute.id, sectionInfoId);
+
+      if (res.section) {
+        dispatch(
+          deleteSectionInfoReducer({ section: res.section, cvMinuteSectionId }),
+        );
+        handleClosePopup();
+      }
+      setDeleteLoading(false);
+    }
+  };
+
+  const handleDeleteCvMinuteSection = async (cvMinuteSectionId: number) => {
+    if (cvMinute) {
+      setDeleteLoading(true);
+      const res = await deleteCvMinuteSectionService(
+        cvMinute.id,
+        cvMinuteSectionId,
+      );
+
+      if (res.cvMinuteSection) {
+        dispatch(
+          deleteCvMinuteSectionReducer({
+            cvMinuteSection: res.cvMinuteSection,
+          }),
+        );
+        handleClosePopup();
+      }
+      setDeleteLoading(false);
     }
   };
 
@@ -333,8 +393,7 @@ export default function CvPreview() {
                   </i>
                   <p
                     onClick={resetFontSize}
-                    className="h-full px-[1em] flex justify-center items-center text-white text-[0.875em] rounded-[0.35em] select-none hover:opacity-90 cursor-pointer"
-                    style={{ background: cvMinute.primaryBg }}
+                    className="h-full px-[1em] flex justify-center items-center bg-gray-200 text-black text-[0.875em] rounded-[0.35em] select-none hover:opacity-90 cursor-pointer"
                   >
                     Reset
                   </p>
@@ -393,16 +452,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white hover:opacity-90 cursor-pointer"
-                          style={{ background: cvMinute.primaryBg }}
+                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full bg-gray-200 text-black hover:opacity-90 cursor-pointer"
                         >
                           <Plus className="h-[1.5em]" />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-xs shadow px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
-                        style={{ background: cvMinute.primaryBg }}
+                        className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
                       >
                         <p>Ajouter rubrique</p>
                       </TooltipContent>
@@ -447,16 +504,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white hover:opacity-90 cursor-pointer"
-                          style={{ background: cvMinute.primaryBg }}
+                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-black bg-gray-200 hover:opacity-90 cursor-pointer"
                         >
                           <UserPlus className="h-[1.5em]" />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-xs shadow px-2 py-1 me-1 rounded-[0.25em]"
-                        style={{ background: cvMinute.primaryBg }}
+                        className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
                       >
                         <p>Adresse & Contacts</p>
                       </TooltipContent>
@@ -511,16 +566,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white hover:opacity-90 cursor-pointer"
-                          style={{ background: cvMinute.primaryBg }}
+                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-black bg-gray-200 hover:opacity-90 cursor-pointer"
                         >
                           <Brush className="h-[1.5em]" />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-xs shadow px-2 py-1 me-1 rounded-[0.25em]"
-                        style={{ background: cvMinute.primaryBg }}
+                        className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
                       >
                         <p>Couleurs de fond</p>
                       </TooltipContent>
@@ -661,7 +714,7 @@ export default function CvPreview() {
                               }
                               onDragOver={handleDragOver}
                               onDrop={(event) =>
-                                handleDrop({
+                                handleDropSectionInfo({
                                   event,
                                   dropId: c.id,
                                   type: 'contact',
@@ -671,15 +724,19 @@ export default function CvPreview() {
                               onClick={(event) => {
                                 const data: PopupInterface = {
                                   title:
-                                    'Ajouter vos contacts, liens, adresse...',
+                                    'Modifier ou supprimer contact, lien, adresse...',
                                   hidden: false,
+                                  deleteLabel: 'Supprimer',
+                                  onDelete: () =>
+                                    handleDeleteSectionInfo(c.id, contacts.id),
+                                  deleteLoading,
                                   sectionInfoId: c.id,
                                   cvMinuteSectionId: contacts?.id,
                                   updateContactSection: true,
                                   sectionInfoOrder: c.order,
                                   fields: [
                                     {
-                                      label: 'Contacts / Liens / Adresse',
+                                      label: 'Contact / Lien / Adresse',
                                       type: 'input',
                                       icon: c.icon,
                                       iconSize: c.iconSize,
@@ -732,10 +789,9 @@ export default function CvPreview() {
                                 }
                                 onDragOver={handleDragOver}
                                 onDrop={(event) =>
-                                  handleDrop({
+                                  handleDropCvMinuteSection({
                                     event,
                                     dropId: cvMinuteSection.id,
-                                    type: 'cvMinuteSection',
                                   })
                                 }
                                 onClick={(event) => {
@@ -745,6 +801,8 @@ export default function CvPreview() {
                                     suggestionTitle: 'Idées de rubrique',
                                     suggestion: '',
                                     deleteLabel: 'Supprimer la rubrique',
+                                    onDelete: () =>
+                                      handleDeleteCvMinuteSection(s.id),
                                     updateCvMinuteSection: true,
                                     cvMinuteSectionId: cvMinuteSection.id,
                                     sectionInfoId:
@@ -817,24 +875,17 @@ export default function CvPreview() {
                                   <TooltipProvider>
                                     <Tooltip delayDuration={700}>
                                       <TooltipTrigger asChild>
-                                        <i
-                                          className="hover:opacity-90 cursor-pointer"
-                                          style={{
-                                            color: cvMinute.primaryBg,
-                                          }}
-                                        >
+                                        <i className="text-gray-300 hover:text-gray-400 transition-colors duration-150 cursor-pointer">
                                           <Zap
-                                            fill={'currentColor'}
-                                            size={fontSize + 12}
+                                            size={
+                                              (fontSize + 16) * (fontSize / 16)
+                                            }
                                           />
                                         </i>
                                       </TooltipTrigger>
                                       <TooltipContent
                                         side="left"
-                                        className="text-white text-[0.875em] shadow px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
-                                        style={{
-                                          background: cvMinute.primaryBg,
-                                        }}
+                                        className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
                                       >
                                         <p>Modifier</p>
                                       </TooltipContent>
@@ -892,7 +943,7 @@ export default function CvPreview() {
                       }}
                       className="flex justify-between items-center hover:bg-gray-100 px-[0.5em] py-[0.25em] rounded"
                     >
-                      <h1 className="text-[2em] font-bold text-gray-800">
+                      <h1 className="text-[2em] font-bold text-gray-900">
                         {title?.sectionInfos[0]?.content ?? 'Titre du CV'}
                       </h1>
                     </div>
@@ -951,7 +1002,7 @@ export default function CvPreview() {
                         onClick={(event) => {
                           const data: PopupInterface = {
                             align: 'right',
-                            title: "Informations de l'expérience",
+                            title: 'Ajouter une expérience',
                             cvMinuteSectionId: experiences.id,
                             updateExperience: true,
                             sectionInfoOrder:
@@ -1034,20 +1085,16 @@ export default function CvPreview() {
                           <TooltipProvider>
                             <Tooltip delayDuration={700}>
                               <TooltipTrigger asChild>
-                                <i
-                                  className="hover:opacity-90 cursor-pointer"
-                                  style={{ color: cvMinute.primaryBg }}
-                                >
+                                <i className="text-gray-300 hover:text-gray-400 transition-colors duration-150 cursor-pointer">
                                   <Triangle
-                                    size={fontSize + 12}
+                                    size={(fontSize + 16) * (fontSize / 16)}
                                     fill={'currentColor'}
                                   />
                                 </i>
                               </TooltipTrigger>
                               <TooltipContent
                                 side="right"
-                                className="text-white text-xs shadow px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
-                                style={{ background: cvMinute.primaryBg }}
+                                className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
                               >
                                 <p>Ajouter expérience</p>
                               </TooltipContent>
@@ -1071,7 +1118,7 @@ export default function CvPreview() {
                               }
                               onDragOver={handleDragOver}
                               onDrop={(event) =>
-                                handleDrop({
+                                handleDropSectionInfo({
                                   event,
                                   dropId: item.id,
                                   type: 'experience',
@@ -1083,6 +1130,11 @@ export default function CvPreview() {
                                   align: 'right',
                                   title: "Modifier ou supprimer l'expérience",
                                   deleteLabel: "Supprimer l'expérience",
+                                  onDelete: () =>
+                                    handleDeleteSectionInfo(
+                                      item.id,
+                                      experiences.id,
+                                    ),
                                   sectionInfoId: item.id,
                                   cvMinuteSectionId: experiences.id,
                                   updateExperience: true,

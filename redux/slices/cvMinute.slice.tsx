@@ -107,17 +107,17 @@ const cvMinuteSlice = createSlice({
         targetSection,
         cvMinuteSectionId,
       }: {
-        section?: SectionInfoInterface;
-        targetSection?: SectionInfoInterface;
-        cvMinuteSectionId?: number;
+        section: SectionInfoInterface;
+        targetSection: SectionInfoInterface;
+        cvMinuteSectionId: number;
       } = action.payload;
 
       state.cvMinuteSections.forEach((c) => {
         if (c.id === cvMinuteSectionId) {
           c.sectionInfos = c.sectionInfos.map((s) => {
-            if (s.id === section?.id) {
+            if (s.id === section.id) {
               return { ...s, order: section.order };
-            } else if (s.id === targetSection?.id) {
+            } else if (s.id === targetSection.id) {
               return { ...s, order: targetSection.order };
             }
             return s;
@@ -130,18 +130,44 @@ const cvMinuteSlice = createSlice({
         cvMinuteSection,
         targetCvMinuteSection,
       }: {
-        cvMinuteSection?: CvMinuteSectionInterface;
-        targetCvMinuteSection?: CvMinuteSectionInterface;
+        cvMinuteSection: CvMinuteSectionInterface;
+        targetCvMinuteSection: CvMinuteSectionInterface;
       } = action.payload;
 
       state.cvMinuteSections = state.cvMinuteSections.map((c) => {
-        if (c.id === cvMinuteSection?.id) {
+        if (c.id === cvMinuteSection.id) {
           return { ...c, sectionOrder: cvMinuteSection.sectionOrder };
-        } else if (c.id === targetCvMinuteSection?.id) {
+        } else if (c.id === targetCvMinuteSection.id) {
           return { ...c, sectionOrder: targetCvMinuteSection.sectionOrder };
         }
         return c;
       });
+    },
+    deleteSectionInfoReducer: (state, action) => {
+      const {
+        section,
+        cvMinuteSectionId,
+      }: {
+        section: SectionInfoInterface;
+        cvMinuteSectionId: number;
+      } = action.payload;
+
+      state.cvMinuteSections.forEach((c) => {
+        if (c.id === cvMinuteSectionId) {
+          c.sectionInfos = c.sectionInfos.filter((s) => s.id !== section.id);
+        }
+      });
+    },
+    deleteCvMinuteSectionReducer: (state, action) => {
+      const {
+        cvMinuteSection,
+      }: {
+        cvMinuteSection: CvMinuteInterface;
+      } = action.payload;
+
+      state.cvMinuteSections = state.cvMinuteSections.filter(
+        (c) => c.id !== cvMinuteSection.id,
+      );
     },
   },
 });
@@ -151,6 +177,8 @@ export const {
   updateCvMinuteReducer,
   updateSectionInfoOrderReducer,
   updateCvMinuteSectionOrderReducer,
+  deleteSectionInfoReducer,
+  deleteCvMinuteSectionReducer,
 } = cvMinuteSlice.actions;
 
 export default cvMinuteSlice.reducer;

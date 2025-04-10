@@ -46,7 +46,6 @@ const updateCvMinuteSectionService = async ({
   primaryBg,
   secondaryBg,
   tertiaryBg,
-  sectionId,
   sectionOrder,
   sectionInfoId,
   sectionInfoOrder,
@@ -70,7 +69,6 @@ const updateCvMinuteSectionService = async ({
   primaryBg?: string;
   secondaryBg?: string;
   tertiaryBg?: string;
-  sectionId?: PopupInterface['sectionId'];
   sectionOrder?: PopupInterface['sectionOrder'];
   sectionInfoId?: PopupInterface['sectionInfoId'];
   sectionInfoOrder?: PopupInterface['sectionInfoOrder'];
@@ -114,14 +112,16 @@ const updateCvMinuteSectionService = async ({
 };
 
 const updateSectionInfoOrderService = async ({
+  id,
   sectionInfoId,
   targetSectionInfoId,
 }: {
+  id: number;
   sectionInfoId: number;
   targetSectionInfoId: number;
 }) => {
   try {
-    const res = await api.put('/cv-minute/section-info-order', {
+    const res = await api.put(`/cv-minute/${id}/section-info/order`, {
       sectionInfoId,
       targetSectionInfoId,
     });
@@ -132,20 +132,47 @@ const updateSectionInfoOrderService = async ({
 };
 
 const updateCvMinuteSectionOrderService = async ({
+  id,
   cvMinuteSectionId,
   targetCvMinuteSectionId,
 }: {
+  id: number;
   cvMinuteSectionId: number;
   targetCvMinuteSectionId: number;
 }) => {
   try {
-    const res = await api.put('/cv-minute/section-order', {
+    const res = await api.put(`/cv-minute/${id}/section/order`, {
       cvMinuteSectionId,
       targetCvMinuteSectionId,
     });
     return res.data;
   } catch (error) {
     return { error: `UPDATE CVMINUTE SECTION ORDER ERROR: ${error}` };
+  }
+};
+
+const deleteSectionInfoService = async (id: number, sectionInfoId: number) => {
+  try {
+    const res = await api.delete(
+      `/cv-minute/${id}/section-info/${sectionInfoId}`,
+    );
+    return res.data;
+  } catch (error) {
+    return { error: `DELETE SECTIONINFO ERROR: ${error}` };
+  }
+};
+
+const deleteCvMinuteSectionService = async (
+  id: number,
+  cvMinuteSectionId: number,
+) => {
+  try {
+    const res = await api.delete(
+      `/cv-minute/${id}/section/${cvMinuteSectionId}`,
+    );
+    return res.data;
+  } catch (error) {
+    return { error: `DELETE CVMINUTESECTION ERROR: ${error}` };
   }
 };
 
@@ -156,4 +183,6 @@ export {
   updateCvMinuteSectionService,
   updateSectionInfoOrderService,
   updateCvMinuteSectionOrderService,
+  deleteSectionInfoService,
+  deleteCvMinuteSectionService,
 };

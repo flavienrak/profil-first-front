@@ -9,6 +9,7 @@ export default function PrimaryButton({
   rotate = 0,
   type = 'button',
   isLoading = false,
+  onClick,
 }: {
   label: string;
   icon?: IconInterface;
@@ -16,11 +17,13 @@ export default function PrimaryButton({
   rotate?: number;
   type?: 'button' | 'reset' | 'submit';
   isLoading?: boolean;
+  onClick?: () => void;
 }) {
   return (
     <button
       type={type}
       disabled={isLoading}
+      onClick={onClick}
       className={`w-full p-[0.5em] bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] rounded-[0.325em] transition-opacity duration-300 select-none ${
         isLoading ? 'opacity-80' : 'hover:opacity-90 cursor-pointer'
       }`}
