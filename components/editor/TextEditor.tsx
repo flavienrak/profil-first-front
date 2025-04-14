@@ -2,9 +2,10 @@
 
 import React from 'react';
 import StarterKit from '@tiptap/starter-kit';
+import TextUnderline from '@tiptap/extension-underline';
 
 import { EditorContent, EditorProvider, useCurrentEditor } from '@tiptap/react';
-import { Bold, Italic, Redo, Undo } from 'lucide-react';
+import { Bold, Italic, Redo, Underline, Undo } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -48,14 +49,15 @@ const MenuBar = () => {
       <button
         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault();
-          editor.chain().focus().setParagraph().run();
+          editor.chain().focus().toggleUnderline().run();
         }}
+        disabled={!editor.can().chain().focus().toggleUnderline().run()}
         className={cn(
           'h-[2em] w-[2em] flex justify-center items-center cursor-pointer rounded-[0.125em]',
-          editor.isActive('paragraph') ? 'bg-gray-300' : 'hover:bg-gray-200',
+          editor.isActive('underline') ? 'bg-gray-300' : 'hover:bg-gray-200',
         )}
       >
-        <p className="font-medium text-[1.125em]">P</p>
+        <Underline size={fontSize + 2} />
       </button>
       <button
         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
@@ -110,7 +112,7 @@ export default function TextEditor({
     <div className="w-full flex flex-col text-[0.875em] border rounded-sm cursor-text">
       <EditorProvider
         slotBefore={<MenuBar />}
-        extensions={[StarterKit]}
+        extensions={[StarterKit, TextUnderline]}
         onUpdate={({ editor }) => {
           const htmlContent = editor.getHTML();
           onChange(htmlContent);

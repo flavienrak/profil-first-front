@@ -135,6 +135,10 @@
   color: #fff;
 }
 
+u {
+  text-underline-offset: 0.25em;
+}
+
 .word-spacing {
   word-spacing: 0.4em;
 }

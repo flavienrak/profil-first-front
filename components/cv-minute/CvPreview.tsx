@@ -41,9 +41,10 @@ import {
 } from '@/redux/slices/cvMinute.slice';
 import { UidContext, videoUri } from '@/providers/UidProvider';
 import { Step } from '@/interfaces/step.interface';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { pdf } from '@react-pdf/renderer';
 import { LucideIcon } from '../utils/LucideIcon';
 import { CvMinuteSectionInterface } from '@/interfaces/cvMinuteSection.interface';
+import { saveAs } from 'file-saver';
 
 export interface FieldInterface {
   key: string;
@@ -437,6 +438,39 @@ export default function CvPreview() {
     setShowGuide(false);
   };
 
+  const handleDownload = async () => {
+    if (cvMinute) {
+      const blob = await pdf(
+        <PdfTempldate
+          image={`${backendUri}/uploads/files/user-${user?.id}/${profileImg[0].name}`}
+          name={name?.sectionInfos[0]?.content}
+          firstname={firstname?.sectionInfos[0]?.content}
+          contacts={contacts?.sectionInfos
+            ?.slice()
+            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))}
+          editableSections={editableSections
+            .map((s) => getCvMinuteSection(s.name))
+            .filter(
+              (section): section is CvMinuteSectionInterface =>
+                section !== undefined,
+            )
+            .sort(
+              (a, b) =>
+                (a.sectionOrder ?? Infinity) - (b.sectionOrder ?? Infinity),
+            )}
+          title={title?.sectionInfos[0]?.content}
+          presentation={presentation?.sectionInfos[0]?.content}
+          experiences={experiences?.sectionInfos}
+          primaryBg={cvMinute.primaryBg}
+          secondaryBg={cvMinute.secondaryBg}
+          tertiaryBg={cvMinute.tertiaryBg}
+        />,
+      ).toBlob();
+
+      saveAs(blob, 'cv.pdf');
+    }
+  };
+
   if (cvMinute && context)
     return (
       <div className="flex justify-center flex-col">
@@ -463,42 +497,15 @@ export default function CvPreview() {
             <button className="step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none">
               Enregistrer le CV et l’offre
             </button>
-            <PDFDownloadLink
-              fileName="cv.pdf"
-              document={
-                <PdfTempldate
-                  image={`${backendUri}/uploads/files/user-${user?.id}/${profileImg[0].name}`}
-                  name={name?.sectionInfos[0]?.content}
-                  firstname={firstname?.sectionInfos[0]?.content}
-                  contacts={contacts?.sectionInfos
-                    ?.slice()
-                    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))}
-                  editableSections={editableSections
-                    .map((s) => getCvMinuteSection(s.name))
-                    .filter(
-                      (section): section is CvMinuteSectionInterface =>
-                        section !== undefined,
-                    )
-                    .sort(
-                      (a, b) =>
-                        (a.sectionOrder ?? Infinity) -
-                        (b.sectionOrder ?? Infinity),
-                    )}
-                  title={title?.sectionInfos[0]?.content}
-                  presentation={presentation?.sectionInfos[0]?.content}
-                  experiences={experiences?.sectionInfos}
-                  primaryBg={cvMinute.primaryBg}
-                  secondaryBg={cvMinute.secondaryBg}
-                  tertiaryBg={cvMinute.tertiaryBg}
-                />
-              }
+            <button
+              onClick={handleDownload}
               className="step-6 flex justify-center items-center gap-2 h-12 py-3 ps-4 pe-6 rounded-[0.25em] text-white bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] hover:opacity-90 cursor-pointer select-none"
             >
               <Download />
               <span className="text-[0.875em] font-semibold">
                 Télécharger le CV
               </span>
-            </PDFDownloadLink>
+            </button>
           </div>
         </div>
 
