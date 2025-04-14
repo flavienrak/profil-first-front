@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import TextEditor from '../editor/TextEditor';
+import TextEditor from '../utils/TextEditor';
 import SelectIcon from '@/components/utils/SelectIcon';
 import PrimaryButton from '@/components/utils/PrimaryButton';
 

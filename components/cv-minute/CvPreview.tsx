@@ -442,7 +442,10 @@ export default function CvPreview() {
     if (cvMinute) {
       const blob = await pdf(
         <PdfTempldate
-          image={`${backendUri}/uploads/files/user-${user?.id}/${profileImg[0].name}`}
+          image={
+            profileImg[0]?.name &&
+            `${backendUri}/uploads/files/user-${user?.id}/${profileImg[0].name}`
+          }
           name={name?.sectionInfos[0]?.content}
           firstname={firstname?.sectionInfos[0]?.content}
           contacts={contacts?.sectionInfos
@@ -469,6 +472,17 @@ export default function CvPreview() {
 
       saveAs(blob, 'cv.pdf');
     }
+  };
+
+  const getParagraphCount = (html: string) => {
+    const matches = html.match(/<p\b[^>]*>/g);
+    return matches ? matches.length : 0;
+  };
+
+  const getSpacing = (length: number) => {
+    if (length > 8) return '[&_p]:mb-[0.25em]';
+    if (length > 4) return '[&_p]:mb-[0.5em]';
+    return '[&_p]:mb-[0.625em]';
   };
 
   if (cvMinute && context)
@@ -932,7 +946,9 @@ export default function CvPreview() {
                                   size={c.iconSize * (fontSize / 16)}
                                 />
                               )}
-                              <p className="flex-1">{c.content}</p>
+                              <p className="flex-1 max-w-[calc(100%-2em)] break-words">
+                                {c.content}
+                              </p>
                             </div>
                           ))}
                         </div>
@@ -1109,7 +1125,7 @@ export default function CvPreview() {
                       }}
                       className="step-7 flex justify-between items-center hover:bg-[#f3f4f6] px-[0.25em] py-[0.25em] rounded"
                     >
-                      <h1 className="text-[2em] font-bold text-[#101828]">
+                      <h1 className="text-[2em] leading-[1.125em] font-bold text-[#101828]">
                         {title?.sectionInfos[0]?.content ?? 'Titre du CV'}
                       </h1>
                     </div>
@@ -1386,7 +1402,9 @@ export default function CvPreview() {
                                 {item.company} - <span>({item.contrat})</span>
                               </p>
                               <div
-                                className="text-[0.75em]"
+                                className={`text-[0.75em] ${getSpacing(
+                                  getParagraphCount(item.content),
+                                )}`}
                                 dangerouslySetInnerHTML={{
                                   __html: DOMPurify.sanitize(item.content),
                                 }}

@@ -35,7 +35,7 @@ export default function PdfTempldate({
 }) {
   return (
     <Document>
-      <Page size="A4" wrap>
+      <Page size="A4" wrap={false}>
         <View
           style={{
             width: '100%',
@@ -66,18 +66,18 @@ export default function PdfTempldate({
                 gap: '12px',
               }}
             >
-              {image && (
-                <View
-                  style={{
-                    height: '120px',
-                    width: '120px',
-                    borderRadius: '80px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: '#fff',
-                  }}
-                >
+              <View
+                style={{
+                  height: '120px',
+                  width: '120px',
+                  borderRadius: '80px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                }}
+              >
+                {image ? (
                   <Image
                     src={image}
                     style={{
@@ -88,8 +88,12 @@ export default function PdfTempldate({
                     }}
                     alt="Profil"
                   />
-                </View>
-              )}
+                ) : (
+                  <Text style={{ color: '#364153', fontSize: '12px' }}>
+                    Votre photo ici
+                  </Text>
+                )}
+              </View>
 
               <View
                 style={{
@@ -142,15 +146,21 @@ export default function PdfTempldate({
                     key={`contact-${c.id}`}
                     style={{
                       width: '100%',
+                      maxWidth: '100%',
                       display: 'flex',
                       flexDirection: 'row',
+                      alignItems: 'center',
                       gap: '6px',
                     }}
                   >
                     <View>
-                      {c.icon && <LucidePDFIcon name={c.icon} size={12} />}
+                      {c.icon && (
+                        <LucidePDFIcon name={c.icon} size={c.iconSize} />
+                      )}
                     </View>
-                    <View>
+                    <View
+                      style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+                    >
                       <Text
                         style={{
                           fontSize: '10px',
@@ -206,9 +216,9 @@ export default function PdfTempldate({
                       {s.sectionInfos[0].content?.split('\n').map((line, i) => (
                         <Text
                           key={`editableSectionText-${i}`}
-                          style={{ fontSize: '10px', lineHeight: '14px' }}
+                          style={{ fontSize: '10px', lineHeight: '13px' }}
                         >
-                          {line}
+                          {line.trim() === '' ? ' ' : line}
                         </Text>
                       ))}
                     </View>

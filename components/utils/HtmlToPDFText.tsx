@@ -104,7 +104,18 @@ export default function HtmlToPdfText({
   const document = parseDocument(html);
 
   return (
-    <View style={{ display: 'flex', flexDirection: 'column' }}>
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap:
+          filterChildren(document.children).length > 8
+            ? '4px'
+            : filterChildren(document.children).length > 4
+            ? '6px'
+            : '8px',
+      }}
+    >
       {filterChildren(document.children).map((node, i) =>
         renderNode(node as DomElement, normalizeStyle(baseStyle), i),
       )}
