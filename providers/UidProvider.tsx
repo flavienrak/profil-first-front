@@ -25,6 +25,8 @@ export const UidContext = React.createContext<UidContextType | undefined>(
   undefined,
 );
 
+export const videoUri = process.env.NEXT_PUBLIC_VIDEO_URI;
+
 export default function UidProvider({
   children,
 }: {

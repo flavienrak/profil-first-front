@@ -93,7 +93,6 @@ const updateCvMinuteSectionService = async ({
       primaryBg,
       secondaryBg,
       tertiaryBg,
-      sectionId,
       sectionOrder,
       sectionInfoId,
       sectionInfoOrder,

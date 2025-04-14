@@ -25,9 +25,9 @@ import { updateCvMinuteSectionService } from '@/services/cvMinute.service';
 import { isSameData } from '@/lib/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
-import { DynamicIcon } from 'lucide-react/dynamic';
 import { RootState } from '@/redux/store';
 import { IconInterface } from '@/interfaces/icon.interface';
+import { LucideIcon } from '../utils/LucideIcon';
 
 interface EditPopupInterface {
   popup: PopupInterface;
@@ -199,7 +199,7 @@ export default function EditPopup({
         className={`flex flex-col gap-[1em] p-[0.75em] max-h-[calc(100vh-8rem)] ${
           popup.hidden === false
             ? 'overflow-y-visible'
-            : 'overflow-y-auto overflow-x-hidden'
+            : 'overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300'
         }`}
       >
         {popup.title && (
@@ -221,142 +221,173 @@ export default function EditPopup({
           />
         )}
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-[0.5em]"
-          >
-            <div className="flex flex-col gap-[0.25em]">
-              {popup.fields.map((field) => (
-                <FormField
-                  key={field.key}
-                  name={field.key}
-                  control={form.control}
-                  render={({ field: formField }) => (
-                    <FormItem>
-                      <FormLabel asChild className="!text-[0.875em]">
-                        <div className="w-full flex flex-col items-start font-normal">
-                          <p>{field.label}</p>
-                          {field.example && (
-                            <p className="text-[0.6em] font-bold">
-                              {field.example}
-                            </p>
-                          )}
-                        </div>
-                      </FormLabel>
-                      <FormControl>
-                        <div className="flex flex-col gap-[0.5em]">
-                          <div className="flex gap-[0.5em]">
-                            {icon && iconSize && (
-                              <div className="relative">
-                                {showIcons && (
-                                  <SelectIcon
-                                    icon={icon}
-                                    size={iconSize}
-                                    onChange={(value: IconInterface) => {
-                                      setIcon(value);
-                                      setShowIcons(false);
-                                    }}
-                                    onChangeSize={(value: number) =>
-                                      setIconSize(value)
-                                    }
-                                  />
-                                )}
-                                <i
-                                  onClick={() => setShowIcons((prev) => !prev)}
-                                  className={`h-[2.5em] w-[2.5em] flex justify-center items-center text-[0.875em] text-gray-700 border rounded-[0.25em] cursor-pointer ${
-                                    showIcons
-                                      ? 'bg-[var(--primary-color)] text-white'
-                                      : 'hover:bg-gray-200'
-                                  }`}
-                                >
-                                  <DynamicIcon
-                                    name={icon}
-                                    size={iconSize * (fontSize / 16)}
-                                  />
-                                </i>
-                              </div>
-                            )}
-                            {field.type === 'textarea' ? (
-                              <Textarea
-                                {...formField}
-                                autoComplete="off"
-                                className="flex-1 min-h-[5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
-                                placeholder={field.placeholder}
-                                required
-                              />
-                            ) : field.type === 'text' ? (
-                              <TextEditor
-                                onChange={formField.onChange}
-                                content={field.value.toString()}
-                              />
-                            ) : field.type === 'color' ? (
-                              <Input
-                                {...formField}
-                                type="color"
-                                className="flex-1 h-[2.5em] px-[0.5em] py-[0.25em] rounded-[0.325em]"
-                              />
-                            ) : (
-                              <Input
-                                {...formField}
-                                autoComplete="off"
-                                className="flex-1 h-[2.5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
-                                placeholder={field.placeholder}
-                                required
-                              />
+        {!popup.static && (
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-[0.5em]"
+            >
+              <div className="flex flex-col gap-[0.25em]">
+                {popup.fields.map((field) => (
+                  <FormField
+                    key={field.key}
+                    name={field.key}
+                    control={form.control}
+                    render={({ field: formField }) => (
+                      <FormItem>
+                        <FormLabel asChild className="!text-[0.875em]">
+                          <div className="w-full flex flex-col items-start font-normal">
+                            <p>{field.label}</p>
+                            {field.example && (
+                              <p className="text-[0.6em] font-bold">
+                                {field.example}
+                              </p>
                             )}
                           </div>
-                          <FormMessage className="text-xs">
-                            {
-                              (form.formState.errors[field.key] as FieldError)
-                                ?.message
-                            }
-                          </FormMessage>
-                          <FormDescription className="text-[0.75em]">
-                            {field.description}
-                          </FormDescription>
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              ))}
-            </div>
-
-            {popup.openly && (
-              <div className="flex flex-col gap-[0.5em]">
-                <PrimaryButton
-                  label={'Génerer des suggestions'}
-                  icon={'unplug'}
-                  size={fontSize}
-                  rotate={90}
-                />
-                <p className="text-[0.75em] text-center text-gray-700">
-                  Cliquer sur 'Génerer des suggestions pour obtenir des
-                  propositions personnalisées'
-                </p>
-                {popup.suggestion && (
-                  <div className="flex flex-col gap-[0.5em]">
-                    <h3 className="text-[0.875em] text-center font-medium">
-                      {popup.suggestionTitle}
-                    </h3>
-                    <div className="border p-[0.5em] rounded-sm">
-                      <p className="text-[0.75em]">{popup.suggestion}</p>
-                    </div>
-                  </div>
-                )}
+                        </FormLabel>
+                        <FormControl>
+                          <div className="flex flex-col gap-[0.5em]">
+                            <div className="flex gap-[0.5em]">
+                              {icon && iconSize && (
+                                <div className="relative">
+                                  {showIcons && (
+                                    <SelectIcon
+                                      icon={icon}
+                                      size={iconSize}
+                                      onChange={(value: IconInterface) => {
+                                        setIcon(value);
+                                        setShowIcons(false);
+                                      }}
+                                      onChangeSize={(value: number) =>
+                                        setIconSize(value)
+                                      }
+                                    />
+                                  )}
+                                  <i
+                                    onClick={() =>
+                                      setShowIcons((prev) => !prev)
+                                    }
+                                    className={`h-[2.5em] w-[2.5em] flex justify-center items-center text-[0.875em] text-gray-700 border rounded-[0.25em] cursor-pointer ${
+                                      showIcons
+                                        ? 'bg-[var(--primary-color)] text-white'
+                                        : 'hover:bg-gray-200'
+                                    }`}
+                                  >
+                                    <LucideIcon
+                                      name={icon}
+                                      size={iconSize * (fontSize / 16)}
+                                    />
+                                  </i>
+                                </div>
+                              )}
+                              {field.type === 'textarea' ? (
+                                <Textarea
+                                  {...formField}
+                                  autoComplete="off"
+                                  className="flex-1 min-h-[5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
+                                  placeholder={field.placeholder}
+                                  required
+                                />
+                              ) : field.type === 'text' ? (
+                                <TextEditor
+                                  onChange={formField.onChange}
+                                  content={field.value.toString()}
+                                />
+                              ) : field.type === 'color' ? (
+                                <Input
+                                  {...formField}
+                                  type="color"
+                                  className="flex-1 h-[2.5em] px-[0.25em] py-[0.125em] rounded-[0.325em]"
+                                />
+                              ) : (
+                                <Input
+                                  {...formField}
+                                  autoComplete="off"
+                                  className="flex-1 h-[2.5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
+                                  placeholder={field.placeholder}
+                                  required
+                                />
+                              )}
+                            </div>
+                            <FormMessage className="text-xs">
+                              {
+                                (form.formState.errors[field.key] as FieldError)
+                                  ?.message
+                              }
+                            </FormMessage>
+                            <FormDescription className="text-[0.75em]">
+                              {field.description}
+                            </FormDescription>
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                ))}
               </div>
-            )}
 
-            <PrimaryButton
-              type="submit"
-              label={`Enregistrer ${
-                popup.fields.length > 1 ? 'les' : 'la'
-              } modification${popup.fields.length > 1 ? 's' : ''}`}
-              isLoading={isLoading}
-            />
-          </form>
-        </Form>
+              {popup.openly && (
+                <div className="flex flex-col gap-[0.5em]">
+                  <PrimaryButton
+                    label={'Génerer des suggestions'}
+                    icon={'unplug'}
+                    size={fontSize}
+                    rotate={90}
+                  />
+                  <p className="text-[0.75em] text-center text-gray-700">
+                    Cliquer sur 'Génerer des suggestions pour obtenir des
+                    propositions personnalisées'
+                  </p>
+                  {popup.suggestion && (
+                    <div className="flex flex-col gap-[0.5em]">
+                      <h3 className="text-[0.875em] text-center font-medium">
+                        {popup.suggestionTitle}
+                      </h3>
+                      <div className="border p-[0.5em] rounded-sm">
+                        <p className="text-[0.75em]">{popup.suggestion}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <PrimaryButton
+                type="submit"
+                label={`Enregistrer ${
+                  popup.fields.length > 1 ? 'les' : 'la'
+                } modification${popup.fields.length > 1 ? 's' : ''}`}
+                isLoading={isLoading}
+              />
+            </form>
+          </Form>
+        )}
+
+        {popup.static && (
+          <div>
+            <div className="flex flex-col gap-[0.25em]">
+              <p className="text-[0.875em]">Explications :</p>
+              <p className="text-[0.6875em] whitespace-pre-line">
+                {popup?.details}
+              </p>
+            </div>
+            <div className="flex flex-col gap-[0.25em]">
+              <p className="text-[0.875em]">Disponibilité :</p>
+              <p className="text-[0.6875em] whitespace-pre-line">
+                {popup?.disponibility}
+              </p>
+            </div>
+            <div className="flex flex-col gap-[1em]">
+              <PrimaryButton
+                onClick={popup.onShowGuide}
+                label="Je veux un guide de 30 secondes"
+              />
+              <PrimaryButton
+                onClick={popup.onShowVideo}
+                label="Visionner la vidéo explicative"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

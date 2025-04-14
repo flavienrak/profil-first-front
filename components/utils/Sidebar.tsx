@@ -108,7 +108,7 @@ export default function Sidebar({ showMenu }: { showMenu: boolean }) {
 
       <i
         onClick={toggleshowMenu}
-        className="z-50 absolute -right-8 h-8 w-8 flex justify-center items-center bg-gray-50 border rounded-r-sm hover:bg-gray-100 cursor-pointer"
+        className="z-50 absolute -right-8 h-8 w-8 flex justify-center items-center bg-gray-50 border border-gray-200 rounded-r-sm hover:bg-gray-100 cursor-pointer"
       >
         {showMenu ? <ChevronLeft /> : <ChevronRight />}
       </i>

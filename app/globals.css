@@ -8,6 +8,7 @@
   --primary-color: #8b5cf6; */
   --primary-color: #6b2cf5;
   --secondary-color: #4461f2;
+  --tertiary-color: #22d3ee;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

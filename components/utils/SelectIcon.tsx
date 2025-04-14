@@ -3,12 +3,12 @@
 import React from 'react';
 
 import { Input } from '@/components/ui/input';
-import { DynamicIcon } from 'lucide-react/dynamic';
 import { allIcons } from '@/lib/icons';
 import { IconInterface } from '@/interfaces/icon.interface';
 import { Search } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { LucideIcon } from './LucideIcon';
 
 export default function SelectIcon({
   icon,
@@ -127,7 +127,7 @@ export default function SelectIcon({
                   : 'text-gray-600 bg-gray-50 hover:bg-[var(--primary-color)] hover:text-white cursor-pointer'
               }`}
             >
-              <DynamicIcon name={i} size={size * (fontSize / 16)} />
+              <LucideIcon name={i} size={size * (fontSize / 16)} />
             </i>
           ))}
         </div>

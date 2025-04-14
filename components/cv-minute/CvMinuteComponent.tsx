@@ -6,12 +6,10 @@ import CvPreview from './CvPreview';
 import CvMinuteForm from './CvMinuteForm';
 
 import { RootState } from '@/redux/store';
-import { UidContext } from '@/providers/UidProvider';
+import { UidContext, videoUri } from '@/providers/UidProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { acceptConditionsService } from '@/services/user.service';
 import { updateUserReducer } from '@/redux/slices/user.slice';
-
-const videoUri = process.env.NEXT_PUBLIC_VIDEO_URI;
 
 export default function CvMinuteComponent() {
   const dispatch = useDispatch();

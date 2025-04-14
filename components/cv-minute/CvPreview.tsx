@@ -3,7 +3,11 @@
 import React from 'react';
 import Image from 'next/image';
 import DOMPurify from 'dompurify';
+import Popup from '../utils/Popup';
+import Guide from '../utils/Guide';
 import EditPopup from './EditPopup';
+import PdfTempldate from './PdfTempldate';
+import PrimaryButton from '../utils/PrimaryButton';
 
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,7 +39,11 @@ import {
   deleteSectionInfoReducer,
   deleteCvMinuteSectionReducer,
 } from '@/redux/slices/cvMinute.slice';
-import { DynamicIcon } from 'lucide-react/dynamic';
+import { UidContext, videoUri } from '@/providers/UidProvider';
+import { Step } from '@/interfaces/step.interface';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { LucideIcon } from '../utils/LucideIcon';
+import { CvMinuteSectionInterface } from '@/interfaces/cvMinuteSection.interface';
 
 export interface FieldInterface {
   key: string;
@@ -55,9 +63,12 @@ export interface FieldInterface {
 export interface PopupInterface {
   align?: 'left' | 'right';
   hidden?: boolean;
+  static?: boolean;
   title?: string;
   conseil?: string;
   openly?: boolean;
+  details?: string;
+  disponibility?: string;
   suggestionTitle?: string;
   suggestion?: string;
   deleteLabel?: string;
@@ -69,6 +80,8 @@ export interface PopupInterface {
   cvMinuteSectionId?: number;
   deleteLoading?: boolean;
   onDelete?: () => void;
+  onShowGuide?: () => void;
+  onShowVideo?: () => void;
 
   updateBg?: boolean;
   newSection?: boolean;
@@ -80,9 +93,61 @@ export interface PopupInterface {
 type SectionType = 'contact' | 'cvMinuteSection' | 'experience';
 
 const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
+const details = `Lorem ipsum dolor sit amet consectetur adipisicing elit. \n
+Fugiat nulla, soluta illum placeat molestiae, optio quo quae minus animi rem fuga ducimus, \n
+architecto totam exercitationem id quas ratione hic provident!\nLorem ipsum dolor sit amet consectetur adipisicing elit. \n\n`;
+const disponibility = `Lorem ipsum dolor sit amet consectetur adipisicing elit. \n
+Fugiat nulla, soluta illum placeat molestiae, optio quo quae minus animi rem fuga ducimus, \n
+architecto totam exercitationem id quas ratione hic provident!\nLorem ipsum dolor sit amet consectetur adipisicing elit. \n\n`;
+
+const steps: Step[] = [
+  { class: 'step-1', description: 'Un coup de pouce pour refaire votre CV' },
+  { class: 'step-2', description: "Consulter l'offre d'emploi" },
+  { class: 'step-3', description: 'Consulter le Score matching CV - Offre' },
+  { class: 'step-4', description: 'Refaire mon CV en un clic' },
+  {
+    class: 'step-5',
+    description: `Stockez le CV et retrouvez le dans "CV et offres"`,
+  },
+  {
+    class: 'step-6',
+    description: "Téléchargez votre CV pour candidater sur d'autres sites",
+  },
+  {
+    class: 'step-7',
+    description: 'Cliquez pour ajouter ou modifier le titre de votre CV',
+  },
+  {
+    class: 'step-8',
+    description: 'Cliquez pour ajouter ou modifier votre profil',
+  },
+  {
+    class: 'step-9',
+    description: 'Cliquez pour ajouter une expérience',
+  },
+  {
+    class: 'step-10',
+    description: 'Cliquez pour ajouter ou modifier votre photo',
+  },
+  {
+    class: 'step-11',
+    description: 'Cliquez pour ajouter une rubrique',
+  },
+  {
+    class: 'step-12',
+    description: 'Cliquez pour ajouter un contact, lien ou adresse',
+  },
+  {
+    class: 'step-13',
+    description: 'Cliquez pour modifier les couleurs de fonds',
+  },
+];
 
 export default function CvPreview() {
   const dispatch = useDispatch();
+  const context = React.useContext(UidContext);
+  const cvRef = React.useRef<HTMLDivElement | null>(null);
+
   const { user } = useSelector((state: RootState) => state.user);
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
   const { cvMinute, files, sections, cvMinuteSections } = useSelector(
@@ -117,6 +182,18 @@ export default function CvPreview() {
   const [currentPosition, setCurrentPosition] = React.useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
+  const [showGuide, setShowGuide] = React.useState(false);
+  const [showVideo, setShowVideo] = React.useState(false);
+  const [review, setReview] = React.useState(false);
+  const [showMatching, setShowMatching] = React.useState(false);
+
+  const [currentGuideStep, setCurrentGuideStep] = React.useState(0);
+
+  const [initialScore, setInitialScore] = React.useState(20);
+  const [currentScore, setCurrentScore] = React.useState(40);
+
+  const [recommandations, setRecommandations] =
+    React.useState('Recommandations');
 
   const increaseFontSize = () => {
     dispatch(updatePersistReducer({ fontSize: fontSize + 1 }));
@@ -342,32 +419,86 @@ export default function CvPreview() {
     }
   };
 
-  if (cvMinute)
+  const handleNextGuide = () => {
+    if (currentGuideStep < steps.length - 1) {
+      setCurrentGuideStep(currentGuideStep + 1);
+    } else {
+      setShowGuide(false);
+    }
+  };
+
+  const handlePreviousGuide = () => {
+    if (currentGuideStep > 0) {
+      setCurrentGuideStep(currentGuideStep - 1);
+    }
+  };
+
+  const handleCloseGuide = () => {
+    setShowGuide(false);
+  };
+
+  if (cvMinute && context)
     return (
       <div className="flex justify-center flex-col">
-        <div className="w-full px-8 h-20 border-b bg-white flex items-center">
+        <div className="w-full px-8 h-20 border-b border-gray-200 bg-white flex items-center">
           <div className="w-full flex justify-center items-center gap-5">
-            <button className="flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-gray-200 hover:opacity-90 cursor-pointer select-none">
+            <button className="step-1 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none">
               Guide de rédaction du CV
             </button>
-            <button className="flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-gray-200 hover:opacity-90 cursor-pointer select-none">
+            <button
+              onClick={() => setReview(true)}
+              className="step-2 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none"
+            >
               Relire l’offre
             </button>
-            <button className="flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-gray-200 hover:opacity-90 cursor-pointer select-none">
+            <button
+              onClick={() => setShowMatching(true)}
+              className="step-3 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none"
+            >
               Matching score
             </button>
-            <button className="flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-gray-200 hover:opacity-90 cursor-pointer select-none">
+            <button className="step-4 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none">
               Optimiser en un clic
             </button>
-            <button className="flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-gray-200 hover:opacity-90 cursor-pointer select-none">
+            <button className="step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none">
               Enregistrer le CV et l’offre
             </button>
-            <button className="flex justify-center items-center gap-2 h-12 py-3 ps-4 pe-6 rounded-[0.25em] text-white bg-[var(--primary-color)] hover:opacity-90 cursor-pointer select-none">
+            <PDFDownloadLink
+              fileName="cv.pdf"
+              document={
+                <PdfTempldate
+                  image={`${backendUri}/uploads/files/user-${user?.id}/${profileImg[0].name}`}
+                  name={name?.sectionInfos[0]?.content}
+                  firstname={firstname?.sectionInfos[0]?.content}
+                  contacts={contacts?.sectionInfos
+                    ?.slice()
+                    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))}
+                  editableSections={editableSections
+                    .map((s) => getCvMinuteSection(s.name))
+                    .filter(
+                      (section): section is CvMinuteSectionInterface =>
+                        section !== undefined,
+                    )
+                    .sort(
+                      (a, b) =>
+                        (a.sectionOrder ?? Infinity) -
+                        (b.sectionOrder ?? Infinity),
+                    )}
+                  title={title?.sectionInfos[0]?.content}
+                  presentation={presentation?.sectionInfos[0]?.content}
+                  experiences={experiences?.sectionInfos}
+                  primaryBg={cvMinute.primaryBg}
+                  secondaryBg={cvMinute.secondaryBg}
+                  tertiaryBg={cvMinute.tertiaryBg}
+                />
+              }
+              className="step-6 flex justify-center items-center gap-2 h-12 py-3 ps-4 pe-6 rounded-[0.25em] text-white bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] hover:opacity-90 cursor-pointer select-none"
+            >
               <Download />
               <span className="text-[0.875em] font-semibold">
                 Télécharger le CV
               </span>
-            </button>
+            </PDFDownloadLink>
           </div>
         </div>
 
@@ -376,31 +507,59 @@ export default function CvPreview() {
             className="flex justify-center p-[2.5em]"
             style={{ fontSize: `${fontSize}px` }}
           >
-            <div className="flex flex-col gap-[0.5em]">
-              <div className="flex justify-end">
-                <div className="flex items-center gap-[1em] p-[0.25em] rounded-[0.5em] bg-white shadow">
+            <div className="flex flex-col gap-[1em]">
+              <div className="flex justify-between bg-white shadow p-[0.25em] rounded-[0.5em]">
+                <button
+                  onClick={(event) => {
+                    const data: PopupInterface = {
+                      title: 'Déscriptions',
+                      static: true,
+                      details,
+                      disponibility,
+                      fields: [],
+                      onShowGuide: () => setShowGuide(true),
+                      onShowVideo: () => setShowVideo(true),
+                    };
+
+                    handleGetPosition(event, 'left', { y: 80 });
+                    if (isOpen) {
+                      handleClosePopup();
+                      setTempData(data);
+                    } else {
+                      handleOpenPopup(data);
+                    }
+                  }}
+                  className="h-full px-[1em] text-[0.875em] bg-[#e5e7eb] rounded-[0.25em] cursor-pointer transition-opacity duration-150 hover:opacity-80"
+                >
+                  Comment ça marche ?
+                </button>
+
+                <div className="flex items-center gap-[1em]">
                   <i
                     onClick={increaseFontSize}
-                    className="h-[2em] w-[2em] flex justify-center items-center hover:bg-gray-100 cursor-pointer rounded-[0.25em]"
+                    className="h-[2em] w-[2em] flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.25em]"
                   >
                     <ZoomIn className="h-[1.5em]" />
                   </i>
                   <i
                     onClick={decreaseFontSize}
-                    className="h-[2em] w-[2em] flex justify-center items-center hover:bg-gray-100 cursor-pointer rounded-[0.25em]"
+                    className="h-[2em] w-[2em] flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.25em]"
                   >
                     <ZoomOut className="h-[1.5em]" />
                   </i>
                   <p
                     onClick={resetFontSize}
-                    className="h-full px-[1em] flex justify-center items-center bg-gray-200 text-black text-[0.875em] rounded-[0.35em] select-none hover:opacity-90 cursor-pointer"
+                    className="h-full px-[1em] flex justify-center items-center bg-[#e5e7eb] text-[0.875em] rounded-[0.35em] select-none hover:opacity-90 cursor-pointer"
                   >
-                    Reset
+                    Réinitialiser
                   </p>
                 </div>
               </div>
 
-              <div className="relative flex bg-white w-[50em] min-h-[70em] rounded-[0.75em] shadow-md">
+              <div
+                ref={cvRef}
+                className="relative flex bg-white w-[50em] min-h-[70em] rounded-[0.75em] shadow-md"
+              >
                 <div className="absolute -left-[3.5em] top-0 flex flex-col gap-[0.5em]">
                   <TooltipProvider>
                     <Tooltip delayDuration={700}>
@@ -452,14 +611,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full bg-gray-200 text-black hover:opacity-90 cursor-pointer"
+                          className="step-11 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white hover:opacity-80 cursor-pointer"
                         >
                           <Plus className="h-[1.5em]" />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
                       >
                         <p>Ajouter rubrique</p>
                       </TooltipContent>
@@ -504,14 +663,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-black bg-gray-200 hover:opacity-90 cursor-pointer"
+                          className="step-12 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
                         >
                           <UserPlus className="h-[1.5em]" />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
                       >
                         <p>Adresse & Contacts</p>
                       </TooltipContent>
@@ -566,14 +725,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-black bg-gray-200 hover:opacity-90 cursor-pointer"
+                          className="step-13 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
                         >
                           <Brush className="h-[1.5em]" />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
                       >
                         <p>Couleurs de fond</p>
                       </TooltipContent>
@@ -591,7 +750,7 @@ export default function CvPreview() {
                         <div className="flex justify-center">
                           <label
                             htmlFor="cv-profile"
-                            className="w-[10em] h-[10em] rounded-full bg-white flex items-center justify-center select-none"
+                            className="step-10 w-[10em] h-[10em] rounded-full bg-white flex items-center justify-center select-none"
                           >
                             {user && profileImg.length > 0 ? (
                               <Image
@@ -602,7 +761,7 @@ export default function CvPreview() {
                                 className="object-cover h-full w-full rounded-full"
                               />
                             ) : (
-                              <span className="text-gray-400">
+                              <span className="text-[#99a1af]">
                                 Votre photo ici
                               </span>
                             )}
@@ -656,7 +815,7 @@ export default function CvPreview() {
                                 handleOpenPopup(data);
                               }
                             }}
-                            className="w-full text-[1em] text-center font-medium hover:bg-gray-100/25"
+                            className="w-full text-[1em] text-center font-medium hover:bg-[#f3f4f6]/25"
                           >
                             {firstname?.sectionInfos[0]?.content ?? 'Prénom'}
                           </h2>
@@ -691,7 +850,7 @@ export default function CvPreview() {
                                 handleOpenPopup(data);
                               }
                             }}
-                            className="w-full text-[1.125em] text-center font-bold mb-3 hover:bg-gray-100/25"
+                            className="w-full text-[1.125em] text-center font-bold mb-3 hover:bg-[#f3f4f6]/25"
                           >
                             {name?.sectionInfos[0]?.content ?? 'NOM'}
                           </h1>
@@ -704,7 +863,7 @@ export default function CvPreview() {
                         <div className="relative w-full flex flex-col text-[0.875em] px-[0.25em]">
                           {contacts.sectionInfos.map((c) => (
                             <div
-                              key={c.id}
+                              key={`contact-${c.id}`}
                               draggable
                               onDragStart={() =>
                                 handleDragStart({
@@ -757,11 +916,11 @@ export default function CvPreview() {
                                   handleOpenPopup(data);
                                 }
                               }}
-                              className="flex items-center gap-[0.375em] p-[0.25em] group relative hover:bg-gray-100/25"
+                              className="flex items-center gap-[0.375em] p-[0.25em] group relative hover:bg-[#f3f4f6]/25"
                               style={{ order: c.order }}
                             >
                               {c.icon && c.iconSize && (
-                                <DynamicIcon
+                                <LucideIcon
                                   name={c.icon}
                                   size={c.iconSize * (fontSize / 16)}
                                 />
@@ -779,7 +938,7 @@ export default function CvPreview() {
                           if (cvMinuteSection)
                             return (
                               <div
-                                key={s.id}
+                                key={`editableSection-${s.id}`}
                                 draggable
                                 onDragStart={() =>
                                   handleDragStart({
@@ -850,10 +1009,10 @@ export default function CvPreview() {
                                   }
                                 }}
                                 style={{ order: cvMinuteSection.sectionOrder }}
-                                className="relative w-full mt-[1em] hover:bg-gray-100/25 p-[0.25em] transition-[order] duration-500"
+                                className="relative w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em] transition-[order] duration-500"
                               >
                                 <h3
-                                  className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.75em] font-semibold mb-[0.5em] text-[0.875em] select-none"
+                                  className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.5em] font-semibold mb-[0.5em] text-[0.875em] select-none"
                                   style={{ background: cvMinute.secondaryBg }}
                                 >
                                   {cvMinuteSection?.sectionTitle}
@@ -875,7 +1034,7 @@ export default function CvPreview() {
                                   <TooltipProvider>
                                     <Tooltip delayDuration={700}>
                                       <TooltipTrigger asChild>
-                                        <i className="text-gray-300 hover:text-gray-400 transition-colors duration-150 cursor-pointer">
+                                        <i className="text-[var(--primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
                                           <Zap
                                             size={
                                               (fontSize + 16) * (fontSize / 16)
@@ -885,7 +1044,7 @@ export default function CvPreview() {
                                       </TooltipTrigger>
                                       <TooltipContent
                                         side="left"
-                                        className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
                                       >
                                         <p>Modifier</p>
                                       </TooltipContent>
@@ -941,9 +1100,9 @@ export default function CvPreview() {
                           handleOpenPopup(data);
                         }
                       }}
-                      className="flex justify-between items-center hover:bg-gray-100 px-[0.5em] py-[0.25em] rounded"
+                      className="step-7 flex justify-between items-center hover:bg-[#f3f4f6] px-[0.25em] py-[0.25em] rounded"
                     >
-                      <h1 className="text-[2em] font-bold text-gray-900">
+                      <h1 className="text-[2em] font-bold text-[#101828]">
                         {title?.sectionInfos[0]?.content ?? 'Titre du CV'}
                       </h1>
                     </div>
@@ -987,7 +1146,7 @@ export default function CvPreview() {
                           handleOpenPopup(data);
                         }
                       }}
-                      className="flex justify-between text-gray-700 hover:bg-gray-100 p-[0.5em] rounded text-[0.875em] whitespace-pre-line"
+                      className="step-8 flex justify-between text-[#364153] hover:bg-[#f3f4f6] p-[0.5em] rounded text-[0.875em] whitespace-pre-line"
                     >
                       <p>
                         {presentation?.sectionInfos[0]?.content ??
@@ -1072,7 +1231,7 @@ export default function CvPreview() {
                         className="relative p-[0.25em]"
                       >
                         <h2
-                          className="w-full uppercase text-[1.125em] font-semibold border-b-[0.125em]"
+                          className="step-9 w-full uppercase text-[1.125em] font-semibold border-b-[0.125em]"
                           style={{
                             color: cvMinute.primaryBg,
                             borderColor: cvMinute.primaryBg,
@@ -1085,7 +1244,7 @@ export default function CvPreview() {
                           <TooltipProvider>
                             <Tooltip delayDuration={700}>
                               <TooltipTrigger asChild>
-                                <i className="text-gray-300 hover:text-gray-400 transition-colors duration-150 cursor-pointer">
+                                <i className="text-[var(--primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
                                   <Triangle
                                     size={(fontSize + 16) * (fontSize / 16)}
                                     fill={'currentColor'}
@@ -1094,7 +1253,7 @@ export default function CvPreview() {
                               </TooltipTrigger>
                               <TooltipContent
                                 side="right"
-                                className="text-black text-[0.75em] shadow bg-gray-200 px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
+                                className="text-white text-[0.75em] shadow bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
                               >
                                 <p>Ajouter expérience</p>
                               </TooltipContent>
@@ -1108,7 +1267,7 @@ export default function CvPreview() {
                         <div className="flex flex-col gap-[0.375em]">
                           {experiences.sectionInfos.map((item) => (
                             <div
-                              key={item.id}
+                              key={`experience-${item.id}`}
                               draggable
                               onDragStart={() =>
                                 handleDragStart({
@@ -1138,6 +1297,7 @@ export default function CvPreview() {
                                   sectionInfoId: item.id,
                                   cvMinuteSectionId: experiences.id,
                                   updateExperience: true,
+                                  sectionInfoOrder: item.order,
                                   fields: [
                                     {
                                       label: 'Titre du poste',
@@ -1200,7 +1360,7 @@ export default function CvPreview() {
                                   handleOpenPopup(data);
                                 }
                               }}
-                              className="flex flex-col gap-[0.25em] p-[0.25em] hover:bg-gray-100"
+                              className="flex flex-col gap-[0.25em] p-[0.25em] hover:bg-[#f3f4f6]"
                               style={{ order: item.order }}
                             >
                               <div className="flex items-end gap-[0.5em] font-semibold">
@@ -1224,11 +1384,38 @@ export default function CvPreview() {
                                   __html: DOMPurify.sanitize(item.content),
                                 }}
                               />
+
+                              <div className="absolute -right-[13em] w-[12em] flex flex-col gap-[0.5em]">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[0.875em] font-medium text-[#4a5565] truncate">
+                                    {item.title}
+                                  </span>
+                                  <span className="text-[0.875em] font-semibold text-primary">
+                                    85%
+                                  </span>
+                                </div>
+                                <div className="relative h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
+                                  <div
+                                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
+                                    style={{ width: '85%' }}
+                                  />
+                                </div>
+                                <button
+                                  onClick={(
+                                    event: React.MouseEvent<HTMLButtonElement>,
+                                  ) => {
+                                    event.stopPropagation();
+                                  }}
+                                  className="w-full text-[0.75em] font-semibold hover:text-[var(--primary-color)] cursor-pointer"
+                                >
+                                  Optimiser cette expérience
+                                </button>
+                              </div>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-gray-500 italic text-[0.875em] p-[0.25em]">
+                        <p className="text-[#6a7282] italic text-[0.875em] p-[0.25em]">
                           Aucune expérience ajoutée
                         </p>
                       )}
@@ -1245,6 +1432,7 @@ export default function CvPreview() {
                 popup.updateContactSection) &&
                 popup.cvMinuteSectionId) ||
                 popup.updateBg ||
+                popup.static ||
                 popup.newSection) && (
                 <EditPopup
                   popup={popup}
@@ -1256,8 +1444,153 @@ export default function CvPreview() {
                   handleMouseUp={handleMouseUp}
                 />
               )}
+
+            {showVideo && (
+              <Popup full onClose={() => setShowVideo(false)}>
+                <div className="p-4 h-[32rem] w-[60rem]">
+                  {videoUri ? (
+                    <iframe
+                      src={context.handleVideo(videoUri)}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="h-full w-full rounded-lg shadow"
+                    ></iframe>
+                  ) : (
+                    <p>Vidéo non trouvé</p>
+                  )}
+                </div>
+              </Popup>
+            )}
+
+            {review && (
+              <Popup onClose={() => setReview(false)}>
+                <div className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                  <p className="whitespace-pre-line">{cvMinute.position}</p>
+                </div>
+              </Popup>
+            )}
+
+            {showMatching && (
+              <Popup onClose={() => setShowMatching(false)}>
+                <div className="max-h-[80vh] overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                  <div className="bg-white rounded-lg p-6 max-w-lg w-full">
+                    <h3 className="text-xl font-bold mb-6">
+                      Score de Matching
+                    </h3>
+
+                    <div className="flex justify-around items-center mb-8">
+                      <div className="text-center">
+                        <p className="text-sm text-gray-600 mb-2">
+                          Score initial
+                        </p>
+                        <div className="relative inline-flex items-center justify-center">
+                          <svg className="w-20 h-20">
+                            <circle
+                              className="text-gray-200"
+                              strokeWidth="5"
+                              stroke="currentColor"
+                              fill="transparent"
+                              r="30"
+                              cx="40"
+                              cy="40"
+                            />
+                            <circle
+                              className="text-blue-600"
+                              strokeWidth="5"
+                              strokeLinecap="round"
+                              stroke="currentColor"
+                              fill="transparent"
+                              r="30"
+                              cx="40"
+                              cy="40"
+                              strokeDasharray={`${2 * Math.PI * 30}`}
+                              strokeDashoffset={`${
+                                2 * Math.PI * 30 * (1 - initialScore / 100)
+                              }`}
+                            />
+                          </svg>
+                          <span className="absolute text-xl font-bold">
+                            {initialScore}%
+                          </span>
+                        </div>
+                      </div>
+
+                      {currentScore !== null && (
+                        <div className="text-center">
+                          <p className="text-sm text-gray-600 mb-2">
+                            Score actuel
+                          </p>
+                          <div className="relative inline-flex items-center justify-center">
+                            <svg className="w-20 h-20">
+                              <circle
+                                className="text-gray-200"
+                                strokeWidth="5"
+                                stroke="currentColor"
+                                fill="transparent"
+                                r="30"
+                                cx="40"
+                                cy="40"
+                              />
+                              <circle
+                                className="text-green-600"
+                                strokeWidth="5"
+                                strokeLinecap="round"
+                                stroke="currentColor"
+                                fill="transparent"
+                                r="30"
+                                cx="40"
+                                cy="40"
+                                strokeDasharray={`${2 * Math.PI * 30}`}
+                                strokeDashoffset={`${
+                                  2 * Math.PI * 30 * (1 - currentScore / 100)
+                                }`}
+                              />
+                            </svg>
+                            <span className="absolute text-xl font-bold">
+                              {currentScore}%
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mb-6">
+                      <h4 className="font-semibold mb-2">
+                        L'analyse de Coach Victorien :
+                      </h4>
+                      <p className="text-gray-600">{recommandations}</p>
+                      <p className="text-sm text-gray-500 mt-2 italic">
+                        Rappel : Le score de matching est purement indicatif.
+                        C'est à vous de jauger la pertinence de votre CV selon
+                        vos objectifs.
+                      </p>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => setShowMatching(false)}
+                        className="w-full p-[0.5em] rounded-[0.325em] border border-gray-500 select-none"
+                      >
+                        Fermer
+                      </button>
+                      <PrimaryButton label={'Recalculer'} />
+                    </div>
+                  </div>
+                </div>
+              </Popup>
+            )}
           </div>
         </div>
+
+        {showGuide && (
+          <Guide
+            steps={steps}
+            currentStep={currentGuideStep}
+            onNext={handleNextGuide}
+            onPrevious={handlePreviousGuide}
+            onClose={handleCloseGuide}
+          />
+        )}
       </div>
     );
 }

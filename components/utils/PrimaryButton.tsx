@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconInterface } from '@/interfaces/icon.interface';
-import { DynamicIcon } from 'lucide-react/dynamic';
+import { LucideIcon } from './LucideIcon';
 
 export default function PrimaryButton({
   label,
@@ -49,11 +49,9 @@ export default function PrimaryButton({
           </svg>
         )}
         {icon && (
-          <DynamicIcon
-            name={icon}
-            size={size}
-            style={{ rotate: `${rotate}deg` }}
-          />
+          <i className="rotate-90">
+            <LucideIcon name={icon} size={size} />
+          </i>
         )}
         <span>{label}</span>
       </p>
