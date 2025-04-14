@@ -158,12 +158,11 @@ export default function PdfTempldate({
                         <LucidePDFIcon name={c.icon} size={c.iconSize} />
                       )}
                     </View>
-                    <View
-                      style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-                    >
+                    <View style={{ overflow: 'hidden' }}>
                       <Text
                         style={{
                           fontSize: '10px',
+                          textOverflow: 'ellipsis',
                         }}
                       >
                         {c.content}
