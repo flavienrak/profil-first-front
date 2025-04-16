@@ -4,6 +4,7 @@ import React from 'react';
 import TextEditor from '../utils/TextEditor';
 import SelectIcon from '@/components/utils/SelectIcon';
 import PrimaryButton from '@/components/utils/PrimaryButton';
+import DOMPurify from 'dompurify';
 
 import {
   Globe,
@@ -37,6 +38,7 @@ import { RootState } from '@/redux/store';
 import { IconInterface } from '@/interfaces/icon.interface';
 import { LucideIcon } from '../utils/LucideIcon';
 import { SectionInfoInterface } from '@/interfaces/sectionInfo.interface';
+import { AdviceInterface } from '@/interfaces/advice.interface';
 
 interface EditPopupInterface {
   popup: PopupInterface;
@@ -66,7 +68,7 @@ export default function EditPopup({
 }: EditPopupInterface) {
   const dispatch = useDispatch();
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
-  const { sections, cvMinuteSections } = useSelector(
+  const { cvMinute, sections, cvMinuteSections } = useSelector(
     (state: RootState) => state.cvMinute,
   );
   const getCvMinuteSection = (value: string) => {
@@ -77,6 +79,20 @@ export default function EditPopup({
 
   const [experienceInfo, setExperienceInfo] =
     React.useState<SectionInfoInterface | null>(null);
+  const [suggestions, setSuggestions] = React.useState<AdviceInterface[]>([]);
+
+  const [icon, setIcon] = React.useState(
+    popup.fields.find((f) => f.icon)?.icon,
+  );
+  const [iconSize, setIconSize] = React.useState(
+    popup.fields.find((f) => f.iconSize)?.iconSize,
+  );
+  const [showIcons, setShowIcons] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [openDetails, setOpenDetails] = React.useState(false);
+
+  const [loadingButton, setLoadingButton] = React.useState(false);
+  const [loadingSuggestion, setLoadingSuggestion] = React.useState(false);
 
   React.useEffect(() => {
     if (popup.withScore) {
@@ -90,16 +106,25 @@ export default function EditPopup({
     }
   }, [experiences, popup.withScore, popup.sectionInfoId]);
 
-  const [icon, setIcon] = React.useState(
-    popup.fields.find((f) => f.icon)?.icon,
-  );
-  const [iconSize, setIconSize] = React.useState(
-    popup.fields.find((f) => f.iconSize)?.iconSize,
-  );
-  const [showIcons, setShowIcons] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [openDetails, setOpenDetails] = React.useState(false);
-  const [loadingButton, setLoadingButton] = React.useState(false);
+  React.useEffect(() => {
+    if (cvMinute?.advices && popup.suggestionKey === 'title') {
+      setSuggestions(cvMinute.advices.filter((a) => a.type === 'suggestion'));
+    } else if (cvMinuteSections && popup.suggestionKey === 'content') {
+      const cvMinuteSection = cvMinuteSections.find(
+        (s) => s.id === popup.cvMinuteSectionId,
+      );
+
+      const sectionInfo = cvMinuteSection?.sectionInfos.find(
+        (s) => s.id === popup.sectionInfoId,
+      );
+
+      if (sectionInfo) {
+        setSuggestions(
+          sectionInfo.advices.filter((a) => a.type === 'suggestion'),
+        );
+      }
+    }
+  }, [cvMinute?.advices, cvMinuteSections, popup.suggestionKey]);
 
   const dynamicSchema = (fields: FieldInterface[]) => {
     const shape: Record<string, z.ZodTypeAny> = {};
@@ -132,6 +157,14 @@ export default function EditPopup({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  const handleAddSuggestion = async (value: string) => {
+    if (popup.suggestionKey === 'title') {
+      form.setValue('title', value);
+    } else if (popup.suggestionKey === 'content') {
+      form.setValue('content', value);
+    }
+  };
 
   const onSubmit = async (data: FormValues) => {
     const parseRes = formSchema.safeParse(data);
@@ -427,8 +460,8 @@ export default function EditPopup({
                                     />
                                   ) : field.type === 'text' ? (
                                     <TextEditor
+                                      content={formField.value}
                                       onChange={formField.onChange}
-                                      content={field.value.toString()}
                                     />
                                   ) : field.type === 'color' ? (
                                     <Input
@@ -469,25 +502,45 @@ export default function EditPopup({
 
               {popup.openly && (
                 <div className="flex flex-col gap-[0.5em]">
-                  <PrimaryButton
-                    label={'Génerer des suggestions'}
-                    icon={'unplug'}
-                    size={fontSize}
-                    rotate={90}
-                  />
-                  <p className="text-[0.75em] text-center text-gray-700">
-                    Cliquer sur 'Génerer des suggestions pour obtenir des
-                    propositions personnalisées'
-                  </p>
-                  {popup.suggestion && (
-                    <div className="flex flex-col gap-[0.5em]">
+                  {suggestions.length > 0 ? (
+                    <div className="flex flex-col gap-[0.5em] pb-[0.5em]">
                       <h3 className="text-[0.875em] text-center font-medium">
                         {popup.suggestionTitle}
                       </h3>
-                      <div className="border p-[0.5em] rounded-sm">
-                        <p className="text-[0.75em]">{popup.suggestion}</p>
-                      </div>
+                      <ul className="list-disc list-inside flex flex-col gap-[0.5em]">
+                        {suggestions.map((s) => (
+                          <li
+                            key={`suggestion-${s.id}`}
+                            onClick={() => handleAddSuggestion(s.content)}
+                            className="text-[0.75em] border p-[0.5em] rounded-[0.25em] hover:bg-gray-100 cursor-pointer"
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(s.content),
+                            }}
+                          ></li>
+                        ))}
+                      </ul>
                     </div>
+                  ) : (
+                    <>
+                      <PrimaryButton
+                        label={'Génerer des suggestions'}
+                        icon={'unplug'}
+                        size={fontSize}
+                        rotate={90}
+                        isLoading={loadingSuggestion}
+                        onClick={async () => {
+                          if (popup.onGenerate) {
+                            setLoadingSuggestion(true);
+                            await popup.onGenerate();
+                            setLoadingSuggestion(false);
+                          }
+                        }}
+                      />
+                      <p className="text-[0.75em] text-center text-gray-700">
+                        Cliquer sur 'Génerer des suggestions pour obtenir des
+                        propositions personnalisées'
+                      </p>
+                    </>
                   )}
                 </div>
               )}

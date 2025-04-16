@@ -4,7 +4,12 @@ import React from 'react';
 import StarterKit from '@tiptap/starter-kit';
 import TextUnderline from '@tiptap/extension-underline';
 
-import { EditorContent, EditorProvider, useCurrentEditor } from '@tiptap/react';
+import {
+  useEditor,
+  EditorContent,
+  EditorProvider,
+  useCurrentEditor,
+} from '@tiptap/react';
 import { Bold, Italic, Redo, Underline, Undo } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSelector } from 'react-redux';
@@ -93,8 +98,14 @@ const MenuBar = () => {
   );
 };
 
-function MyEditorContent() {
+function MyEditorContent({ content }: { content: string }) {
   const { editor } = useCurrentEditor();
+
+  React.useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
   if (!editor) return null;
 
@@ -119,7 +130,7 @@ export default function TextEditor({
         }}
         content={content}
       >
-        <MyEditorContent />
+        <MyEditorContent content={content} />
       </EditorProvider>
     </div>
   );

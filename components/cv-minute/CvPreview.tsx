@@ -34,10 +34,12 @@ import {
   deleteCvMinuteSectionService,
   deleteSectionInfoService,
   updateCvMinuteProfileService,
+  generateCvMinuteSectionAdviceService,
   updateCvMinuteScoreService,
   updateCvMinuteSectionOrderService,
   updateSectionInfoOrderService,
   updateSectionInfoScoreService,
+  generateSectionInfoAdviceService,
 } from '@/services/cvMinute.service';
 import {
   updateSectionInfoOrderReducer,
@@ -47,6 +49,8 @@ import {
   deleteCvMinuteSectionReducer,
   updateSectionInfoScoreReducer,
   updateCvMinuteScoreReducer,
+  updateCvMinuteSectionPropositionReducer,
+  updateSectionInfoAdviceReducer,
 } from '@/redux/slices/cvMinute.slice';
 import { UidContext, videoUri } from '@/providers/UidProvider';
 import { Step } from '@/interfaces/step.interface';
@@ -80,7 +84,7 @@ export interface PopupInterface {
   conseil?: string;
   openly?: boolean;
   suggestionTitle?: string;
-  suggestion?: string;
+  suggestionKey?: string;
   actionLabel?: string;
   compare?: boolean;
   type?: string;
@@ -92,6 +96,7 @@ export interface PopupInterface {
   deleteLoading?: boolean;
   withScore?: boolean;
   onClick?: () => Promise<void>;
+  onGenerate?: () => Promise<void>;
   onShowGuide?: () => void;
   onShowVideo?: () => void;
 
@@ -434,6 +439,40 @@ export default function CvPreview() {
     }
   };
 
+  const handleGenerateCvMinuteProposition = async () => {
+    if (cvMinute) {
+      const res = await generateCvMinuteSectionAdviceService(cvMinute.id);
+
+      if (res.cvMinute) {
+        dispatch(
+          updateCvMinuteSectionPropositionReducer({ cvMinute: res.cvMinute }),
+        );
+      }
+    }
+
+    return;
+  };
+
+  const handleGenerateSectionInfoProposition = async (
+    value: number,
+    cvMinuteSectionId: number,
+  ) => {
+    if (cvMinute) {
+      const res = await generateSectionInfoAdviceService(cvMinute.id, value);
+
+      if (res.sectionInfo) {
+        dispatch(
+          updateSectionInfoAdviceReducer({
+            sectionInfo: res.sectionInfo,
+            cvMinuteSectionId,
+          }),
+        );
+      }
+    }
+
+    return;
+  };
+
   const handleRecalculateGlobalMatching = async () => {
     if (cvMinute) {
       setLoadingGlobal(true);
@@ -651,10 +690,12 @@ export default function CvPreview() {
                               conseil: cvMinute.advices.find(
                                 (a) =>
                                   a.cvMinuteId === cvMinute.id &&
-                                  a.type === 'newSection',
+                                  a.type === 'advice',
                               )?.content,
                               suggestionTitle: 'Idées de rubrique',
-                              suggestion: '',
+                              suggestionKey: 'title',
+                              onGenerate: async () =>
+                                await handleGenerateCvMinuteProposition(),
                               newSection: true,
                               sectionOrder:
                                 editableSections.length > 0
@@ -940,7 +981,7 @@ export default function CvPreview() {
 
                     {contacts?.sectionInfos &&
                       contacts.sectionInfos.length > 0 && (
-                        <div className="relative w-full flex flex-col text-[0.875em] px-[0.25em]">
+                        <div className="relative w-full flex flex-col justify-between text-[0.875em] px-[0.25em]">
                           {contacts.sectionInfos.map((c) => (
                             <div
                               key={`contact-${c.id}`}
@@ -998,7 +1039,7 @@ export default function CvPreview() {
                                   handleOpenPopup(data);
                                 }
                               }}
-                              className="flex items-center gap-[0.375em] p-[0.25em] group relative hover:bg-[#f3f4f6]/25"
+                              className="flex-1 flex items-center gap-[0.375em] p-[0.25em] group relative hover:bg-[#f3f4f6]/25"
                               style={{ order: c.order }}
                             >
                               {c.icon && c.iconSize && (
@@ -1044,10 +1085,9 @@ export default function CvPreview() {
                                       (a) =>
                                         a.cvMinuteSectionId ===
                                           cvMinuteSection.id &&
-                                        a.type === 'existSection',
+                                        a.type === 'advice',
                                     )?.content,
                                     suggestionTitle: 'Idées de rubrique',
-                                    suggestion: '',
                                     actionLabel: 'Supprimer la rubrique',
                                     onClick: async () =>
                                       await handleDeleteCvMinuteSection(s.id),
@@ -1155,9 +1195,19 @@ export default function CvPreview() {
                         const data: PopupInterface = {
                           align: 'right',
                           title: 'Titre du CV',
-                          conseil: title.sectionInfos[0]?.advice.content,
+                          openly: true,
+                          conseil: title.sectionInfos[0]?.advices.find(
+                            (a) =>
+                              a.sectionInfoId === title.sectionInfos[0]?.id &&
+                              a.type === 'advice',
+                          )?.content,
+                          onGenerate: async () =>
+                            await handleGenerateSectionInfoProposition(
+                              title.sectionInfos[0]?.id,
+                              title.id,
+                            ),
                           suggestionTitle: 'Idées de titre du CV',
-                          suggestion: '',
+                          suggestionKey: 'content',
                           actionLabel: 'Supprimer le titre',
                           sectionInfoId: title.sectionInfos[0]?.id,
                           cvMinuteSectionId: title.id,
@@ -1203,10 +1253,20 @@ export default function CvPreview() {
                         const data: PopupInterface = {
                           align: 'right',
                           title: 'Ajouter une presentation',
-                          conseil: presentation.sectionInfos[0]?.advice.content,
+                          conseil: presentation.sectionInfos[0]?.advices.find(
+                            (a) =>
+                              a.sectionInfoId ===
+                                presentation.sectionInfos[0]?.id &&
+                              a.type === 'advice',
+                          )?.content,
+                          onGenerate: async () =>
+                            await handleGenerateSectionInfoProposition(
+                              presentation.sectionInfos[0]?.id,
+                              presentation.id,
+                            ),
                           openly: true,
                           suggestionTitle: 'Idées de présentation',
-                          suggestion: '',
+                          suggestionKey: 'content',
                           sectionInfoId: presentation.sectionInfos[0]?.id,
                           cvMinuteSectionId: presentation.id,
                           updateCvMinuteSection: true,
@@ -1353,7 +1413,7 @@ export default function CvPreview() {
 
                       {experiences?.sectionInfos &&
                       experiences.sectionInfos.length > 0 ? (
-                        <div className="flex-1 flex flex-col gap-[0.375em]">
+                        <div className="flex-1 flex flex-col justify-between gap-[0.375em]">
                           {experiences.sectionInfos.map((item) => (
                             <div
                               key={`experience-${item.id}`}
@@ -1432,6 +1492,7 @@ export default function CvPreview() {
                                       label: 'Description',
                                       type: 'text',
                                       key: 'content',
+                                      show: false,
                                       requiredError: 'Description requise',
                                       placeholder:
                                         item.content ?? 'Description...',
@@ -1517,8 +1578,15 @@ export default function CvPreview() {
                                         large: true,
                                         openly: true,
                                         withScore: true,
+                                        suggestionTitle: 'Idées de redactions',
+                                        suggestionKey: 'content',
                                         onClick: async () =>
                                           await handleRecalculateExperienceMatching(
+                                            item.id,
+                                            experiences.id,
+                                          ),
+                                        onGenerate: async () =>
+                                          await handleGenerateSectionInfoProposition(
                                             item.id,
                                             experiences.id,
                                           ),

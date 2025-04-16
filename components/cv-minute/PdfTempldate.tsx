@@ -136,8 +136,10 @@ export default function PdfTempldate({
             {contacts && contacts.length > 0 && (
               <View
                 style={{
+                  flex: '1',
                   display: 'flex',
                   flexDirection: 'column',
+                  justifyContent: 'space-between',
                   gap: '6px',
                 }}
               >
@@ -173,57 +175,69 @@ export default function PdfTempldate({
               </View>
             )}
 
-            {editableSections &&
-              editableSections.length > 0 &&
-              editableSections.map((s) => (
-                <View
-                  key={`editableSection-${s.id}`}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '6px',
-                  }}
-                >
+            {editableSections && editableSections.length > 0 && (
+              <View
+                style={{
+                  flex: '1',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  gap: '12px',
+                }}
+              >
+                {editableSections.map((s) => (
                   <View
+                    key={`editableSection-${s.id}`}
                     style={{
+                      flex: '1',
+                      width: '100%',
                       display: 'flex',
-                      padding: '3px 4px',
-                      backgroundColor: secondaryBg,
+                      flexDirection: 'column',
+                      gap: '6px',
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: '11px',
-                        textTransform: 'uppercase',
-                        fontWeight: 'semibold',
-                      }}
-                    >
-                      {s.sectionTitle}
-                    </Text>
-                  </View>
-                  {s.sectionInfos && s.sectionInfos.length > 0 && (
                     <View
                       style={{
-                        width: '100%',
                         display: 'flex',
-                        flexDirection: 'column',
-                        gap: '2px',
-                        padding: '0 5px',
+                        padding: '3px 4px',
+                        backgroundColor: secondaryBg,
                       }}
                     >
-                      {s.sectionInfos[0].content?.split('\n').map((line, i) => (
-                        <Text
-                          key={`editableSectionText-${i}`}
-                          style={{ fontSize: '10px', lineHeight: '13px' }}
-                        >
-                          {line.trim() === '' ? ' ' : line}
-                        </Text>
-                      ))}
+                      <Text
+                        style={{
+                          fontSize: '11px',
+                          textTransform: 'uppercase',
+                          fontWeight: 'semibold',
+                        }}
+                      >
+                        {s.sectionTitle}
+                      </Text>
                     </View>
-                  )}
-                </View>
-              ))}
+                    {s.sectionInfos && s.sectionInfos.length > 0 && (
+                      <View
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '2px',
+                          padding: '0 5px',
+                        }}
+                      >
+                        {s.sectionInfos[0].content
+                          ?.split('\n')
+                          .map((line, i) => (
+                            <Text
+                              key={`editableSectionText-${i}`}
+                              style={{ fontSize: '10px', lineHeight: '13px' }}
+                            >
+                              {line.trim() === '' ? ' ' : line}
+                            </Text>
+                          ))}
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
 
           <View
@@ -264,7 +278,12 @@ export default function PdfTempldate({
             )}
 
             <View
-              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+              style={{
+                flex: '1',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+              }}
             >
               <View
                 style={{
@@ -286,66 +305,76 @@ export default function PdfTempldate({
                 </Text>
               </View>
 
-              {experiences &&
-                experiences.length > 0 &&
-                experiences.map((item) => (
-                  <View
-                    key={`experience-${item.id}`}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '6px',
-                    }}
-                  >
+              {experiences && experiences.length > 0 && (
+                <View
+                  style={{
+                    flex: '1',
+                    width: '100%',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  {experiences.map((item) => (
                     <View
+                      key={`experience-${item.id}`}
                       style={{
                         display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'flex-end',
-                        gap: '8px',
+                        flexDirection: 'column',
+                        gap: '6px',
                       }}
                     >
-                      <Text
+                      <View
                         style={{
-                          fontSize: '10px',
-                          fontWeight: 'medium',
-                          color: primaryBg,
+                          display: 'flex',
+                          flexDirection: 'row',
+                          alignItems: 'flex-end',
+                          gap: '8px',
                         }}
                       >
-                        {item.date} :
-                      </Text>
-                      <Text style={{ fontSize: '12px', fontWeight: 'medium' }}>
-                        {item.title}
-                      </Text>
-                    </View>
-
-                    <View
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: '4px',
-                        padding: '3px 5px',
-                        backgroundColor: tertiaryBg,
-                      }}
-                    >
-                      <Text style={{ fontSize: '10px', fontWeight: 'light' }}>
-                        {item.company}
-                      </Text>
-                      <Text style={{ fontSize: '10px', fontWeight: 'light' }}>
-                        - ({item.contrat})
-                      </Text>
-                    </View>
-
-                    {item.content?.split('\n').map((line, i) => (
-                      <View key={`experienceText-${i}`}>
-                        <HtmlToPdfText
-                          html={line}
-                          baseStyle={{ fontSize: '9px', lineHeight: '13px' }}
-                        />
+                        <Text
+                          style={{
+                            fontSize: '10px',
+                            fontWeight: 'medium',
+                            color: primaryBg,
+                          }}
+                        >
+                          {item.date} :
+                        </Text>
+                        <Text
+                          style={{ fontSize: '12px', fontWeight: 'medium' }}
+                        >
+                          {item.title}
+                        </Text>
                       </View>
-                    ))}
-                  </View>
-                ))}
+
+                      <View
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          gap: '4px',
+                          padding: '3px 5px',
+                          backgroundColor: tertiaryBg,
+                        }}
+                      >
+                        <Text style={{ fontSize: '10px', fontWeight: 'light' }}>
+                          {item.company}
+                        </Text>
+                        <Text style={{ fontSize: '10px', fontWeight: 'light' }}>
+                          - ({item.contrat})
+                        </Text>
+                      </View>
+
+                      {item.content?.split('\n').map((line, i) => (
+                        <View key={`experienceText-${i}`}>
+                          <HtmlToPdfText
+                            html={line}
+                            baseStyle={{ fontSize: '9px', lineHeight: '13px' }}
+                          />
+                        </View>
+                      ))}
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
           </View>
         </View>

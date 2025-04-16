@@ -102,6 +102,16 @@ const cvMinuteSlice = createSlice({
         }
       }
     },
+    updateCvMinuteSectionPropositionReducer: (state, action) => {
+      const { cvMinute }: { cvMinute: CvMinuteInterface } = action.payload;
+
+      if (state.cvMinute && state.cvMinute.id === cvMinute.id) {
+        state.cvMinute = {
+          ...state.cvMinute,
+          advices: cvMinute.advices,
+        };
+      }
+    },
     updateCvMinuteScoreReducer: (state, action) => {
       const {
         evaluation,
@@ -136,6 +146,26 @@ const cvMinuteSlice = createSlice({
               return { ...s, order: section.order };
             } else if (s.id === targetSection.id) {
               return { ...s, order: targetSection.order };
+            }
+            return s;
+          });
+        }
+      });
+    },
+    updateSectionInfoAdviceReducer: (state, action) => {
+      const {
+        sectionInfo,
+        cvMinuteSectionId,
+      }: {
+        sectionInfo: SectionInfoInterface;
+        cvMinuteSectionId: number;
+      } = action.payload;
+
+      state.cvMinuteSections.forEach((c) => {
+        if (c.id === cvMinuteSectionId) {
+          c.sectionInfos = c.sectionInfos.map((s) => {
+            if (s.id === sectionInfo.id) {
+              return { ...s, advices: sectionInfo.advices };
             }
             return s;
           });
@@ -214,8 +244,10 @@ const cvMinuteSlice = createSlice({
 export const {
   setCvMinuteReducer,
   updateCvMinuteReducer,
+  updateCvMinuteSectionPropositionReducer,
   updateCvMinuteScoreReducer,
   updateSectionInfoOrderReducer,
+  updateSectionInfoAdviceReducer,
   updateSectionInfoScoreReducer,
   updateCvMinuteSectionOrderReducer,
   deleteSectionInfoReducer,

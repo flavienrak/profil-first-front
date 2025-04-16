@@ -1,5 +1,7 @@
 import { AdviceInterface } from './advice.interface';
+import { CvMinuteSectionInterface } from './cvMinuteSection.interface';
 import { EvaluationInterface } from './evaluation.interface';
+import { FileInterface } from './file.interface';
 
 export interface CvMinuteInterface {
   id: number;
@@ -9,7 +11,9 @@ export interface CvMinuteInterface {
   tertiaryBg: string;
   userId: number;
 
+  files: FileInterface[];
   advices: AdviceInterface[];
+  cvMinuteSections: CvMinuteSectionInterface[];
   evaluation: EvaluationInterface;
   createdAt: Date;
   updatedAt: Date;

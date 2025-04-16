@@ -29,7 +29,7 @@ export default function PrimaryButton({
       }`}
     >
       <p className="flex justify-center items-center gap-[0.5em] font-semibold text-[0.875em] text-white">
-        {isLoading && (
+        {isLoading ? (
           <svg
             aria-hidden="true"
             role="status"
@@ -47,11 +47,12 @@ export default function PrimaryButton({
               fill="currentColor"
             />
           </svg>
-        )}
-        {icon && (
-          <i className="rotate-90">
-            <LucideIcon name={icon} size={size} />
-          </i>
+        ) : (
+          icon && (
+            <i style={{ rotate: `${rotate}deg` }}>
+              <LucideIcon name={icon} size={size} />
+            </i>
+          )
         )}
         <span>{label}</span>
       </p>

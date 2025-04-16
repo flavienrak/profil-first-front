@@ -4,24 +4,18 @@ import { IconInterface } from './icon.interface';
 
 export interface SectionInfoInterface {
   id: number;
-  role: string;
-  content: string;
-  font: string;
-  color: string;
-  background: string;
   order?: number;
+  content: string;
   title?: string;
   company?: string;
   date?: string;
   contrat?: string;
   icon?: IconInterface;
-  iconColor?: string;
   iconSize?: number;
-  cvMinuteId: number;
-  sectionId: number;
+  cvMinuteSectionId: number;
 
   evaluation: EvaluationInterface;
-  advice: AdviceInterface;
+  advices: AdviceInterface[];
   createdAt: Date;
   updatedAt: Date;
 }

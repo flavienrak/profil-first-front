@@ -1,3 +1,6 @@
+import { CvMinuteInterface } from './cvMinute.interface';
+import { FileInterface } from './file.interface';
+
 export interface UserInterface {
   id: number;
   name: string;
@@ -5,6 +8,8 @@ export interface UserInterface {
   acceptConditions: boolean;
   role: 'user' | 'recruiter' | 'admin';
 
+  files: FileInterface[];
+  cvMinutes: CvMinuteInterface[];
   createdAt: Date;
   updatedAt: Date;
 }

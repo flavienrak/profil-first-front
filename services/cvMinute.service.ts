@@ -2,7 +2,7 @@ import api from '@/axios/axios.instance';
 import { PopupInterface } from '@/components/cv-minute/CvPreview';
 import { IconInterface } from '@/interfaces/icon.interface';
 
-const getCvMinuteService = async (id: string | number) => {
+const getCvMinuteService = async (id: number) => {
   try {
     const res = await api.get(`/cv-minute/${id}`);
     return res.data;
@@ -11,7 +11,16 @@ const getCvMinuteService = async (id: string | number) => {
   }
 };
 
-const updateCvMinuteScoreService = async (id: string | number) => {
+const generateCvMinuteSectionAdviceService = async (id: number) => {
+  try {
+    const res = await api.post(`/cv-minute/${id}`);
+    return res.data;
+  } catch (error) {
+    return { error: `GENERATE CVMINUTE PROPOSITION ERROR: ${error}` };
+  }
+};
+
+const updateCvMinuteScoreService = async (id: number) => {
   try {
     const res = await api.put(`/cv-minute/${id}`);
     return res.data;
@@ -119,6 +128,20 @@ const updateCvMinuteSectionService = async ({
   }
 };
 
+const deleteCvMinuteSectionService = async (
+  id: number,
+  cvMinuteSectionId: number,
+) => {
+  try {
+    const res = await api.delete(
+      `/cv-minute/${id}/section/${cvMinuteSectionId}`,
+    );
+    return res.data;
+  } catch (error) {
+    return { error: `DELETE CVMINUTESECTION ERROR: ${error}` };
+  }
+};
+
 const updateSectionInfoOrderService = async ({
   id,
   sectionInfoId,
@@ -136,6 +159,20 @@ const updateSectionInfoOrderService = async ({
     return res.data;
   } catch (error) {
     return { error: `UPDATE SECTIONINFO ORDER ERROR: ${error}` };
+  }
+};
+
+const generateSectionInfoAdviceService = async (
+  id: number,
+  sectionInfoId: number,
+) => {
+  try {
+    const res = await api.post(
+      `/cv-minute/${id}/section-info/${sectionInfoId}`,
+    );
+    return res.data;
+  } catch (error) {
+    return { error: `GENERATE SECTIONINFO PROPOSITION ERROR: ${error}` };
   }
 };
 
@@ -185,29 +222,17 @@ const deleteSectionInfoService = async (id: number, sectionInfoId: number) => {
   }
 };
 
-const deleteCvMinuteSectionService = async (
-  id: number,
-  cvMinuteSectionId: number,
-) => {
-  try {
-    const res = await api.delete(
-      `/cv-minute/${id}/section/${cvMinuteSectionId}`,
-    );
-    return res.data;
-  } catch (error) {
-    return { error: `DELETE CVMINUTESECTION ERROR: ${error}` };
-  }
-};
-
 export {
   getCvMinuteService,
+  generateCvMinuteSectionAdviceService,
   updateCvMinuteScoreService,
   addCvMinuteService,
   updateCvMinuteProfileService,
   updateCvMinuteSectionService,
+  deleteCvMinuteSectionService,
   updateSectionInfoOrderService,
+  generateSectionInfoAdviceService,
   updateSectionInfoScoreService,
   updateCvMinuteSectionOrderService,
   deleteSectionInfoService,
-  deleteCvMinuteSectionService,
 };
