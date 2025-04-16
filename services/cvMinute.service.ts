@@ -7,7 +7,16 @@ const getCvMinuteService = async (id: string | number) => {
     const res = await api.get(`/cv-minute/${id}`);
     return res.data;
   } catch (error) {
-    return { error: `GET CV MINUTE ERROR: ${error}` };
+    return { error: `GET CVMINUTE ERROR: ${error}` };
+  }
+};
+
+const updateCvMinuteScoreService = async (id: string | number) => {
+  try {
+    const res = await api.put(`/cv-minute/${id}`);
+    return res.data;
+  } catch (error) {
+    return { error: `UPDATE CVMINUTE SCORE ERROR: ${error}` };
   }
 };
 
@@ -130,6 +139,21 @@ const updateSectionInfoOrderService = async ({
   }
 };
 
+const updateSectionInfoScoreService = async ({
+  id,
+  sectionInfoId,
+}: {
+  id: number;
+  sectionInfoId: number;
+}) => {
+  try {
+    const res = await api.put(`/cv-minute/${id}/section-info/${sectionInfoId}`);
+    return res.data;
+  } catch (error) {
+    return { error: `UPDATE SECTIONINFO SCORE ERROR: ${error}` };
+  }
+};
+
 const updateCvMinuteSectionOrderService = async ({
   id,
   cvMinuteSectionId,
@@ -177,10 +201,12 @@ const deleteCvMinuteSectionService = async (
 
 export {
   getCvMinuteService,
+  updateCvMinuteScoreService,
   addCvMinuteService,
   updateCvMinuteProfileService,
   updateCvMinuteSectionService,
   updateSectionInfoOrderService,
+  updateSectionInfoScoreService,
   updateCvMinuteSectionOrderService,
   deleteSectionInfoService,
   deleteCvMinuteSectionService,

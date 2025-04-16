@@ -89,7 +89,7 @@ export default function PdfTempldate({
                     alt="Profil"
                   />
                 ) : (
-                  <Text style={{ color: '#364153', fontSize: '12px' }}>
+                  <Text style={{ color: '#99a1af', fontSize: '12px' }}>
                     Votre photo ici
                   </Text>
                 )}

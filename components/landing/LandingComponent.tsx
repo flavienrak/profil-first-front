@@ -66,12 +66,12 @@ export default function LandingComponent() {
               ProfilFirst
             </span>
           </div>
-          <Link
-            href={'/connexion'}
+          <button
+            onClick={() => handleShowAuth('user')}
             className="px-6 py-2 bg-[#4461F2] text-white rounded-full font-semibold hover:bg-[#3451E2] transition-colors duration-300"
           >
             Se connecter
-          </Link>
+          </button>
         </motion.div>
 
         {/* Header Section */}

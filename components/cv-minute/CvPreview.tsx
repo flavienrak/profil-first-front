@@ -14,9 +14,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Brush,
   Download,
+  Goal,
   Plus,
+  Rocket,
+  SquareCheck,
   Triangle,
+  TriangleAlert,
   UserPlus,
+  Wallet,
   Zap,
   ZoomIn,
   ZoomOut,
@@ -29,8 +34,10 @@ import {
   deleteCvMinuteSectionService,
   deleteSectionInfoService,
   updateCvMinuteProfileService,
+  updateCvMinuteScoreService,
   updateCvMinuteSectionOrderService,
   updateSectionInfoOrderService,
+  updateSectionInfoScoreService,
 } from '@/services/cvMinute.service';
 import {
   updateSectionInfoOrderReducer,
@@ -38,6 +45,8 @@ import {
   updateCvMinuteSectionOrderReducer,
   deleteSectionInfoReducer,
   deleteCvMinuteSectionReducer,
+  updateSectionInfoScoreReducer,
+  updateCvMinuteScoreReducer,
 } from '@/redux/slices/cvMinute.slice';
 import { UidContext, videoUri } from '@/providers/UidProvider';
 import { Step } from '@/interfaces/step.interface';
@@ -59,28 +68,30 @@ export interface FieldInterface {
   initialValue: string | number;
   requiredError: string;
   trim?: boolean;
+  show?: boolean;
 }
 
 export interface PopupInterface {
   align?: 'left' | 'right';
+  large?: boolean;
   hidden?: boolean;
   static?: boolean;
   title?: string;
   conseil?: string;
   openly?: boolean;
-  details?: string;
-  disponibility?: string;
   suggestionTitle?: string;
   suggestion?: string;
-  deleteLabel?: string;
+  actionLabel?: string;
   compare?: boolean;
+  type?: string;
   fields: FieldInterface[];
   sectionOrder?: number;
   sectionInfoId?: number;
   sectionInfoOrder?: number;
   cvMinuteSectionId?: number;
   deleteLoading?: boolean;
-  onDelete?: () => void;
+  withScore?: boolean;
+  onClick?: () => Promise<void>;
   onShowGuide?: () => void;
   onShowVideo?: () => void;
 
@@ -94,12 +105,6 @@ export interface PopupInterface {
 type SectionType = 'contact' | 'cvMinuteSection' | 'experience';
 
 const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
-const details = `Lorem ipsum dolor sit amet consectetur adipisicing elit. \n
-Fugiat nulla, soluta illum placeat molestiae, optio quo quae minus animi rem fuga ducimus, \n
-architecto totam exercitationem id quas ratione hic provident!\nLorem ipsum dolor sit amet consectetur adipisicing elit. \n\n`;
-const disponibility = `Lorem ipsum dolor sit amet consectetur adipisicing elit. \n
-Fugiat nulla, soluta illum placeat molestiae, optio quo quae minus animi rem fuga ducimus, \n
-architecto totam exercitationem id quas ratione hic provident!\nLorem ipsum dolor sit amet consectetur adipisicing elit. \n\n`;
 
 const steps: Step[] = [
   { class: 'step-1', description: 'Un coup de pouce pour refaire votre CV' },
@@ -178,7 +183,6 @@ export default function CvPreview() {
 
   const [popup, setPopup] = React.useState<PopupInterface | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
   const [tempData, setTempData] = React.useState<PopupInterface | null>(null);
   const [currentPosition, setCurrentPosition] = React.useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = React.useState(false);
@@ -187,14 +191,10 @@ export default function CvPreview() {
   const [showVideo, setShowVideo] = React.useState(false);
   const [review, setReview] = React.useState(false);
   const [showMatching, setShowMatching] = React.useState(false);
+  const [showOptimize, setShowOptimize] = React.useState(false);
 
   const [currentGuideStep, setCurrentGuideStep] = React.useState(0);
-
-  const [initialScore, setInitialScore] = React.useState(20);
-  const [currentScore, setCurrentScore] = React.useState(40);
-
-  const [recommandations, setRecommandations] =
-    React.useState('Recommandations');
+  const [loadingGlobal, setLoadingGlobal] = React.useState(false);
 
   const increaseFontSize = () => {
     dispatch(updatePersistReducer({ fontSize: fontSize + 1 }));
@@ -387,7 +387,6 @@ export default function CvPreview() {
     cvMinuteSectionId: number,
   ) => {
     if (cvMinute) {
-      setDeleteLoading(true);
       const res = await deleteSectionInfoService(cvMinute.id, sectionInfoId);
 
       if (res.section) {
@@ -396,13 +395,13 @@ export default function CvPreview() {
         );
         handleClosePopup();
       }
-      setDeleteLoading(false);
     }
+
+    return;
   };
 
   const handleDeleteCvMinuteSection = async (cvMinuteSectionId: number) => {
     if (cvMinute) {
-      setDeleteLoading(true);
       const res = await deleteCvMinuteSectionService(
         cvMinute.id,
         cvMinuteSectionId,
@@ -416,8 +415,9 @@ export default function CvPreview() {
         );
         handleClosePopup();
       }
-      setDeleteLoading(false);
     }
+
+    return;
   };
 
   const handleNextGuide = () => {
@@ -434,8 +434,46 @@ export default function CvPreview() {
     }
   };
 
-  const handleCloseGuide = () => {
-    setShowGuide(false);
+  const handleRecalculateGlobalMatching = async () => {
+    if (cvMinute) {
+      setLoadingGlobal(true);
+      const res = await updateCvMinuteScoreService(cvMinute.id);
+      if (res.evaluation) {
+        dispatch(
+          updateCvMinuteScoreReducer({
+            evaluation: res.evaluation,
+            cvMinuteId: cvMinute.id,
+          }),
+        );
+      }
+      setLoadingGlobal(false);
+    }
+
+    return;
+  };
+
+  const handleRecalculateExperienceMatching = async (
+    value: number,
+    cvMinuteSectionId: number,
+  ) => {
+    if (cvMinute) {
+      const res = await updateSectionInfoScoreService({
+        id: cvMinute.id,
+        sectionInfoId: value,
+      });
+
+      if (res.evaluation) {
+        dispatch(
+          updateSectionInfoScoreReducer({
+            evaluation: res.evaluation,
+            sectionInfoId: value,
+            cvMinuteSectionId,
+          }),
+        );
+      }
+    }
+
+    return;
   };
 
   const handleDownload = async () => {
@@ -480,9 +518,9 @@ export default function CvPreview() {
   };
 
   const getSpacing = (length: number) => {
-    if (length > 8) return '[&_p]:mb-[0.25em]';
-    if (length > 4) return '[&_p]:mb-[0.5em]';
-    return '[&_p]:mb-[0.625em]';
+    if (length > 5) return 'leading-[2em]';
+    if (length > 3) return 'leading-[2.5em]';
+    return 'leading-[3em]';
   };
 
   if (cvMinute && context)
@@ -490,7 +528,25 @@ export default function CvPreview() {
       <div className="flex justify-center flex-col">
         <div className="w-full px-8 h-20 border-b border-gray-200 bg-white flex items-center">
           <div className="w-full flex justify-center items-center gap-5">
-            <button className="step-1 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none">
+            <button
+              onClick={(event) => {
+                const data: PopupInterface = {
+                  title: 'Guide de rédaction',
+                  type: 'guide',
+                  static: true,
+                  fields: [],
+                };
+
+                handleGetPosition(event, 'left', { y: 80, x: 255 });
+                if (isOpen) {
+                  handleClosePopup();
+                  setTempData(data);
+                } else {
+                  handleOpenPopup(data);
+                }
+              }}
+              className="step-1 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none"
+            >
               Guide de rédaction du CV
             </button>
             <button
@@ -505,7 +561,10 @@ export default function CvPreview() {
             >
               Matching score
             </button>
-            <button className="step-4 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none">
+            <button
+              onClick={() => setShowOptimize(true)}
+              className="step-4 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none"
+            >
               Optimiser en un clic
             </button>
             <button className="step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none">
@@ -534,9 +593,8 @@ export default function CvPreview() {
                   onClick={(event) => {
                     const data: PopupInterface = {
                       title: 'Déscriptions',
+                      type: 'desc',
                       static: true,
-                      details,
-                      disponibility,
                       fields: [],
                       onShowGuide: () => setShowGuide(true),
                       onShowVideo: () => setShowVideo(true),
@@ -590,10 +648,11 @@ export default function CvPreview() {
                             const data: PopupInterface = {
                               title: 'Ajouter une rubrique',
                               openly: true,
-                              conseil:
-                                contacts?.advices && contacts.advices.length > 0
-                                  ? contacts.advices[0].content
-                                  : '',
+                              conseil: cvMinute.advices.find(
+                                (a) =>
+                                  a.cvMinuteId === cvMinute.id &&
+                                  a.type === 'newSection',
+                              )?.content,
                               suggestionTitle: 'Idées de rubrique',
                               suggestion: '',
                               newSection: true,
@@ -765,7 +824,7 @@ export default function CvPreview() {
                   className="w-1/3 text-white p-[0.75em] rounded-l-[0.75em]"
                   style={{ background: cvMinute.primaryBg }}
                 >
-                  <div className="flex flex-col items-center">
+                  <div className="h-full flex flex-col items-center">
                     <div className="w-full flex flex-col gap-[0.75em]">
                       {profile && (
                         <div className="flex justify-center">
@@ -906,10 +965,12 @@ export default function CvPreview() {
                                   title:
                                     'Modifier ou supprimer contact, lien, adresse...',
                                   hidden: false,
-                                  deleteLabel: 'Supprimer',
-                                  onDelete: () =>
-                                    handleDeleteSectionInfo(c.id, contacts.id),
-                                  deleteLoading,
+                                  actionLabel: 'Supprimer',
+                                  onClick: async () =>
+                                    await handleDeleteSectionInfo(
+                                      c.id,
+                                      contacts.id,
+                                    ),
                                   sectionInfoId: c.id,
                                   cvMinuteSectionId: contacts?.id,
                                   updateContactSection: true,
@@ -955,7 +1016,7 @@ export default function CvPreview() {
                       )}
 
                     {editableSections.length > 0 && (
-                      <div className="w-full flex flex-col">
+                      <div className="flex-1 w-full flex flex-col">
                         {editableSections.map((s) => {
                           const cvMinuteSection = getCvMinuteSection(s.name);
                           if (cvMinuteSection)
@@ -979,12 +1040,17 @@ export default function CvPreview() {
                                 onClick={(event) => {
                                   const data: PopupInterface = {
                                     title: 'Modifier ou supprimer la rubrique',
-                                    conseil: 'Nos conseils',
+                                    conseil: cvMinuteSection.advices.find(
+                                      (a) =>
+                                        a.cvMinuteSectionId ===
+                                          cvMinuteSection.id &&
+                                        a.type === 'existSection',
+                                    )?.content,
                                     suggestionTitle: 'Idées de rubrique',
                                     suggestion: '',
-                                    deleteLabel: 'Supprimer la rubrique',
-                                    onDelete: () =>
-                                      handleDeleteCvMinuteSection(s.id),
+                                    actionLabel: 'Supprimer la rubrique',
+                                    onClick: async () =>
+                                      await handleDeleteCvMinuteSection(s.id),
                                     updateCvMinuteSection: true,
                                     cvMinuteSectionId: cvMinuteSection.id,
                                     sectionInfoId:
@@ -1032,7 +1098,7 @@ export default function CvPreview() {
                                   }
                                 }}
                                 style={{ order: cvMinuteSection.sectionOrder }}
-                                className="relative w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em] transition-[order] duration-500"
+                                className="relative flex-1 w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em] transition-[order] duration-500"
                               >
                                 <h3
                                   className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.5em] font-semibold mb-[0.5em] text-[0.875em] select-none"
@@ -1089,10 +1155,10 @@ export default function CvPreview() {
                         const data: PopupInterface = {
                           align: 'right',
                           title: 'Titre du CV',
-                          conseil: 'Nos conseils',
+                          conseil: title.sectionInfos[0]?.advice.content,
                           suggestionTitle: 'Idées de titre du CV',
                           suggestion: '',
-                          deleteLabel: 'Supprimer le titre',
+                          actionLabel: 'Supprimer le titre',
                           sectionInfoId: title.sectionInfos[0]?.id,
                           cvMinuteSectionId: title.id,
                           updateCvMinuteSection: true,
@@ -1123,7 +1189,7 @@ export default function CvPreview() {
                           handleOpenPopup(data);
                         }
                       }}
-                      className="step-7 flex justify-between items-center hover:bg-[#f3f4f6] px-[0.25em] py-[0.25em] rounded"
+                      className="step-7 flex justify-between items-center hover:bg-[#f3f4f6] px-[0.25em] py-[0.25em]"
                     >
                       <h1 className="text-[2em] leading-[1.125em] font-bold text-[#101828]">
                         {title?.sectionInfos[0]?.content ?? 'Titre du CV'}
@@ -1137,7 +1203,7 @@ export default function CvPreview() {
                         const data: PopupInterface = {
                           align: 'right',
                           title: 'Ajouter une presentation',
-                          conseil: '',
+                          conseil: presentation.sectionInfos[0]?.advice.content,
                           openly: true,
                           suggestionTitle: 'Idées de présentation',
                           suggestion: '',
@@ -1169,7 +1235,7 @@ export default function CvPreview() {
                           handleOpenPopup(data);
                         }
                       }}
-                      className="step-8 flex justify-between text-[#364153] hover:bg-[#f3f4f6] p-[0.5em] rounded text-[0.875em] whitespace-pre-line"
+                      className="step-8 flex justify-between text-[#364153] hover:bg-[#f3f4f6] p-[0.5em] text-[0.875em] whitespace-pre-line"
                     >
                       <p>
                         {presentation?.sectionInfos[0]?.content ??
@@ -1179,7 +1245,7 @@ export default function CvPreview() {
                   )}
 
                   {experiences && (
-                    <div className="flex flex-col gap-[0.5em]">
+                    <div className="flex-1 flex flex-col gap-[0.5em]">
                       <div
                         onClick={(event) => {
                           const data: PopupInterface = {
@@ -1287,7 +1353,7 @@ export default function CvPreview() {
 
                       {experiences?.sectionInfos &&
                       experiences.sectionInfos.length > 0 ? (
-                        <div className="flex flex-col gap-[0.375em]">
+                        <div className="flex-1 flex flex-col gap-[0.375em]">
                           {experiences.sectionInfos.map((item) => (
                             <div
                               key={`experience-${item.id}`}
@@ -1311,9 +1377,9 @@ export default function CvPreview() {
                                 const data: PopupInterface = {
                                   align: 'right',
                                   title: "Modifier ou supprimer l'expérience",
-                                  deleteLabel: "Supprimer l'expérience",
-                                  onDelete: () =>
-                                    handleDeleteSectionInfo(
+                                  actionLabel: "Supprimer l'expérience",
+                                  onClick: async () =>
+                                    await handleDeleteSectionInfo(
                                       item.id,
                                       experiences.id,
                                     ),
@@ -1383,7 +1449,7 @@ export default function CvPreview() {
                                   handleOpenPopup(data);
                                 }
                               }}
-                              className="flex flex-col gap-[0.25em] p-[0.25em] hover:bg-[#f3f4f6]"
+                              className="flex-1 flex flex-col gap-[0.25em] p-[0.25em] hover:bg-[#f3f4f6]"
                               style={{ order: item.order }}
                             >
                               <div className="flex items-end gap-[0.5em] font-semibold">
@@ -1403,39 +1469,143 @@ export default function CvPreview() {
                               </p>
                               <div
                                 className={`text-[0.75em] ${getSpacing(
-                                  getParagraphCount(item.content),
+                                  (experiences.sectionInfos.length /
+                                    getParagraphCount(item.content)) *
+                                    experiences.sectionInfos.length,
                                 )}`}
                                 dangerouslySetInnerHTML={{
                                   __html: DOMPurify.sanitize(item.content),
                                 }}
                               />
 
-                              <div className="absolute -right-[13em] w-[12em] flex flex-col gap-[0.5em]">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-[0.875em] font-medium text-[#4a5565] truncate">
-                                    {item.title}
-                                  </span>
-                                  <span className="text-[0.875em] font-semibold text-primary">
-                                    85%
-                                  </span>
+                              {item.evaluation && (
+                                <div className="absolute -right-[13em] w-[12em] flex flex-col gap-[0.5em]">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[0.875em] font-medium text-[#4a5565] truncate">
+                                      {item.title}
+                                    </span>
+                                    <span className="text-[0.875em] font-semibold text-primary">
+                                      {item.evaluation.actualScore
+                                        ? item.evaluation.actualScore
+                                        : item.evaluation.initialScore}
+                                      %
+                                    </span>
+                                  </div>
+                                  <div className="relative h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
+                                    <div
+                                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
+                                      style={{
+                                        width: `${
+                                          item.evaluation.actualScore
+                                            ? item.evaluation.actualScore
+                                            : item.evaluation.initialScore
+                                        }%`,
+                                      }}
+                                    />
+                                  </div>
+                                  <button
+                                    onClick={(
+                                      event: React.MouseEvent<HTMLButtonElement>,
+                                    ) => {
+                                      event.stopPropagation();
+
+                                      const data: PopupInterface = {
+                                        align: 'right',
+                                        title: "Optimiser l'expérience",
+                                        actionLabel:
+                                          'Recalculer le score de  matching',
+                                        large: true,
+                                        openly: true,
+                                        withScore: true,
+                                        onClick: async () =>
+                                          await handleRecalculateExperienceMatching(
+                                            item.id,
+                                            experiences.id,
+                                          ),
+                                        sectionInfoId: item.id,
+                                        cvMinuteSectionId: experiences.id,
+                                        updateExperience: true,
+                                        sectionInfoOrder: item.order,
+                                        fields: [
+                                          {
+                                            label: 'Titre du poste',
+                                            type: 'input',
+                                            key: 'title',
+                                            requiredError:
+                                              'Titre du poste requis',
+                                            placeholder:
+                                              item.title ?? 'Titre...',
+                                            value: item.title ?? '',
+                                            initialValue: item.title ?? '',
+                                            show: false,
+                                          },
+                                          {
+                                            label: "Nom de l'entreprise",
+                                            type: 'input',
+                                            key: 'company',
+                                            requiredError:
+                                              "Nom de l'entreprise requis",
+                                            placeholder:
+                                              item.company ?? 'Entreprise...',
+                                            value: item.company ?? '',
+                                            initialValue: item.company ?? '',
+                                            show: false,
+                                          },
+                                          {
+                                            label: 'Mois début - Mois fin',
+                                            example: 'Ex : 03-2023 05-2025',
+                                            type: 'input',
+                                            key: 'date',
+                                            requiredError: 'Mois requis',
+                                            placeholder: item.date ?? 'Mois...',
+                                            value: item.date ?? '',
+                                            initialValue: item.date ?? '',
+                                            show: false,
+                                          },
+                                          {
+                                            label: 'Type de contrat',
+                                            example:
+                                              'Ex : CDI, CDD, Intérim...',
+                                            type: 'input',
+                                            key: 'contrat',
+                                            requiredError:
+                                              'Type de contrat requis',
+                                            placeholder:
+                                              item.contrat ?? 'Contrat...',
+                                            value: item.contrat ?? '',
+                                            initialValue: item.contrat ?? '',
+                                            show: false,
+                                          },
+                                          {
+                                            label: 'Description',
+                                            type: 'text',
+                                            key: 'content',
+                                            requiredError:
+                                              'Description requise',
+                                            placeholder:
+                                              item.content ?? 'Description...',
+                                            value: item.content ?? '',
+                                            initialValue: item.content ?? '',
+                                          },
+                                        ],
+                                      };
+
+                                      handleGetPosition(event, 'right', {
+                                        y: 80,
+                                      });
+                                      if (isOpen) {
+                                        handleClosePopup();
+                                        setTempData(data);
+                                      } else {
+                                        handleOpenPopup(data);
+                                      }
+                                    }}
+                                    className="w-full text-[0.75em] font-semibold hover:text-[var(--primary-color)] cursor-pointer"
+                                  >
+                                    Optimiser cette expérience
+                                  </button>
                                 </div>
-                                <div className="relative h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
-                                  <div
-                                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
-                                    style={{ width: '85%' }}
-                                  />
-                                </div>
-                                <button
-                                  onClick={(
-                                    event: React.MouseEvent<HTMLButtonElement>,
-                                  ) => {
-                                    event.stopPropagation();
-                                  }}
-                                  className="w-full text-[0.75em] font-semibold hover:text-[var(--primary-color)] cursor-pointer"
-                                >
-                                  Optimiser cette expérience
-                                </button>
-                              </div>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -1488,16 +1658,121 @@ export default function CvPreview() {
             )}
 
             {review && (
-              <Popup onClose={() => setReview(false)}>
+              <Popup large onClose={() => setReview(false)}>
                 <div className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
                   <p className="whitespace-pre-line">{cvMinute.position}</p>
                 </div>
               </Popup>
             )}
 
+            {showOptimize && (
+              <Popup large onClose={() => setShowOptimize(false)}>
+                <div className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-[0.5em]">
+                      <i className="text-red-400">
+                        <Goal />
+                      </i>
+                      <h6 className="font-semibold">
+                        Voici ce que la Master Optimisation va améliorer sur
+                        votre CV
+                      </h6>
+                    </div>
+                    <div className="flex flex-col gap-1 py-2">
+                      <div className="flex gap-[0.5em]">
+                        <i className="text-green-500">
+                          <SquareCheck fill={'currentColor'} stroke={'white'} />
+                        </i>
+
+                        <p className="text-sm">
+                          <span className="font-semibold">Lorem ipsum:</span>{' '}
+                          dolor sit amet consectetur adipisicing elit. Enim nemo
+                          sed voluptate, ducimus corporis sequi quam magnam
+                          neque vero suscipit autem perspiciatis alias natus
+                          dolorum dolores odio inventore quo doloribus.
+                        </p>
+                      </div>
+                      <div className="flex gap-[0.5em]">
+                        <i className="text-green-500">
+                          <SquareCheck fill={'currentColor'} stroke={'white'} />
+                        </i>
+
+                        <p className="text-sm">
+                          <span className="font-semibold">Lorem ipsum:</span>{' '}
+                          dolor sit amet consectetur adipisicing elit. Enim nemo
+                          sed is alias natus dolorum dolores odio inventore quo
+                          doloribus.
+                        </p>
+                      </div>
+                      <div className="flex gap-[0.5em]">
+                        <i className="text-green-500">
+                          <SquareCheck fill={'currentColor'} stroke={'white'} />
+                        </i>
+
+                        <p className="text-sm">
+                          <span className="font-semibold">Lorem ipsum:</span>{' '}
+                          dolor sit amet consectetur adipisicing elit. Enim nemo
+                          sed voluptate, ducimus corporis sequi quam magnam
+                          neque vero suscipit.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-[0.5em]">
+                      <i className="text-yellow-400">
+                        <Wallet fill={'currentColor'} stroke={'white'} />
+                      </i>
+                      <p className="font-semibold">
+                        Cout estimé : <span>20 Crédits</span>
+                      </p>
+                    </div>
+                    <div className="flex gap-[0.5em]">
+                      <i className="text-yellow-400">
+                        <TriangleAlert fill={'currentColor'} stroke={'white'} />
+                      </i>
+                      <p>
+                        <span className="font-semibold">Important : </span>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Aperiam et ea at provident
+                        <span className="font-semibold">
+                          {' '}
+                          relire et valider{' '}
+                        </span>
+                        tempora fuga, aspernatur dolor vitae saepe quasi soluta
+                        placeat eveniet, nam recusandae dicta a veritatis vero
+                        libero?
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-[0.5em]">
+                      <i className="text-red-400">
+                        <Rocket />
+                      </i>
+                      <p className="font-semibold">
+                        Souhaitez-vous appliquer ces améliorations ?
+                      </p>
+                    </div>
+                    <div className="flex gap-6">
+                      <button className="flex-1 bg-green-400 text-white text-lg font-semibold p-3.5 rounded-md transition-opacity duration-150 cursor-pointer hover:opacity-90">
+                        Appliquer
+                      </button>
+                      <button
+                        onClick={() => setShowOptimize(false)}
+                        className="flex-1 bg-blue-400 text-white text-lg font-semibold p-3.5 rounded-md transition-opacity duration-150 cursor-pointer hover:opacity-90"
+                      >
+                        Revenir sur mon CV
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Popup>
+            )}
+
             {showMatching && (
-              <Popup onClose={() => setShowMatching(false)}>
-                <div className="max-h-[80vh] overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+              <Popup large onClose={() => setShowMatching(false)}>
+                <div
+                  style={{ fontSize: '1rem' }}
+                  className="max-h-[80vh] overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
+                >
                   <div className="bg-white rounded-lg p-6 max-w-lg w-full">
                     <h3 className="text-xl font-bold mb-6">
                       Score de Matching
@@ -1530,75 +1805,97 @@ export default function CvPreview() {
                               cy="40"
                               strokeDasharray={`${2 * Math.PI * 30}`}
                               strokeDashoffset={`${
-                                2 * Math.PI * 30 * (1 - initialScore / 100)
+                                2 *
+                                Math.PI *
+                                30 *
+                                (1 - cvMinute.evaluation.initialScore / 100)
                               }`}
+                              transform="rotate(90 40 40)"
                             />
                           </svg>
-                          <span className="absolute text-xl font-bold">
-                            {initialScore}%
+                          <span className="absolute text-lg font-bold">
+                            {cvMinute.evaluation.initialScore}%
                           </span>
                         </div>
                       </div>
 
-                      {currentScore !== null && (
-                        <div className="text-center">
-                          <p className="text-sm text-gray-600 mb-2">
-                            Score actuel
-                          </p>
-                          <div className="relative inline-flex items-center justify-center">
-                            <svg className="w-20 h-20">
-                              <circle
-                                className="text-gray-200"
-                                strokeWidth="5"
-                                stroke="currentColor"
-                                fill="transparent"
-                                r="30"
-                                cx="40"
-                                cy="40"
-                              />
-                              <circle
-                                className="text-green-600"
-                                strokeWidth="5"
-                                strokeLinecap="round"
-                                stroke="currentColor"
-                                fill="transparent"
-                                r="30"
-                                cx="40"
-                                cy="40"
-                                strokeDasharray={`${2 * Math.PI * 30}`}
-                                strokeDashoffset={`${
-                                  2 * Math.PI * 30 * (1 - currentScore / 100)
-                                }`}
-                              />
-                            </svg>
-                            <span className="absolute text-xl font-bold">
-                              {currentScore}%
-                            </span>
-                          </div>
+                      <div className="text-center">
+                        <p className="text-sm text-gray-600 mb-2">
+                          Score actuel
+                        </p>
+                        <div className="relative inline-flex items-center justify-center">
+                          <svg className="w-20 h-20">
+                            <circle
+                              className="text-gray-200"
+                              strokeWidth="5"
+                              stroke="currentColor"
+                              fill="transparent"
+                              r="30"
+                              cx="40"
+                              cy="40"
+                            />
+                            <circle
+                              className="text-green-600"
+                              strokeWidth="5"
+                              strokeLinecap="round"
+                              stroke="currentColor"
+                              fill="transparent"
+                              r="30"
+                              cx="40"
+                              cy="40"
+                              strokeDasharray={`${2 * Math.PI * 30}`}
+                              strokeDashoffset={`${
+                                2 *
+                                Math.PI *
+                                30 *
+                                (1 -
+                                  (cvMinute.evaluation.actualScore
+                                    ? cvMinute.evaluation.actualScore
+                                    : cvMinute.evaluation.initialScore) /
+                                    100)
+                              }`}
+                              transform="rotate(90 40 40)"
+                            />
+                          </svg>
+                          <span className="absolute text-lg font-bold">
+                            {cvMinute.evaluation.actualScore
+                              ? cvMinute.evaluation.actualScore
+                              : cvMinute.evaluation.initialScore}
+                            %
+                          </span>
                         </div>
-                      )}
+                      </div>
                     </div>
 
                     <div className="mb-6">
-                      <h4 className="font-semibold mb-2">
+                      <h4 className="text-base font-semibold mb-2">
                         L'analyse de Coach Victorien :
                       </h4>
-                      <p className="text-gray-600">{recommandations}</p>
+                      <p className="text-sm underline underline-offset-2 text-gray-600">
+                        Recommendations :
+                      </p>
                       <p className="text-sm text-gray-500 mt-2 italic">
                         Rappel : Le score de matching est purement indicatif.
                         C'est à vous de jauger la pertinence de votre CV selon
                         vos objectifs.
+                      </p>
+                      <p className="text-sm text-gray-500 mt-2 italic">
+                        {cvMinute.evaluation.content}
                       </p>
                     </div>
 
                     <div className="flex gap-4">
                       <button
                         onClick={() => setShowMatching(false)}
-                        className="w-full p-[0.5em] rounded-[0.325em] border border-gray-500 select-none"
+                        className="w-full p-2 rounded-sm border border-gray-500 select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
                       >
                         Fermer
                       </button>
-                      <PrimaryButton label={'Recalculer'} />
+                      <PrimaryButton
+                        label={'Recalculer'}
+                        onClick={handleRecalculateGlobalMatching}
+                        isLoading={loadingGlobal}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1613,7 +1910,7 @@ export default function CvPreview() {
             currentStep={currentGuideStep}
             onNext={handleNextGuide}
             onPrevious={handlePreviousGuide}
-            onClose={handleCloseGuide}
+            onClose={() => setShowGuide(false)}
           />
         )}
       </div>

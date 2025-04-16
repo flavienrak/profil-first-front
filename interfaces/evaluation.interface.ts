@@ -1,10 +1,11 @@
-export interface AdviceInterface {
+export interface EvaluationInterface {
   id: number;
-  type: string;
+  initialScore: number;
+  actualScore?: number;
   content: string;
+  weakContent?: string;
   cvMinuteId?: number;
   sectionInfoId?: number;
-  cvMinuteSectionId?: number;
 
   createdAt: Date;
   updatedAt: Date;

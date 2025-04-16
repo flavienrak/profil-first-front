@@ -1,5 +1,6 @@
 import { CvMinuteInterface } from '@/interfaces/cvMinute.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/cvMinuteSection.interface';
+import { EvaluationInterface } from '@/interfaces/evaluation.interface';
 import { FileInterface } from '@/interfaces/file.interface';
 import { SectionInterface } from '@/interfaces/section.interface';
 import { SectionInfoInterface } from '@/interfaces/sectionInfo.interface';
@@ -101,6 +102,22 @@ const cvMinuteSlice = createSlice({
         }
       }
     },
+    updateCvMinuteScoreReducer: (state, action) => {
+      const {
+        evaluation,
+        cvMinuteId,
+      }: {
+        evaluation: EvaluationInterface;
+        cvMinuteId: number;
+      } = action.payload;
+
+      if (state.cvMinute && state.cvMinute.id === cvMinuteId) {
+        state.cvMinute = {
+          ...state.cvMinute,
+          evaluation,
+        };
+      }
+    },
     updateSectionInfoOrderReducer: (state, action) => {
       const {
         section,
@@ -119,6 +136,28 @@ const cvMinuteSlice = createSlice({
               return { ...s, order: section.order };
             } else if (s.id === targetSection.id) {
               return { ...s, order: targetSection.order };
+            }
+            return s;
+          });
+        }
+      });
+    },
+    updateSectionInfoScoreReducer: (state, action) => {
+      const {
+        evaluation,
+        sectionInfoId,
+        cvMinuteSectionId,
+      }: {
+        evaluation: EvaluationInterface;
+        sectionInfoId: number;
+        cvMinuteSectionId: number;
+      } = action.payload;
+
+      state.cvMinuteSections.forEach((c) => {
+        if (c.id === cvMinuteSectionId) {
+          c.sectionInfos = c.sectionInfos.map((s) => {
+            if (s.id === sectionInfoId) {
+              return { ...s, evaluation: evaluation };
             }
             return s;
           });
@@ -175,7 +214,9 @@ const cvMinuteSlice = createSlice({
 export const {
   setCvMinuteReducer,
   updateCvMinuteReducer,
+  updateCvMinuteScoreReducer,
   updateSectionInfoOrderReducer,
+  updateSectionInfoScoreReducer,
   updateCvMinuteSectionOrderReducer,
   deleteSectionInfoReducer,
   deleteCvMinuteSectionReducer,

@@ -1,4 +1,5 @@
 import { AdviceInterface } from './advice.interface';
+import { EvaluationInterface } from './evaluation.interface';
 import { IconInterface } from './icon.interface';
 
 export interface SectionInfoInterface {
@@ -19,7 +20,8 @@ export interface SectionInfoInterface {
   cvMinuteId: number;
   sectionId: number;
 
-  advices: AdviceInterface[];
+  evaluation: EvaluationInterface;
+  advice: AdviceInterface;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,4 +1,5 @@
 import { AdviceInterface } from './advice.interface';
+import { EvaluationInterface } from './evaluation.interface';
 
 export interface CvMinuteInterface {
   id: number;
@@ -9,6 +10,7 @@ export interface CvMinuteInterface {
   userId: number;
 
   advices: AdviceInterface[];
+  evaluation: EvaluationInterface;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -42,7 +42,7 @@ export default function CvMinuteComponent() {
           <div>
             {showConditions ? (
               <Popup large required>
-                <div className="h-full flex flex-col justify-between gap-8 p-4">
+                <div className="h-4/5 flex flex-col justify-between gap-8 p-4">
                   <div>
                     <div className="float-right flex flex-col gap-2 ps-6 h-44 w-64">
                       <p className="text-center font-semibold tracking-tighter">
