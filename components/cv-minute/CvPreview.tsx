@@ -110,7 +110,7 @@ export interface PopupInterface {
 
 type SectionType = 'contact' | 'cvMinuteSection' | 'experience';
 
-const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
+const backendUri = process.env.NEXT_PUBLIC_API_URL;
 
 const steps: Step[] = [
   { class: 'step-1', description: 'Un coup de pouce pour refaire votre CV' },

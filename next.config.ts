@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next';
 
-const backendUri = process.env.NEXT_PUBLIC_BACKEND_URI;
+const backendUri = process.env.NEXT_PUBLIC_API_URL;
 const domains: string[] = ['images.unsplash.com'];
 
 if (backendUri) {
@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     domains: domains,
   },
   env: {
-    NEXT_PUBLIC_BACKEND_URI: process.env.NEXT_PUBLIC_BACKEND_URI,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_VIDEO_URI: process.env.NEXT_PUBLIC_VIDEO_URI,
   },
 };
