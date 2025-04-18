@@ -1,24 +1,26 @@
-# Étape 1 : Construction de l'app
+# Étape 1 : Build
 FROM node:20-slim AS builder
 
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier uniquement les fichiers nécessaires à l'installation
 COPY package*.json ./
-RUN npm install
 
-# Copier le reste de l'application
+# Installer uniquement les deps nécessaires au build
+RUN npm install --frozen-lockfile
+
 COPY . .
 
-# Construire l'application Next.js
+# Construire l'app
 RUN npm run build
 
-# Étape 2 : Image finale de production
+# Supprimer les dépendances de dev après le build
+RUN npm prune --production
+
+# Étape 2 : Image finale minimaliste
 FROM node:20-slim AS runner
 
+ENV NODE_ENV=production
 
-# Répertoire de travail
 WORKDIR /app
 
 # Copier uniquement ce qui est nécessaire à l'exécution
@@ -28,8 +30,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/next.config.ts ./next.config.ts
 
-# Ouvrir le port
+# Port exposé
 EXPOSE 3000
 
-# Démarrer l'app Next.js
 CMD ["npm", "run", "start"]
