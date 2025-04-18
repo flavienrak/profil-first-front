@@ -17,8 +17,6 @@ RUN npm run build
 # Étape 2 : Image finale de production
 FROM node:20-slim AS runner
 
-# Définir la variable d'environnement pour la prod
-ENV NODE_ENV=production
 
 # Répertoire de travail
 WORKDIR /app
