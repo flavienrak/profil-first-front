@@ -46,7 +46,6 @@ export default function UidProvider({
 
   React.useEffect(() => {
     (async () => {
-      console.log('NEXT_PUBLIC_VIDEO_URI:', process.env.NEXT_PUBLIC_VIDEO_URI);
       const res = await jwtIdService();
 
       if (res.userId) {
