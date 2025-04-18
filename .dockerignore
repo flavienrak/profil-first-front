@@ -1,0 +1,28 @@
+# Node modules (reinstallés dans l'image)
+node_modules
+
+# Dossier de build
+.next
+out
+dist
+
+# Logs
+*.log
+npm-debug.log*
+
+# Fichiers de config dev/éditeurs
+.vscode
+.idea
+
+# Environnements
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# Fichiers système
+.DS_Store
+Thumbs.db
