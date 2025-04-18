@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
   images: {
     domains: domains,
   },
+  env: {
+    NEXT_PUBLIC_BACKEND_URI: process.env.NEXT_PUBLIC_BACKEND_URI,
+    NEXT_PUBLIC_VIDEO_URI: process.env.NEXT_PUBLIC_VIDEO_URI,
+  },
 };
 
 export default nextConfig;
