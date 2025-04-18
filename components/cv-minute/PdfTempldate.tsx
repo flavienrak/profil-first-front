@@ -86,7 +86,6 @@ export default function PdfTempldate({
                       borderRadius: '80px',
                       objectFit: 'cover',
                     }}
-                    alt="Profil"
                   />
                 ) : (
                   <Text style={{ color: '#99a1af', fontSize: '12px' }}>
