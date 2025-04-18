@@ -4,12 +4,7 @@ import React from 'react';
 import StarterKit from '@tiptap/starter-kit';
 import TextUnderline from '@tiptap/extension-underline';
 
-import {
-  useEditor,
-  EditorContent,
-  EditorProvider,
-  useCurrentEditor,
-} from '@tiptap/react';
+import { EditorContent, EditorProvider, useCurrentEditor } from '@tiptap/react';
 import { Bold, Italic, Redo, Underline, Undo } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSelector } from 'react-redux';

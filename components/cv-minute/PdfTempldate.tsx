@@ -253,7 +253,7 @@ export default function PdfTempldate({
           >
             {title && title.trim().length > 0 && (
               <View>
-                <Text style={{ fontWeight: 'bold', fontSize: '22px' }}>
+                <Text style={{ fontWeight: 'bold', fontSize: '20px' }}>
                   {title}
                 </Text>
               </View>
@@ -310,6 +310,7 @@ export default function PdfTempldate({
                   style={{
                     flex: '1',
                     width: '100%',
+                    display: 'flex',
                     justifyContent: 'space-between',
                   }}
                 >
@@ -317,6 +318,7 @@ export default function PdfTempldate({
                     <View
                       key={`experience-${item.id}`}
                       style={{
+                        flex: '1',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '6px',

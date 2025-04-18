@@ -40,6 +40,7 @@ import {
   updateSectionInfoOrderService,
   updateSectionInfoScoreService,
   generateSectionInfoAdviceService,
+  optimizeCvMinuteService,
 } from '@/services/cvMinute.service';
 import {
   updateSectionInfoOrderReducer,
@@ -51,6 +52,7 @@ import {
   updateCvMinuteScoreReducer,
   updateCvMinuteSectionPropositionReducer,
   updateSectionInfoAdviceReducer,
+  setCvMinuteReducer,
 } from '@/redux/slices/cvMinute.slice';
 import { UidContext, videoUri } from '@/providers/UidProvider';
 import { Step } from '@/interfaces/step.interface';
@@ -83,15 +85,14 @@ export interface PopupInterface {
   title?: string;
   conseil?: string;
   openly?: boolean;
+  section?: string;
   suggestionTitle?: string;
   suggestionKey?: string;
   actionLabel?: string;
   compare?: boolean;
   type?: string;
   fields: FieldInterface[];
-  sectionOrder?: number;
   sectionInfoId?: number;
-  sectionInfoOrder?: number;
   cvMinuteSectionId?: number;
   deleteLoading?: boolean;
   withScore?: boolean;
@@ -154,6 +155,21 @@ const steps: Step[] = [
   },
 ];
 
+const optimizeOptions = [
+  {
+    bold: 'Expériences reformulées ',
+    label: 'pour mettre en avant vos résultats concrets.',
+  },
+  {
+    bold: 'Mots clés stratégiques ajoutés ',
+    label: 'pour coller aux attentes des recruteurs.',
+  },
+  {
+    bold: 'Compétences optimisées ',
+    label: 'pour renforcer votre attractivité sur le marché.',
+  },
+];
+
 export default function CvPreview() {
   const dispatch = useDispatch();
   const context = React.useContext(UidContext);
@@ -200,6 +216,7 @@ export default function CvPreview() {
 
   const [currentGuideStep, setCurrentGuideStep] = React.useState(0);
   const [loadingGlobal, setLoadingGlobal] = React.useState(false);
+  const [loadingOptimize, setLoadingOptimize] = React.useState(false);
 
   const increaseFontSize = () => {
     dispatch(updatePersistReducer({ fontSize: fontSize + 1 }));
@@ -439,6 +456,25 @@ export default function CvPreview() {
     }
   };
 
+  const handleOptimizeCvMinute = async () => {
+    if (cvMinute) {
+      setLoadingOptimize(true);
+      const res = await optimizeCvMinuteService(cvMinute.id);
+
+      if (res.cvMinute) {
+        dispatch(
+          setCvMinuteReducer({
+            cvMinute: res.cvMinute,
+            sections: res.sections,
+            cvMinuteSections: res.cvMinuteSections,
+          }),
+        );
+      }
+      setLoadingOptimize(false);
+      setShowOptimize(false);
+    }
+  };
+
   const handleGenerateCvMinuteProposition = async () => {
     if (cvMinute) {
       const res = await generateCvMinuteSectionAdviceService(cvMinute.id);
@@ -457,8 +493,12 @@ export default function CvPreview() {
     value: number,
     cvMinuteSectionId: number,
   ) => {
-    if (cvMinute) {
-      const res = await generateSectionInfoAdviceService(cvMinute.id, value);
+    if (cvMinute && popup?.section) {
+      const res = await generateSectionInfoAdviceService(
+        cvMinute.id,
+        value,
+        popup.section,
+      );
 
       if (res.sectionInfo) {
         dispatch(
@@ -686,6 +726,7 @@ export default function CvPreview() {
                           onClick={(event) => {
                             const data: PopupInterface = {
                               title: 'Ajouter une rubrique',
+                              large: true,
                               openly: true,
                               conseil: cvMinute.advices.find(
                                 (a) =>
@@ -697,10 +738,6 @@ export default function CvPreview() {
                               onGenerate: async () =>
                                 await handleGenerateCvMinuteProposition(),
                               newSection: true,
-                              sectionOrder:
-                                editableSections.length > 0
-                                  ? editableSections.length + 1
-                                  : 1,
                               fields: [
                                 {
                                   label: 'Nom de la rubrique',
@@ -756,11 +793,6 @@ export default function CvPreview() {
                               hidden: false,
                               cvMinuteSectionId: contacts?.id,
                               updateContactSection: true,
-                              sectionInfoOrder:
-                                contacts?.sectionInfos &&
-                                contacts.sectionInfos.length > 0
-                                  ? contacts.sectionInfos.length + 1
-                                  : 1,
                               fields: [
                                 {
                                   label: 'Contacts / Liens / Adresse',
@@ -1015,7 +1047,6 @@ export default function CvPreview() {
                                   sectionInfoId: c.id,
                                   cvMinuteSectionId: contacts?.id,
                                   updateContactSection: true,
-                                  sectionInfoOrder: c.order,
                                   fields: [
                                     {
                                       label: 'Contact / Lien / Adresse',
@@ -1154,7 +1185,7 @@ export default function CvPreview() {
                                     </p>
                                   ) : (
                                     <p className="text-[0.875em] italic">
-                                      Aucun diplôme ajouté
+                                      Aucune donnée ajoutée
                                     </p>
                                   )}
                                 </div>
@@ -1194,7 +1225,9 @@ export default function CvPreview() {
                       onClick={(event) => {
                         const data: PopupInterface = {
                           align: 'right',
+                          section: 'title',
                           title: 'Titre du CV',
+                          large: true,
                           openly: true,
                           conseil: title.sectionInfos[0]?.advices.find(
                             (a) =>
@@ -1241,7 +1274,7 @@ export default function CvPreview() {
                       }}
                       className="step-7 flex justify-between items-center hover:bg-[#f3f4f6] px-[0.25em] py-[0.25em]"
                     >
-                      <h1 className="text-[2em] leading-[1.125em] font-bold text-[#101828]">
+                      <h1 className="text-[1.75em] leading-[1.125em] font-bold text-[#101828]">
                         {title?.sectionInfos[0]?.content ?? 'Titre du CV'}
                       </h1>
                     </div>
@@ -1252,6 +1285,7 @@ export default function CvPreview() {
                       onClick={(event) => {
                         const data: PopupInterface = {
                           align: 'right',
+                          section: 'presentation',
                           title: 'Ajouter une presentation',
                           conseil: presentation.sectionInfos[0]?.advices.find(
                             (a) =>
@@ -1264,6 +1298,7 @@ export default function CvPreview() {
                               presentation.sectionInfos[0]?.id,
                               presentation.id,
                             ),
+                          large: true,
                           openly: true,
                           suggestionTitle: 'Idées de présentation',
                           suggestionKey: 'content',
@@ -1313,11 +1348,6 @@ export default function CvPreview() {
                             title: 'Ajouter une expérience',
                             cvMinuteSectionId: experiences.id,
                             updateExperience: true,
-                            sectionInfoOrder:
-                              experiences.sectionInfos &&
-                              experiences.sectionInfos.length > 0
-                                ? experiences.sectionInfos.length + 1
-                                : 1,
                             fields: [
                               {
                                 label: 'Titre du poste',
@@ -1446,7 +1476,6 @@ export default function CvPreview() {
                                   sectionInfoId: item.id,
                                   cvMinuteSectionId: experiences.id,
                                   updateExperience: true,
-                                  sectionInfoOrder: item.order,
                                   fields: [
                                     {
                                       label: 'Titre du poste',
@@ -1572,6 +1601,7 @@ export default function CvPreview() {
 
                                       const data: PopupInterface = {
                                         align: 'right',
+                                        section: 'experience',
                                         title: "Optimiser l'expérience",
                                         actionLabel:
                                           'Recalculer le score de  matching',
@@ -1593,7 +1623,6 @@ export default function CvPreview() {
                                         sectionInfoId: item.id,
                                         cvMinuteSectionId: experiences.id,
                                         updateExperience: true,
-                                        sectionInfoOrder: item.order,
                                         fields: [
                                           {
                                             label: 'Titre du poste',
@@ -1660,6 +1689,7 @@ export default function CvPreview() {
 
                                       handleGetPosition(event, 'right', {
                                         y: 80,
+                                        x: 255,
                                       });
                                       if (isOpen) {
                                         handleClosePopup();
@@ -1747,43 +1777,21 @@ export default function CvPreview() {
                       </h6>
                     </div>
                     <div className="flex flex-col gap-1 py-2">
-                      <div className="flex gap-[0.5em]">
-                        <i className="text-green-500">
-                          <SquareCheck fill={'currentColor'} stroke={'white'} />
-                        </i>
+                      {optimizeOptions.map((o) => (
+                        <div key={o.bold} className="flex gap-[0.5em]">
+                          <i className="text-green-500">
+                            <SquareCheck
+                              fill={'currentColor'}
+                              stroke={'white'}
+                            />
+                          </i>
 
-                        <p className="text-sm">
-                          <span className="font-semibold">Lorem ipsum:</span>{' '}
-                          dolor sit amet consectetur adipisicing elit. Enim nemo
-                          sed voluptate, ducimus corporis sequi quam magnam
-                          neque vero suscipit autem perspiciatis alias natus
-                          dolorum dolores odio inventore quo doloribus.
-                        </p>
-                      </div>
-                      <div className="flex gap-[0.5em]">
-                        <i className="text-green-500">
-                          <SquareCheck fill={'currentColor'} stroke={'white'} />
-                        </i>
-
-                        <p className="text-sm">
-                          <span className="font-semibold">Lorem ipsum:</span>{' '}
-                          dolor sit amet consectetur adipisicing elit. Enim nemo
-                          sed is alias natus dolorum dolores odio inventore quo
-                          doloribus.
-                        </p>
-                      </div>
-                      <div className="flex gap-[0.5em]">
-                        <i className="text-green-500">
-                          <SquareCheck fill={'currentColor'} stroke={'white'} />
-                        </i>
-
-                        <p className="text-sm">
-                          <span className="font-semibold">Lorem ipsum:</span>{' '}
-                          dolor sit amet consectetur adipisicing elit. Enim nemo
-                          sed voluptate, ducimus corporis sequi quam magnam
-                          neque vero suscipit.
-                        </p>
-                      </div>
+                          <p className="text-sm">
+                            <span className="font-semibold">{o.bold}</span>{' '}
+                            {o.label}
+                          </p>
+                        </div>
+                      ))}
                     </div>
 
                     <div className="flex items-center gap-[0.5em]">
@@ -1791,7 +1799,7 @@ export default function CvPreview() {
                         <Wallet fill={'currentColor'} stroke={'white'} />
                       </i>
                       <p className="font-semibold">
-                        Cout estimé : <span>20 Crédits</span>
+                        Coût estimé : <span>20 Crédits</span>
                       </p>
                     </div>
                     <div className="flex gap-[0.5em]">
@@ -1800,15 +1808,14 @@ export default function CvPreview() {
                       </i>
                       <p>
                         <span className="font-semibold">Important : </span>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Aperiam et ea at provident
+                        Chaque modification doit être assumée en entretien.{' '}
+                        <br />
+                        Prenez le temps de
                         <span className="font-semibold">
                           {' '}
                           relire et valider{' '}
                         </span>
-                        tempora fuga, aspernatur dolor vitae saepe quasi soluta
-                        placeat eveniet, nam recusandae dicta a veritatis vero
-                        libero?
+                        votre CV après optimisation
                       </p>
                     </div>
                     <div className="flex items-center gap-[0.5em]">
@@ -1820,15 +1827,17 @@ export default function CvPreview() {
                       </p>
                     </div>
                     <div className="flex gap-6">
-                      <button className="flex-1 bg-green-400 text-white text-lg font-semibold p-3.5 rounded-md transition-opacity duration-150 cursor-pointer hover:opacity-90">
-                        Appliquer
-                      </button>
                       <button
                         onClick={() => setShowOptimize(false)}
-                        className="flex-1 bg-blue-400 text-white text-lg font-semibold p-3.5 rounded-md transition-opacity duration-150 cursor-pointer hover:opacity-90"
+                        className="w-full p-3 rounded-sm border border-gray-500 select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
                       >
                         Revenir sur mon CV
                       </button>
+                      <PrimaryButton
+                        label="Appliquer"
+                        isLoading={loadingOptimize}
+                        onClick={handleOptimizeCvMinute}
+                      />
                     </div>
                   </div>
                 </div>

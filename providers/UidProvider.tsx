@@ -96,7 +96,7 @@ export default function UidProvider({
         router.push(url);
       } else {
         (async () => {
-          const res = await getCvMinuteService(cvMinute);
+          const res = await getCvMinuteService(Number(cvMinute));
           if (res.cvMinute) {
             dispatch(
               setCvMinuteReducer({

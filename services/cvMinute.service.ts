@@ -40,6 +40,15 @@ const addCvMinuteService = async (formData: FormData) => {
   }
 };
 
+const optimizeCvMinuteService = async (id: number) => {
+  try {
+    const res = await api.post(`/cv-minute/${id}/optimize`);
+    return res.data;
+  } catch (error) {
+    return { error: `OPTIMIZE CVMINUTE ERROR: ${error}` };
+  }
+};
+
 const updateCvMinuteProfileService = async (id: number, formData: FormData) => {
   try {
     const res = await api.post(`/cv-minute/${id}/profile`, formData, {
@@ -64,9 +73,7 @@ const updateCvMinuteSectionService = async ({
   primaryBg,
   secondaryBg,
   tertiaryBg,
-  sectionOrder,
   sectionInfoId,
-  sectionInfoOrder,
   cvMinuteSectionId,
 
   updateBg,
@@ -87,9 +94,7 @@ const updateCvMinuteSectionService = async ({
   primaryBg?: string;
   secondaryBg?: string;
   tertiaryBg?: string;
-  sectionOrder?: PopupInterface['sectionOrder'];
   sectionInfoId?: PopupInterface['sectionInfoId'];
-  sectionInfoOrder?: PopupInterface['sectionInfoOrder'];
   cvMinuteSectionId?: PopupInterface['cvMinuteSectionId'];
 
   updateBg?: PopupInterface['updateBg'];
@@ -111,9 +116,7 @@ const updateCvMinuteSectionService = async ({
       primaryBg,
       secondaryBg,
       tertiaryBg,
-      sectionOrder,
       sectionInfoId,
-      sectionInfoOrder,
       cvMinuteSectionId,
 
       updateBg,
@@ -165,10 +168,12 @@ const updateSectionInfoOrderService = async ({
 const generateSectionInfoAdviceService = async (
   id: number,
   sectionInfoId: number,
+  section: string,
 ) => {
   try {
     const res = await api.post(
       `/cv-minute/${id}/section-info/${sectionInfoId}`,
+      { section },
     );
     return res.data;
   } catch (error) {
@@ -227,6 +232,7 @@ export {
   generateCvMinuteSectionAdviceService,
   updateCvMinuteScoreService,
   addCvMinuteService,
+  optimizeCvMinuteService,
   updateCvMinuteProfileService,
   updateCvMinuteSectionService,
   deleteCvMinuteSectionService,
