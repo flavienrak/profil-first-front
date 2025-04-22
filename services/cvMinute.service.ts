@@ -60,28 +60,7 @@ const updateCvMinuteProfileService = async (id: number, formData: FormData) => {
   }
 };
 
-const updateCvMinuteSectionService = async ({
-  id,
-  title,
-  sectionTitle,
-  content,
-  company,
-  date,
-  contrat,
-  icon,
-  iconSize,
-  primaryBg,
-  secondaryBg,
-  tertiaryBg,
-  sectionInfoId,
-  cvMinuteSectionId,
-
-  updateBg,
-  newSection,
-  updateExperience,
-  updateContactSection,
-  updateCvMinuteSection,
-}: {
+const updateCvMinuteSectionService = async (data: {
   id: number;
   title?: string;
   sectionTitle?: string;
@@ -104,26 +83,26 @@ const updateCvMinuteSectionService = async ({
   updateCvMinuteSection?: PopupInterface['updateCvMinuteSection'];
 }) => {
   try {
-    const res = await api.put(`/cv-minute/${id}/section`, {
-      title,
-      sectionTitle,
-      content,
-      company,
-      date,
-      contrat,
-      icon,
-      iconSize,
-      primaryBg,
-      secondaryBg,
-      tertiaryBg,
-      sectionInfoId,
-      cvMinuteSectionId,
+    const res = await api.put(`/cv-minute/${data.id}/section`, {
+      title: data.title,
+      sectionTitle: data.sectionTitle,
+      content: data.content,
+      company: data.company,
+      date: data.date,
+      contrat: data.contrat,
+      icon: data.icon,
+      iconSize: data.iconSize,
+      primaryBg: data.primaryBg,
+      secondaryBg: data.secondaryBg,
+      tertiaryBg: data.tertiaryBg,
+      sectionInfoId: data.sectionInfoId,
+      cvMinuteSectionId: data.cvMinuteSectionId,
 
-      updateBg,
-      newSection,
-      updateExperience,
-      updateContactSection,
-      updateCvMinuteSection,
+      updateBg: data.updateBg,
+      newSection: data.newSection,
+      updateExperience: data.updateExperience,
+      updateContactSection: data.updateContactSection,
+      updateCvMinuteSection: data.updateCvMinuteSection,
     });
     return res.data;
   } catch (error) {
@@ -145,19 +124,15 @@ const deleteCvMinuteSectionService = async (
   }
 };
 
-const updateSectionInfoOrderService = async ({
-  id,
-  sectionInfoId,
-  targetSectionInfoId,
-}: {
+const updateSectionInfoOrderService = async (data: {
   id: number;
   sectionInfoId: number;
   targetSectionInfoId: number;
 }) => {
   try {
-    const res = await api.put(`/cv-minute/${id}/section-info/order`, {
-      sectionInfoId,
-      targetSectionInfoId,
+    const res = await api.put(`/cv-minute/${data.id}/section-info/order`, {
+      sectionInfoId: data.sectionInfoId,
+      targetSectionInfoId: data.targetSectionInfoId,
     });
     return res.data;
   } catch (error) {
@@ -165,15 +140,15 @@ const updateSectionInfoOrderService = async ({
   }
 };
 
-const generateSectionInfoAdviceService = async (
-  id: number,
-  sectionInfoId: number,
-  section: string,
-) => {
+const generateSectionInfoAdviceService = async (data: {
+  id: number;
+  sectionInfoId: number;
+  section: string;
+}) => {
   try {
     const res = await api.post(
-      `/cv-minute/${id}/section-info/${sectionInfoId}`,
-      { section },
+      `/cv-minute/${data.id}/section-info/${data.sectionInfoId}`,
+      { section: data.section },
     );
     return res.data;
   } catch (error) {
@@ -181,34 +156,29 @@ const generateSectionInfoAdviceService = async (
   }
 };
 
-const updateSectionInfoScoreService = async ({
-  id,
-  sectionInfoId,
-}: {
+const updateSectionInfoScoreService = async (data: {
   id: number;
   sectionInfoId: number;
 }) => {
   try {
-    const res = await api.put(`/cv-minute/${id}/section-info/${sectionInfoId}`);
+    const res = await api.put(
+      `/cv-minute/${data.id}/section-info/${data.sectionInfoId}`,
+    );
     return res.data;
   } catch (error) {
     return { error: `UPDATE SECTIONINFO SCORE ERROR: ${error}` };
   }
 };
 
-const updateCvMinuteSectionOrderService = async ({
-  id,
-  cvMinuteSectionId,
-  targetCvMinuteSectionId,
-}: {
+const updateCvMinuteSectionOrderService = async (data: {
   id: number;
   cvMinuteSectionId: number;
   targetCvMinuteSectionId: number;
 }) => {
   try {
-    const res = await api.put(`/cv-minute/${id}/section/order`, {
-      cvMinuteSectionId,
-      targetCvMinuteSectionId,
+    const res = await api.put(`/cv-minute/${data.id}/section/order`, {
+      cvMinuteSectionId: data.cvMinuteSectionId,
+      targetCvMinuteSectionId: data.targetCvMinuteSectionId,
     });
     return res.data;
   } catch (error) {
@@ -216,10 +186,13 @@ const updateCvMinuteSectionOrderService = async ({
   }
 };
 
-const deleteSectionInfoService = async (id: number, sectionInfoId: number) => {
+const deleteSectionInfoService = async (data: {
+  id: number;
+  sectionInfoId: number;
+}) => {
   try {
     const res = await api.delete(
-      `/cv-minute/${id}/section-info/${sectionInfoId}`,
+      `/cv-minute/${data.id}/section-info/${data.sectionInfoId}`,
     );
     return res.data;
   } catch (error) {

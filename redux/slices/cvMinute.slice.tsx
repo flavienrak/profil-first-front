@@ -1,9 +1,9 @@
-import { CvMinuteInterface } from '@/interfaces/cvMinute.interface';
-import { CvMinuteSectionInterface } from '@/interfaces/cvMinuteSection.interface';
-import { EvaluationInterface } from '@/interfaces/evaluation.interface';
+import { CvMinuteInterface } from '@/interfaces/cv-minute/cvMinute.interface';
+import { CvMinuteSectionInterface } from '@/interfaces/cv-minute/cvMinuteSection.interface';
+import { EvaluationInterface } from '@/interfaces/cv-minute/evaluation.interface';
 import { FileInterface } from '@/interfaces/file.interface';
-import { SectionInterface } from '@/interfaces/section.interface';
-import { SectionInfoInterface } from '@/interfaces/sectionInfo.interface';
+import { SectionInterface } from '@/interfaces/cv-minute/section.interface';
+import { SectionInfoInterface } from '@/interfaces/cv-minute/sectionInfo.interface';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: {

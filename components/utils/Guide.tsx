@@ -4,7 +4,7 @@ import React from 'react';
 import DOMPurify from 'dompurify';
 
 import { motion } from 'framer-motion';
-import { Step } from '@/interfaces/step.interface';
+import { StepInterface } from '@/interfaces/step.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { X } from 'lucide-react';
@@ -16,7 +16,7 @@ export default function Guide({
   onPrevious,
   onClose,
 }: {
-  steps: Step[];
+  steps: StepInterface[];
   currentStep: number;
   onNext: () => void;
   onPrevious: () => void;

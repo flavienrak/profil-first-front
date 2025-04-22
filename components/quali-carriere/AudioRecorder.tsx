@@ -1,0 +1,104 @@
+'use client';
+
+import React from 'react';
+import { AudioLines, Mic, RotateCcw } from 'lucide-react';
+
+export default function AudioRecorder({
+  resetForm,
+  setResetForm,
+  setAudio,
+}: {
+  resetForm: boolean;
+  setResetForm: (value: boolean) => void;
+  setAudio: (value: Blob) => void;
+}) {
+  const [recording, setRecording] = React.useState(false);
+  const [audioURL, setAudioURL] = React.useState<string | null>(null);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const audioChunksRef = React.useRef<Blob[]>([]);
+
+  React.useEffect(() => {
+    if (resetForm) {
+      setAudioURL(null);
+      setRecording(false);
+      setResetForm(false);
+    }
+  }, [resetForm]);
+
+  const startRecording = async (
+    event?: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    if (event) {
+      event.preventDefault();
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mediaRecorder = new MediaRecorder(stream);
+    mediaRecorderRef.current = mediaRecorder;
+    audioChunksRef.current = [];
+
+    mediaRecorder.ondataavailable = (event: BlobEvent) => {
+      audioChunksRef.current.push(event.data);
+    };
+
+    mediaRecorder.onstop = async () => {
+      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      setAudioURL(audioUrl);
+      setAudio(audioBlob);
+    };
+
+    mediaRecorder.start();
+    setRecording(true);
+  };
+
+  const stopRecording = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    mediaRecorderRef.current?.stop();
+    setRecording(false);
+  };
+
+  const handleRestart = async () => {
+    setAudioURL(null);
+    await startRecording();
+  };
+
+  return (
+    <div className="w-full flex justify-end p-4">
+      {audioURL ? (
+        <div className="flex gap-2">
+          <audio controls src={audioURL} className="w-72 h-10" />
+          <i
+            onClick={handleRestart}
+            className="h-10 w-10 flex justify-center items-center text-white bg-[var(--primary-color)] rounded-full p-2 cursor-pointer hover:opacity-80"
+          >
+            <RotateCcw size={16} />
+          </i>
+        </div>
+      ) : (
+        <>
+          {recording ? (
+            <button
+              onClick={stopRecording}
+              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full cursor-pointer"
+            >
+              <i>
+                <AudioLines />
+              </i>
+              <span>Stop</span>
+            </button>
+          ) : (
+            <button
+              onClick={startRecording}
+              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full cursor-pointer"
+            >
+              <i>
+                <Mic size={16} />
+              </i>
+              <span>Audio</span>
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

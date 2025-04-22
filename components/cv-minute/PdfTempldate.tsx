@@ -3,8 +3,8 @@ import HtmlToPdfText from '../utils/HtmlToPDFText';
 
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
 import { LucidePDFIcon } from '../utils/LucidePDFIcon';
-import { SectionInfoInterface } from '@/interfaces/sectionInfo.interface';
-import { CvMinuteSectionInterface } from '@/interfaces/cvMinuteSection.interface';
+import { SectionInfoInterface } from '@/interfaces/cv-minute/sectionInfo.interface';
+import { CvMinuteSectionInterface } from '@/interfaces/cv-minute/cvMinuteSection.interface';
 
 export default function PdfTempldate({
   image,

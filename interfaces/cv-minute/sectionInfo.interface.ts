@@ -1,5 +1,5 @@
-import { AdviceInterface } from './advice.interface';
-import { EvaluationInterface } from './evaluation.interface';
+import { AdviceInterface } from './cv-minute/advice.interface';
+import { EvaluationInterface } from './cv-minute/evaluation.interface';
 import { IconInterface } from './icon.interface';
 
 export interface SectionInfoInterface {

@@ -181,7 +181,7 @@ export default function CvMinuteForm() {
             </p>
             <button
               onClick={() => setMessage('')}
-              className="w-full px-8 py-3 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-lg font-semibold hover:opacity-90 transition-opacity duration-300 cursor-pointer"
+              className="w-full px-8 py-3 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300 cursor-pointer"
             >
               J'ai compris
             </button>

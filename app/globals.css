@@ -131,7 +131,7 @@
 }
 
 *::selection {
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--secondary-color);
   color: #fff;
 }
 
@@ -144,12 +144,7 @@ u {
 }
 
 .text-style {
-  background-clip: text;
-  color: #fff;
-  font-size: 30vmin;
-  font-weight: bold;
   letter-spacing: calc(1em / 8);
-  padding: calc(--stroke-width / 2);
   -webkit-text-stroke-color: transparent;
   -webkit-text-stroke-width: calc(1em / 16);
 }

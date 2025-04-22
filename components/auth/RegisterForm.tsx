@@ -54,12 +54,7 @@ export default function RegisterForm({
     },
   });
 
-  const onSubmit = async (data: {
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-  }) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     const parseRes = registerSchema.safeParse(data);
 
     if (parseRes.success) {
