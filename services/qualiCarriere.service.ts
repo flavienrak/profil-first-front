@@ -25,9 +25,40 @@ const respondQuestionService = async (data: {
   }
 };
 
+const editQualiCarriereResumeService = async ({
+  id,
+  content,
+}: {
+  id: number;
+  content: string;
+}) => {
+  try {
+    const res = await api.put(`/quali-carriere/${id}/resume`, { content });
+    return res.data;
+  } catch (error) {
+    return { error: `EDIT QUALICARRIERE RESUME ERROR: ${error}` };
+  }
+};
+
+const editQualiCarriereCompetenceService = async (
+  competences: {
+    id: number;
+    content: string;
+  }[],
+) => {
+  try {
+    const res = await api.put(`/quali-carriere/competence`, {
+      competences,
+    });
+    return res.data;
+  } catch (error) {
+    return { error: `EDIT QUALICARRIERE COMPETENCE ERROR: ${error}` };
+  }
+};
+
 const sendQualiCarriereMessageService = async (message: string) => {
   try {
-    const res = await api.post(`/quali-carriere`, { message });
+    const res = await api.post(`/quali-carriere/message`, { message });
     return res.data;
   } catch (error) {
     return { error: `SEND QUALICARRIERE MESSAGE ERROR: ${error}` };
@@ -37,5 +68,7 @@ const sendQualiCarriereMessageService = async (message: string) => {
 export {
   getQuestionService,
   respondQuestionService,
+  editQualiCarriereResumeService,
+  editQualiCarriereCompetenceService,
   sendQualiCarriereMessageService,
 };
