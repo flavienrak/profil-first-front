@@ -58,7 +58,7 @@ import { UidContext, videoUri } from '@/providers/UidProvider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
 import { LucideIcon } from '../utils/LucideIcon';
-import { CvMinuteSectionInterface } from '@/interfaces/cvMinuteSection.interface';
+import { CvMinuteSectionInterface } from '@/interfaces/cv-minute/cvMinuteSection.interface';
 import { saveAs } from 'file-saver';
 
 export interface FieldInterface {
