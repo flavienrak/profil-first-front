@@ -14,8 +14,9 @@ export default function AudioRecorder({
 }) {
   const [recording, setRecording] = React.useState(false);
   const [audioURL, setAudioURL] = React.useState<string | null>(null);
-  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
-  const audioChunksRef = React.useRef<Blob[]>([]);
+  const [mediaRecorder, setMediaRecorder] =
+    React.useState<MediaRecorder | null>(null);
+  const [audioChunks, setAudioChunks] = React.useState<Blob[]>([]);
 
   React.useEffect(() => {
     if (resetForm) {
@@ -33,15 +34,15 @@ export default function AudioRecorder({
     }
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mediaRecorder = new MediaRecorder(stream);
-    mediaRecorderRef.current = mediaRecorder;
-    audioChunksRef.current = [];
+    setMediaRecorder(mediaRecorder);
+    setAudioChunks([]);
 
     mediaRecorder.ondataavailable = (event: BlobEvent) => {
-      audioChunksRef.current.push(event.data);
+      audioChunks.push(event.data);
     };
 
     mediaRecorder.onstop = async () => {
-      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+      const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
       const audioUrl = URL.createObjectURL(audioBlob);
       setAudioURL(audioUrl);
       setAudio(audioBlob);
@@ -53,7 +54,7 @@ export default function AudioRecorder({
 
   const stopRecording = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    mediaRecorderRef.current?.stop();
+    mediaRecorder?.stop();
     setRecording(false);
   };
 
@@ -65,7 +66,7 @@ export default function AudioRecorder({
   return (
     <div className="w-full flex justify-end p-4">
       {audioURL ? (
-        <div className="flex gap-2">
+        <div className="flex gap-2 pointer-events-auto">
           <audio controls src={audioURL} className="w-72 h-10" />
           <i
             onClick={handleRestart}
@@ -79,22 +80,22 @@ export default function AudioRecorder({
           {recording ? (
             <button
               onClick={stopRecording}
-              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full cursor-pointer"
+              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full select-none cursor-pointer pointer-events-auto"
             >
               <i>
                 <AudioLines />
               </i>
-              <span>Stop</span>
+              <span>Terminer</span>
             </button>
           ) : (
             <button
               onClick={startRecording}
-              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full cursor-pointer"
+              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full select-none cursor-pointer pointer-events-auto"
             >
               <i>
                 <Mic size={16} />
               </i>
-              <span>Audio</span>
+              <span>Enregistrer</span>
             </button>
           )}
         </>

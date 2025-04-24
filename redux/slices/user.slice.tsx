@@ -16,8 +16,18 @@ const userSlice = createSlice({
       state.cvMinuteCount = cvMinuteCount;
     },
     updateUserReducer: (state, action) => {
-      const { user } = action.payload;
-      state.user = { ...state.user, ...user };
+      const {
+        user,
+        cvMinuteCount,
+      }: { user?: UserInterface; cvMinuteCount?: number } = action.payload;
+
+      if (user) {
+        state.user = { ...state.user, ...user };
+      }
+
+      if (cvMinuteCount) {
+        state.cvMinuteCount = cvMinuteCount;
+      }
     },
   },
 });

@@ -10,10 +10,7 @@ import { useDispatch } from 'react-redux';
 import { setUserReducer } from '@/redux/slices/user.slice';
 import { setCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
 import { getCvMinuteService } from '@/services/cvMinute.service';
-import {
-  setQuestionReducer,
-  setResumeReducer,
-} from '@/redux/slices/qualiCarriere.slice';
+import { setQuestionReducer } from '@/redux/slices/qualiCarriere.slice';
 import { getQuestionService } from '@/services/qualiCarriere.service';
 
 interface CurrentQueryInterface {
@@ -25,7 +22,6 @@ interface UidContextType {
   isLoading: boolean;
   currentQuery: CurrentQueryInterface | null;
   loadingQuestion: boolean | null;
-  setLoadingQuestion: (value: boolean) => void;
   handleVideo: (value: string) => string;
   handleRemoveQuery: (value: string) => void;
 }
@@ -141,6 +137,7 @@ export default function UidProvider({
         (async () => {
           setLoadingQuestion(true);
           const res = await getQuestionService();
+          setLoadingQuestion(false);
 
           if (res.nextStep) {
             let currentQuery = null;
@@ -155,13 +152,13 @@ export default function UidProvider({
             });
 
             dispatch(
-              setResumeReducer({
-                qualiCarriereResume: res.qualiCarriereResume,
+              setQuestionReducer({
+                experiences: res.experiences,
                 messages: res.messages,
               }),
             );
             router.push(url);
-          } else if (res.question) {
+          } else if (res.qualiCarriereQuestion) {
             if (Number(currentQuery?.step) !== 1) {
               let currentQuery = null;
               currentQuery = qs.parse(params.toString());
@@ -175,14 +172,15 @@ export default function UidProvider({
               });
 
               router.push(url);
-            } else {
-              dispatch(
-                setQuestionReducer({
-                  question: res.question,
-                  qualiCarriereQuestion: res.qualiCarriereQuestion,
-                }),
-              );
             }
+
+            dispatch(
+              setQuestionReducer({
+                experience: res.experience,
+                qualiCarriereQuestion: res.qualiCarriereQuestion,
+                totalQuestions: res.totalQuestions,
+              }),
+            );
           }
         })();
       }
@@ -223,7 +221,6 @@ export default function UidProvider({
         isLoading,
         currentQuery,
         loadingQuestion,
-        setLoadingQuestion,
         handleVideo,
         handleRemoveQuery,
       }}

@@ -1,6 +1,5 @@
-export interface QualiCarriereQuestionInteface {
+export interface QualiCarriereCompetenceInteface {
   id: number;
-  order: number;
   content: string;
   sectionInfoId: number;
   userId: number;

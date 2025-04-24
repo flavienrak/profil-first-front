@@ -1,6 +1,8 @@
-import { AdviceInterface } from './cv-minute/advice.interface';
-import { EvaluationInterface } from './cv-minute/evaluation.interface';
-import { IconInterface } from './icon.interface';
+import { AdviceInterface } from './advice.interface';
+import { EvaluationInterface } from './evaluation.interface';
+import { IconInterface } from '../icon.interface';
+import { QualiCarriereCompetenceInteface } from '../quali-carriere/competence.interface';
+import { QualiCarriereResumeInterface } from '../quali-carriere/resume.interface';
 
 export interface SectionInfoInterface {
   id: number;
@@ -16,6 +18,9 @@ export interface SectionInfoInterface {
 
   evaluation: EvaluationInterface;
   advices: AdviceInterface[];
+  qualiCarriereCompetences?: QualiCarriereCompetenceInteface[];
+  qualiCarriereResumes?: QualiCarriereResumeInterface[];
+
   createdAt: Date;
   updatedAt: Date;
 }

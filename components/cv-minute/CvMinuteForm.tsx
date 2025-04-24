@@ -8,11 +8,14 @@ import { motion } from 'framer-motion';
 import { Upload } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { addCvMinuteService } from '@/services/cvMinute.service';
+import { useDispatch } from 'react-redux';
+import { updateUserReducer } from '@/redux/slices/user.slice';
 
 export default function CvMinuteForm() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+  const dispatch = useDispatch();
 
   const [file, setFile] = React.useState<File | null>(null);
   const [message, setMessage] = React.useState('');
@@ -54,6 +57,8 @@ export default function CvMinuteForm() {
           url: pathname,
           query: updateQuery,
         });
+
+        dispatch(updateUserReducer({ cvMinuteCount: res.cvMinuteCount }));
 
         router.push(url);
         router.refresh();

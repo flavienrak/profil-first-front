@@ -1,21 +1,20 @@
+import { SectionInfoInterface } from '@/interfaces/cv-minute/sectionInfo.interface';
 import { QualiCarriereChatInterface } from '@/interfaces/quali-carriere/chatInterface';
-import {
-  QualiCarriereQuestionInteface,
-  QuestionInterface,
-} from '@/interfaces/quali-carriere/questionInterface';
-import { ResumeInterface } from '@/interfaces/quali-carriere/resume.interface';
+import { QualiCarriereQuestionInteface } from '@/interfaces/quali-carriere/questionInterface';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: {
-  question: QuestionInterface | null;
+  experience: SectionInfoInterface | null;
+  experiences: SectionInfoInterface[];
   qualiCarriereQuestion: QualiCarriereQuestionInteface | null;
-  qualiCarriereResume: ResumeInterface | null;
   messages: QualiCarriereChatInterface[];
+  totalQuestions: number;
 } = {
-  question: null,
+  experience: null,
+  experiences: [],
   qualiCarriereQuestion: null,
-  qualiCarriereResume: null,
   messages: [],
+  totalQuestions: 0,
 };
 
 const qualiCarriereSlice = createSlice({
@@ -24,25 +23,26 @@ const qualiCarriereSlice = createSlice({
   reducers: {
     setQuestionReducer: (state, action) => {
       const {
-        question,
+        experience,
+        experiences,
         qualiCarriereQuestion,
+        totalQuestions,
       }: {
-        question: QuestionInterface;
+        experience: SectionInfoInterface;
         qualiCarriereQuestion: QualiCarriereQuestionInteface;
+        experiences?: SectionInfoInterface[];
+        totalQuestions?: number;
       } = action.payload;
-      state.question = question;
+      state.experience = experience;
       state.qualiCarriereQuestion = qualiCarriereQuestion;
-    },
-    setResumeReducer: (state, action) => {
-      const {
-        qualiCarriereResume,
-        messages,
-      }: {
-        qualiCarriereResume: ResumeInterface;
-        messages: QualiCarriereChatInterface[];
-      } = action.payload;
-      state.qualiCarriereResume = qualiCarriereResume;
-      state.messages = messages;
+
+      if (experiences) {
+        state.experiences = experiences;
+      }
+
+      if (totalQuestions) {
+        state.totalQuestions = totalQuestions;
+      }
     },
     newMessageReducer: (state, action) => {
       const {
@@ -63,7 +63,7 @@ const qualiCarriereSlice = createSlice({
   },
 });
 
-export const { setQuestionReducer, setResumeReducer, newMessageReducer } =
+export const { setQuestionReducer, newMessageReducer } =
   qualiCarriereSlice.actions;
 
 export default qualiCarriereSlice.reducer;

@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCheck, Edit } from 'lucide-react';
 import { UidContext } from '@/providers/UidProvider';
 import { Textarea } from '../ui/textarea';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +16,8 @@ import { RootState } from '@/redux/store';
 import { sendQualiCarriereMessageService } from '@/services/qualiCarriere.service';
 import { newMessageReducer } from '@/redux/slices/qualiCarriere.slice';
 import { QualiCarriereChatInterface } from '@/interfaces/quali-carriere/chatInterface';
+import { SectionInfoInterface } from '@/interfaces/cv-minute/sectionInfo.interface';
+import { QualiCarriereCompetenceInteface } from '@/interfaces/quali-carriere/competence.interface';
 
 const profilerChatSchema = z.object({
   message: z.string().trim().min(1, 'Message requis'),
@@ -31,13 +33,28 @@ export default function QualiCarriereSynthese({
 }: {
   setRedirectLoading: (value: boolean) => void;
 }) {
-  const { qualiCarriereResume, messages } = useSelector(
+  const { experiences, messages } = useSelector(
     (state: RootState) => state.qualiCarriere,
   );
   const context = React.useContext(UidContext);
   const dispatch = useDispatch();
+  const lastMessage = React.useRef<HTMLDivElement | null>(null);
 
+  const [totalPages, setTotalPages] = React.useState(0);
+  const [actualIndex, setActualIndex] = React.useState(0);
+  const [actualSubIndex, setActualSubIndex] = React.useState(0);
+  const [totalSubIndex, setTotalSubIndex] = React.useState(0);
+  const [actualExperienceContent, setActualExperienceContent] = React.useState<
+    string | null
+  >(null);
+  const [actualCompetenceContent, setActualCompetenceContent] = React.useState<
+    QualiCarriereCompetenceInteface[]
+  >([]);
+  const [actualExperience, setActualExperience] =
+    React.useState<SectionInfoInterface | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const [edit, setEdit] = React.useState(false);
 
   const form = useForm<ProfilerChatFormValues>({
     resolver: zodResolver(profilerChatSchema),
@@ -48,10 +65,68 @@ export default function QualiCarriereSynthese({
 
   React.useEffect(() => {
     setRedirectLoading(false);
-    if (context) {
-      context.setLoadingQuestion(false);
+  }, []);
+
+  React.useEffect(() => {
+    if (lastMessage.current) {
+      lastMessage.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [context]);
+  }, [lastMessage.current]);
+
+  React.useEffect(() => {
+    if (experiences.length > 0 && experiences[actualIndex]) {
+      setTotalPages(experiences.length);
+      setActualExperience(experiences[actualIndex]);
+    }
+  }, [experiences, actualIndex]);
+
+  React.useEffect(() => {
+    if (actualExperience) {
+      setActualSubIndex(0);
+
+      setTotalSubIndex((prev) => {
+        let newState = prev;
+        if (actualExperience.qualiCarriereResumes) {
+          newState =
+            actualExperience.qualiCarriereResumes[0].content
+              .split('\n')
+              .filter((r) => r.trim() !== '').length + 5;
+        }
+        return newState;
+      });
+    }
+  }, [actualExperience]);
+
+  React.useEffect(() => {
+    if (actualExperience) {
+      if (actualSubIndex < totalSubIndex - 5) {
+        setActualCompetenceContent([]);
+        setActualExperienceContent((prev) => {
+          let newState = prev;
+          if (actualExperience.qualiCarriereResumes) {
+            newState = actualExperience.qualiCarriereResumes?.[0].content
+              .split('\n')
+              .filter((r) => r.trim() !== '')[actualSubIndex];
+          }
+          return newState;
+        });
+      } else {
+        setActualExperienceContent(null);
+        setActualCompetenceContent((prev) => {
+          let newState = prev;
+          if (actualExperience.qualiCarriereCompetences) {
+            const start = totalSubIndex - actualSubIndex;
+            const end = start + 6;
+            newState = actualExperience.qualiCarriereCompetences.slice(
+              start,
+              end,
+            );
+          }
+          return newState;
+        });
+      }
+    }
+  }, [totalSubIndex, actualSubIndex]);
 
   const onSubmit = async (data: ProfilerChatFormValues) => {
     const parseRes = profilerChatSchema.safeParse(data);
@@ -70,7 +145,26 @@ export default function QualiCarriereSynthese({
     }
   };
 
-  if (context && context.loadingQuestion === false)
+  const incrementPagination = () => {
+    if (actualSubIndex < totalSubIndex) {
+      setActualSubIndex((prev) => prev + 1);
+    } else {
+      // fin des sous-index : on passe à l'élément suivant
+      if (actualIndex < totalPages - 1) {
+        setActualIndex((prev) => prev + 1);
+      } else {
+        // fin totale → on boucle tout
+        setActualIndex(0);
+        setActualSubIndex(0);
+      }
+    }
+  };
+
+  const handleUpdateResume = async (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {};
+
+  if (context)
     return (
       <div className="h-full flex flex-col gap-8">
         <div className="flex items-center justify-between">
@@ -79,7 +173,7 @@ export default function QualiCarriereSynthese({
               onClick={() => context.handleRemoveQuery('step')}
               className="p-2 bg-gray-50 hover:bg-gray-200 rounded-full transition-colors cursor-pointer"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft size={16} />
             </button>
             <h1 className="text-2xl font-bold text-gray-800 flex-1 text-center">
               Etape 2
@@ -88,43 +182,97 @@ export default function QualiCarriereSynthese({
         </div>
 
         <div className="flex-1 h-3/5 grid grid-cols-2 gap-12">
-          <div className="flex max-h-full flex-col gap-6 bg-gradient-to-br from-[#6B2CF5]/5 to-purple-50 rounded-xl p-8 shadow-lg overflow-hidden">
-            <h2 className="text-2xl font-semibold text-[#6B2CF5]">
-              Synthèse détaillée de vos expériences
-            </h2>
-            <div className="relative h-4/5">
-              <Textarea
-                readOnly
-                defaultValue={qualiCarriereResume?.content}
-                className="bg-white max-h-full overflow-y-auto resize-none border border-purple-100 rounded-xl p-8 shadow-inner"
-              />
-              <div className="absolute top-3 right-3 w-10 h-10 bg-[#6B2CF5] rounded-full flex items-center justify-center hover:bg-[#5a24cc] transition-colors cursor-pointer">
-                <ArrowLeft className="w-5 h-5 text-white transform rotate-180" />
+          <div className="flex max-h-full flex-col gap-6 p-8 bg-gradient-to-br from-[#6B2CF5]/5 to-purple-50 rounded-xl shadow-lg overflow-hidden">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold text-[#6B2CF5]">
+                Synthèse détaillée de vos expériences
+              </h2>
+              {edit ? (
+                <div
+                  onClick={() => setEdit(false)}
+                  className="flex items-center justify-center gap-1 py-2 px-3 text-xs text-white bg-[var(--primary-color)] rounded-full select-none cursor-pointer"
+                >
+                  <i>
+                    <CheckCheck size={14} />
+                  </i>
+                  <span>Enregistrer</span>
+                </div>
+              ) : (
+                <div
+                  onClick={() => setEdit(true)}
+                  className="flex items-center justify-center gap-1 py-2 px-3 text-xs text-white bg-[var(--primary-color)] rounded-full select-none cursor-pointer"
+                >
+                  <i>
+                    <Edit size={14} />
+                  </i>
+                  <span>Editer</span>
+                </div>
+              )}
+            </div>
+            <div className="relative flex-1 h-4/5 py-6 px-1 bg-white rounded-xl shadow-inner overflow-y-auto">
+              {actualExperience && actualExperience.qualiCarriereResumes && (
+                <div className="flex flex-col gap-3 text-base">
+                  <p className="font-semibold px-5">
+                    {actualExperience.date} : {actualExperience.title} -{' '}
+                    {actualExperience.company}
+                  </p>
+
+                  {actualExperienceContent && (
+                    <Textarea
+                      onChange={handleUpdateResume}
+                      value={actualExperienceContent}
+                      className={`border-none py-3 px-5 shadow-none resize-none focus-visible:ring-0`}
+                    />
+                  )}
+
+                  {actualCompetenceContent.length > 0 && (
+                    <div className="flex flex-col gap-3 px-5">
+                      <p className="font-semibold">30 compétences :</p>
+                      <div className="flex flex-col">
+                        {actualCompetenceContent?.map((c) => (
+                          <Textarea
+                            key={`competence-${c.id}`}
+                            onChange={handleUpdateResume}
+                            value={'- ' + c.content}
+                            className={`h-max min-h-auto border-none px-2 shadow-none resize-none hover:bg-gray-100 focus-visible:ring-0`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div
+                onClick={incrementPagination}
+                className="absolute top-3 right-3 w-8 h-8 text-white bg-[#6B2CF5] rounded-full flex items-center justify-center hover:opacity-80 cursor-pointer"
+              >
+                <ArrowRight size={16} />
               </div>
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col gap-6 bg-white rounded-xl p-8 shadow-lg overflow-hidden">
+          <div className="flex-1 flex flex-col gap-4 bg-white rounded-xl p-8 shadow-lg overflow-hidden">
             <div className="flex items-center gap-4">
-              <div className="w-20 min-w-20 h-20 min-h-20 bg-purple-100 rounded-full flex items-center justify-center p-3">
+              <div className="w-14 min-w-14 h-14 min-h-14 bg-purple-100 rounded-full flex items-center justify-center p-2">
                 <Image
                   src={'/coach.png'}
-                  width={48}
-                  height={48}
+                  width={52}
+                  height={52}
                   alt="Profiler Coach AI"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <h2 className="text-2xl font-semibold">
+              <h2 className="text-xl font-semibold">
                 Discutez avec Profiler Carrière Ai
               </h2>
-              <button className="ml-auto px-4 py-2 bg-[#6B2CF5] text-white rounded-full text-sm hover:bg-[#5a24cc] transition-colors cursor-pointer">
-                Enregistrer la discussion
+              <button className="ml-auto px-4 py-2 bg-[#6B2CF5] text-white rounded-full text-sm hover:bg-[#5a24cc] transition-colors select-none cursor-pointer">
+                Enregistrer
               </button>
             </div>
 
-            <div className="flex-1 h-3/5 flex flex-col gap-4 bg-gray-50 rounded-xl p-6">
-              <div className="flex-1 flex flex-col py-4 gap-4 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+            <div className="flex-1 h-3/5 flex flex-col bg-gray-50 rounded-xl p-4">
+              <div className="flex-1 flex flex-col gap-2 pb-4 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
                 <ChatContent message={initialMessage} />
                 {messages.map((m: QualiCarriereChatInterface) => (
                   <ChatContent
@@ -133,13 +281,14 @@ export default function QualiCarriereSynthese({
                     message={m.content}
                   />
                 ))}
+                <div ref={lastMessage}></div>
               </div>
 
               <div className="relative">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex-1 h-1/2 flex flex-col gap-6"
+                    className="flex-1 flex flex-col gap-6"
                   >
                     <FormField
                       name="message"
@@ -150,7 +299,7 @@ export default function QualiCarriereSynthese({
                             <Textarea
                               {...field}
                               autoComplete="off"
-                              className="max-h-28 min-h-14 overflow-y-auto p-4 rounded-2xl resize-none"
+                              className="max-h-28 min-h-10 overflow-y-auto text-sm placeholder:text-sm p-3 rounded-3xl resize-none"
                               placeholder="Votre message..."
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -167,7 +316,7 @@ export default function QualiCarriereSynthese({
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className={`absolute right-2 top-2 w-10 h-10 bg-[#6B2CF5] rounded-full flex items-center justify-center transition-colors shadow-md ${
+                      className={`absolute right-2 top-[0.425rem] w-8 h-8 text-white bg-[#6B2CF5] rounded-full flex items-center justify-center transition-colors shadow-md ${
                         isLoading
                           ? 'opacity-80'
                           : 'hover:bg-[#5a24cc] cursor-pointer'
@@ -192,7 +341,9 @@ export default function QualiCarriereSynthese({
                           />
                         </svg>
                       ) : (
-                        <ArrowLeft className="w-5 h-5 text-white transform rotate-180" />
+                        <i>
+                          <ArrowRight size={14} />
+                        </i>
                       )}
                     </button>
                   </form>
@@ -203,7 +354,7 @@ export default function QualiCarriereSynthese({
         </div>
 
         <div className="flex justify-center">
-          <button className="w-max px-10 py-4 bg-[#6B2CF5] text-white rounded-full text-lg font-semibold hover:bg-[#5a24cc] transition-colors shadow-lg cursor-pointer">
+          <button className="w-max px-10 py-4 bg-[#6B2CF5] text-white rounded-full font-semibold hover:bg-[#5a24cc] transition-colors shadow-lg select-none cursor-pointer">
             Activer Quali Carrière
           </button>
         </div>

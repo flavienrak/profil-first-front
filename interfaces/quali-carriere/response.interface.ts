@@ -1,7 +1,7 @@
-export interface QualiCarriereQuestionInteface {
+export interface QualiCarriereResponseInteface {
   id: number;
-  order: number;
   content: string;
+  questionId: number;
   sectionInfoId: number;
   userId: number;
 

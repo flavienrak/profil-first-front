@@ -22,9 +22,9 @@ import { Textarea } from '../ui/textarea';
 import { respondQuestionService } from '@/services/qualiCarriere.service';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { questionNumber } from '@/lib/constants';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { setQuestionReducer } from '@/redux/slices/qualiCarriere.slice';
+import { Skeleton } from '../ui/skeleton';
 
 const questionSchema = z.object({
   content: z.string().trim(),
@@ -38,7 +38,7 @@ export default function QualiCarriereChat({
   setRedirectLoading: (value: boolean) => void;
 }) {
   const context = React.useContext(UidContext);
-  const { question, qualiCarriereQuestion } = useSelector(
+  const { experience, qualiCarriereQuestion, totalQuestions } = useSelector(
     (state: RootState) => state.qualiCarriere,
   );
 
@@ -60,15 +60,12 @@ export default function QualiCarriereChat({
 
   React.useEffect(() => {
     setRedirectLoading(false);
-    if (context) {
-      context.setLoadingQuestion(false);
-    }
-  }, [context]);
+  }, []);
 
   const onSubmit = async (data: QuestionFormValues) => {
     const parseRes = questionSchema.safeParse(data);
 
-    if (question && qualiCarriereQuestion && (parseRes.success || audio)) {
+    if (qualiCarriereQuestion && (parseRes.success || audio)) {
       const formData = new FormData();
 
       if (
@@ -109,10 +106,10 @@ export default function QualiCarriereChat({
         });
 
         router.push(url);
-      } else if (res.question) {
+      } else if (res.qualiCarriereQuestion) {
         dispatch(
           setQuestionReducer({
-            question: res.question,
+            experience: res.experience,
             qualiCarriereQuestion: res.qualiCarriereQuestion,
           }),
         );
@@ -123,9 +120,9 @@ export default function QualiCarriereChat({
     }
   };
 
-  if (context && context.loadingQuestion === false)
+  if (context)
     return (
-      <div className="h-full w-full flex flex-col gap-8 px-6">
+      <div className="min-h-full w-full flex flex-col gap-8 px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1">
             <button
@@ -154,24 +151,50 @@ export default function QualiCarriereChat({
         </p>
 
         <div className="flex-1 h-4/5 grid md:grid-cols-2 gap-12">
-          <div className="h-full bg-white rounded-xl shadow-lg p-10 flex flex-col gap-6 overflow-hidden">
+          <div className="h-full bg-white rounded-xl shadow-lg p-10 flex flex-col gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-20 min-w-20 h-20 min-h-20 bg-purple-100 rounded-full flex items-center justify-center p-3">
+              <div className="w-14 min-w-14 h-14 min-h-14 bg-purple-100 rounded-full flex items-center justify-center p-2">
                 <Image
                   src={'/coach.png'}
-                  width={48}
-                  height={48}
+                  width={52}
+                  height={52}
                   alt="Profiler Coach AI"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <h2 className="text-2xl font-semibold">
+              <h2 className="text-xl font-semibold">
                 Partagez vos expériences avec Profiler Coach Ai
               </h2>
             </div>
-            <p className="text-gray-600 break-words first-letter:uppercase">
-              {question?.content}
-            </p>
+
+            {context.loadingQuestion ? (
+              <div className="flex flex-col gap-4">
+                <Skeleton className="w-full h-4 rounded bg-gray-200" />
+                <div className="flex flex-col gap-1">
+                  <Skeleton className="w-full h-4 rounded bg-gray-200" />
+                  <Skeleton className="w-full h-4 rounded bg-gray-200" />
+                  <Skeleton className="w-3/5 h-4 rounded bg-gray-200" />
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <p className="font-semibold">
+                  {experience?.date} : {experience?.title} -{' '}
+                  {experience?.company}
+                </p>
+                {isLoading ? (
+                  <div className="flex flex-col gap-1">
+                    <Skeleton className="w-full h-4 rounded bg-gray-200" />
+                    <Skeleton className="w-full h-4 rounded bg-gray-200" />
+                    <Skeleton className="w-3/5 h-4 rounded bg-gray-200" />
+                  </div>
+                ) : (
+                  <p className="text-gray-600 break-words text-sm first-letter:uppercase">
+                    {qualiCarriereQuestion?.content}
+                  </p>
+                )}
+              </div>
+            )}
 
             <Form {...form}>
               <form
@@ -191,7 +214,7 @@ export default function QualiCarriereChat({
                             className="h-full overflow-y-auto p-4 resize-none"
                             placeholder="Votre réponse..."
                           />
-                          <div className="w-full absolute bottom-0 right-0">
+                          <div className="w-full absolute bottom-0 right-0 pointer-events-none">
                             <AudioRecorder
                               resetForm={resetForm}
                               setResetForm={setResetForm}
@@ -212,7 +235,7 @@ export default function QualiCarriereChat({
                   }`}
                 >
                   <span className="text-gray-500">
-                    Question {qualiCarriereQuestion?.order}/{questionNumber}
+                    Question {qualiCarriereQuestion?.order}/{totalQuestions}
                   </span>
                   <button
                     type="submit"
