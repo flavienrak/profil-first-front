@@ -1,4 +1,5 @@
 import api from '@/axios/axios.instance';
+
 import { UserInterface } from '@/interfaces/user.interface';
 
 const jwtIdService = async () => {
@@ -10,12 +11,7 @@ const jwtIdService = async () => {
   }
 };
 
-const loginService = async ({
-  email,
-  password,
-  remember,
-  role,
-}: {
+const loginService = async (data: {
   email: string;
   password: string;
   remember: boolean;
@@ -25,10 +21,10 @@ const loginService = async ({
     const res = await api.post(
       '/auth/login',
       {
-        email,
-        password,
-        remember,
-        role,
+        email: data.email,
+        password: data.password,
+        remember: data.remember,
+        role: data.role,
       },
       { withCredentials: true },
     );
@@ -38,12 +34,7 @@ const loginService = async ({
   }
 };
 
-const registerService = async ({
-  name,
-  email,
-  password,
-  role,
-}: {
+const registerService = async (data: {
   name: string;
   email: string;
   password: string;
@@ -51,10 +42,10 @@ const registerService = async ({
 }) => {
   try {
     const res = await api.post('/auth/register', {
-      name,
-      email,
-      password,
-      role,
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: data.role,
     });
     return res.data;
   } catch (error) {

@@ -43,12 +43,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
     },
   });
 
-  const onSubmit = async (data: {
-    email: string;
-    password: string;
-    remember: boolean;
-    role: UserInterface['role'];
-  }) => {
+  const onSubmit = async (data: LoginFormValues) => {
     const parseRes = loginSchema.safeParse(data);
 
     if (parseRes.success) {

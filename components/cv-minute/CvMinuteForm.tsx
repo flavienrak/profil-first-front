@@ -8,11 +8,14 @@ import { motion } from 'framer-motion';
 import { Upload } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { addCvMinuteService } from '@/services/cvMinute.service';
+import { useDispatch } from 'react-redux';
+import { updateUserReducer } from '@/redux/slices/user.slice';
 
 export default function CvMinuteForm() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+  const dispatch = useDispatch();
 
   const [file, setFile] = React.useState<File | null>(null);
   const [message, setMessage] = React.useState('');
@@ -54,6 +57,8 @@ export default function CvMinuteForm() {
           url: pathname,
           query: updateQuery,
         });
+
+        dispatch(updateUserReducer({ cvMinuteCount: res.cvMinuteCount }));
 
         router.push(url);
         router.refresh();
@@ -181,7 +186,7 @@ export default function CvMinuteForm() {
             </p>
             <button
               onClick={() => setMessage('')}
-              className="w-full px-8 py-3 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-lg font-semibold hover:opacity-90 transition-opacity duration-300 cursor-pointer"
+              className="w-full px-8 py-3 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300 cursor-pointer"
             >
               J'ai compris
             </button>

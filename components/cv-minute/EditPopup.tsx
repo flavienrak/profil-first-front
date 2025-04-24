@@ -37,8 +37,8 @@ import { updateCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
 import { RootState } from '@/redux/store';
 import { IconInterface } from '@/interfaces/icon.interface';
 import { LucideIcon } from '../utils/LucideIcon';
-import { SectionInfoInterface } from '@/interfaces/sectionInfo.interface';
-import { AdviceInterface } from '@/interfaces/advice.interface';
+import { SectionInfoInterface } from '@/interfaces/cv-minute/sectionInfo.interface';
+import { AdviceInterface } from '@/interfaces/cv-minute/advice.interface';
 
 interface EditPopupInterface {
   popup: PopupInterface;
@@ -474,7 +474,7 @@ export default function EditPopup({
                                       <Textarea
                                         {...formField}
                                         autoComplete="off"
-                                        className="flex-1 min-h-[5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
+                                        className="flex-1 min-h-[5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em] resize-none"
                                         placeholder={field.placeholder}
                                         required
                                       />

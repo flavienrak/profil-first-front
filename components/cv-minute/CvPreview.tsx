@@ -55,7 +55,7 @@ import {
   setCvMinuteReducer,
 } from '@/redux/slices/cvMinute.slice';
 import { UidContext, videoUri } from '@/providers/UidProvider';
-import { Step } from '@/interfaces/step.interface';
+import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
 import { LucideIcon } from '../utils/LucideIcon';
 import { CvMinuteSectionInterface } from '@/interfaces/cvMinuteSection.interface';
@@ -112,7 +112,7 @@ type SectionType = 'contact' | 'cvMinuteSection' | 'experience';
 
 const backendUri = process.env.NEXT_PUBLIC_API_URL;
 
-const steps: Step[] = [
+const steps: StepInterface[] = [
   { class: 'step-1', description: 'Un coup de pouce pour refaire votre CV' },
   { class: 'step-2', description: "Consulter l'offre d'emploi" },
   { class: 'step-3', description: 'Consulter le Score matching CV - Offre' },
@@ -308,29 +308,24 @@ export default function CvPreview() {
     event.preventDefault();
   };
 
-  const handleDropSectionInfo = async ({
-    event,
-    dropId,
-    type,
-    cvMinuteSectionId,
-  }: {
+  const handleDropSectionInfo = async (data: {
     event: React.DragEvent<HTMLDivElement>;
     dropId: number;
     type: SectionType;
     cvMinuteSectionId: number;
   }) => {
-    event.preventDefault();
+    data.event.preventDefault();
 
     if (
       cvMinute &&
       draggingItem &&
       (sectionType === 'contact' || sectionType === 'experience') &&
-      sectionType === type
+      sectionType === data.type
     ) {
       const res = await updateSectionInfoOrderService({
         id: cvMinute.id,
         sectionInfoId: draggingItem,
-        targetSectionInfoId: dropId,
+        targetSectionInfoId: data.dropId,
       });
 
       if (res.section) {
@@ -338,7 +333,7 @@ export default function CvPreview() {
           updateSectionInfoOrderReducer({
             section: res.section,
             targetSection: res.targetSection,
-            cvMinuteSectionId,
+            cvMinuteSectionId: data.cvMinuteSectionId,
           }),
         );
       }
@@ -346,20 +341,17 @@ export default function CvPreview() {
     }
   };
 
-  const handleDropCvMinuteSection = async ({
-    event,
-    dropId,
-  }: {
+  const handleDropCvMinuteSection = async (data: {
     event: React.DragEvent<HTMLDivElement>;
     dropId: number;
   }) => {
-    event.preventDefault();
+    data.event.preventDefault();
 
     if (cvMinute && draggingItem) {
       const res = await updateCvMinuteSectionOrderService({
         id: cvMinute.id,
         cvMinuteSectionId: draggingItem,
-        targetCvMinuteSectionId: dropId,
+        targetCvMinuteSectionId: data.dropId,
       });
 
       if (res.cvMinuteSection) {
@@ -374,22 +366,22 @@ export default function CvPreview() {
     }
   };
 
-  const handleChangeProfile = async ({
-    event,
-    sectionInfoId,
-    cvMinuteSectionId,
-  }: {
+  const handleChangeProfile = async (data: {
     event: React.ChangeEvent<HTMLInputElement>;
     sectionInfoId?: number;
     cvMinuteSectionId: number;
   }) => {
-    if (cvMinute && event.target.files && event.target.files.length > 0) {
+    if (
+      cvMinute &&
+      data.event.target.files &&
+      data.event.target.files.length > 0
+    ) {
       const formData = new FormData();
-      if (sectionInfoId) {
-        formData.append('sectionInfoId', sectionInfoId.toString());
+      if (data.sectionInfoId) {
+        formData.append('sectionInfoId', data.sectionInfoId.toString());
       }
-      formData.append('cvMinuteSectionId', cvMinuteSectionId.toString());
-      formData.append('file', event.target.files[0]);
+      formData.append('cvMinuteSectionId', data.cvMinuteSectionId.toString());
+      formData.append('file', data.event.target.files[0]);
 
       const res = await updateCvMinuteProfileService(cvMinute.id, formData);
 
@@ -404,16 +396,22 @@ export default function CvPreview() {
     }
   };
 
-  const handleDeleteSectionInfo = async (
-    sectionInfoId: number,
-    cvMinuteSectionId: number,
-  ) => {
+  const handleDeleteSectionInfo = async (data: {
+    sectionInfoId: number;
+    cvMinuteSectionId: number;
+  }) => {
     if (cvMinute) {
-      const res = await deleteSectionInfoService(cvMinute.id, sectionInfoId);
+      const res = await deleteSectionInfoService({
+        id: cvMinute.id,
+        sectionInfoId: data.sectionInfoId,
+      });
 
       if (res.section) {
         dispatch(
-          deleteSectionInfoReducer({ section: res.section, cvMinuteSectionId }),
+          deleteSectionInfoReducer({
+            section: res.section,
+            cvMinuteSectionId: data.cvMinuteSectionId,
+          }),
         );
         handleClosePopup();
       }
@@ -489,22 +487,22 @@ export default function CvPreview() {
     return;
   };
 
-  const handleGenerateSectionInfoProposition = async (
-    value: number,
-    cvMinuteSectionId: number,
-  ) => {
+  const handleGenerateSectionInfoProposition = async (data: {
+    sectionInfoId: number;
+    cvMinuteSectionId: number;
+  }) => {
     if (cvMinute && popup?.section) {
-      const res = await generateSectionInfoAdviceService(
-        cvMinute.id,
-        value,
-        popup.section,
-      );
+      const res = await generateSectionInfoAdviceService({
+        id: cvMinute.id,
+        sectionInfoId: data.sectionInfoId,
+        section: popup.section,
+      });
 
       if (res.sectionInfo) {
         dispatch(
           updateSectionInfoAdviceReducer({
             sectionInfo: res.sectionInfo,
-            cvMinuteSectionId,
+            cvMinuteSectionId: data.cvMinuteSectionId,
           }),
         );
       }
@@ -1040,10 +1038,10 @@ export default function CvPreview() {
                                   hidden: false,
                                   actionLabel: 'Supprimer',
                                   onClick: async () =>
-                                    await handleDeleteSectionInfo(
-                                      c.id,
-                                      contacts.id,
-                                    ),
+                                    await handleDeleteSectionInfo({
+                                      sectionInfoId: c.id,
+                                      cvMinuteSectionId: contacts.id,
+                                    }),
                                   sectionInfoId: c.id,
                                   cvMinuteSectionId: contacts?.id,
                                   updateContactSection: true,
@@ -1235,10 +1233,10 @@ export default function CvPreview() {
                               a.type === 'advice',
                           )?.content,
                           onGenerate: async () =>
-                            await handleGenerateSectionInfoProposition(
-                              title.sectionInfos[0]?.id,
-                              title.id,
-                            ),
+                            await handleGenerateSectionInfoProposition({
+                              sectionInfoId: title.sectionInfos[0]?.id,
+                              cvMinuteSectionId: title.id,
+                            }),
                           suggestionTitle: 'Idées de titre du CV',
                           suggestionKey: 'content',
                           actionLabel: 'Supprimer le titre',
@@ -1294,10 +1292,10 @@ export default function CvPreview() {
                               a.type === 'advice',
                           )?.content,
                           onGenerate: async () =>
-                            await handleGenerateSectionInfoProposition(
-                              presentation.sectionInfos[0]?.id,
-                              presentation.id,
-                            ),
+                            await handleGenerateSectionInfoProposition({
+                              sectionInfoId: presentation.sectionInfos[0]?.id,
+                              cvMinuteSectionId: presentation.id,
+                            }),
                           large: true,
                           openly: true,
                           suggestionTitle: 'Idées de présentation',
@@ -1469,10 +1467,10 @@ export default function CvPreview() {
                                   title: "Modifier ou supprimer l'expérience",
                                   actionLabel: "Supprimer l'expérience",
                                   onClick: async () =>
-                                    await handleDeleteSectionInfo(
-                                      item.id,
-                                      experiences.id,
-                                    ),
+                                    await handleDeleteSectionInfo({
+                                      sectionInfoId: item.id,
+                                      cvMinuteSectionId: experiences.id,
+                                    }),
                                   sectionInfoId: item.id,
                                   cvMinuteSectionId: experiences.id,
                                   updateExperience: true,
@@ -1617,8 +1615,10 @@ export default function CvPreview() {
                                           ),
                                         onGenerate: async () =>
                                           await handleGenerateSectionInfoProposition(
-                                            item.id,
-                                            experiences.id,
+                                            {
+                                              sectionInfoId: item.id,
+                                              cvMinuteSectionId: experiences.id,
+                                            },
                                           ),
                                         sectionInfoId: item.id,
                                         cvMinuteSectionId: experiences.id,

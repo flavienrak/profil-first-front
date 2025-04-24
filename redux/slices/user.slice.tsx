@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { UserInterface } from '@/interfaces/user.interface';
 
-const initialState: { user: UserInterface | null } = {
+const initialState: { user: UserInterface | null; cvMinuteCount: number } = {
   user: null,
+  cvMinuteCount: 0,
 };
 
 const userSlice = createSlice({
@@ -10,12 +11,23 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserReducer: (state, action) => {
-      const { user } = action.payload;
+      const { user, cvMinuteCount } = action.payload;
       state.user = user;
+      state.cvMinuteCount = cvMinuteCount;
     },
     updateUserReducer: (state, action) => {
-      const { user } = action.payload;
-      state.user = { ...state.user, ...user };
+      const {
+        user,
+        cvMinuteCount,
+      }: { user?: UserInterface; cvMinuteCount?: number } = action.payload;
+
+      if (user) {
+        state.user = { ...state.user, ...user };
+      }
+
+      if (cvMinuteCount) {
+        state.cvMinuteCount = cvMinuteCount;
+      }
     },
   },
 });

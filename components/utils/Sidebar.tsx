@@ -81,7 +81,7 @@ export default function Sidebar({ showMenu }: { showMenu: boolean }) {
                   }`}
                 />
                 {showMenu && (
-                  <span className="font-medium transition-all duration-500 overflow-hidden whitespace-nowrap">
+                  <span className="font-medium transition-all duration-150 overflow-hidden whitespace-nowrap">
                     {item.name}
                   </span>
                 )}

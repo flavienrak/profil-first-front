@@ -1,4 +1,4 @@
-import { CvMinuteInterface } from './cvMinute.interface';
+import { CvMinuteInterface } from './cv-minute/cvMinute.interface';
 import { FileInterface } from './file.interface';
 
 export interface UserInterface {

@@ -1,7 +1,7 @@
 import { AdviceInterface } from './advice.interface';
 import { CvMinuteSectionInterface } from './cvMinuteSection.interface';
 import { EvaluationInterface } from './evaluation.interface';
-import { FileInterface } from './file.interface';
+import { FileInterface } from '../file.interface';
 
 export interface CvMinuteInterface {
   id: number;
