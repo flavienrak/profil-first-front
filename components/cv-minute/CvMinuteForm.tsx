@@ -151,12 +151,12 @@ export default function CvMinuteForm() {
                 isLoading ? 'opacity-90' : 'hover:opacity-90 cursor-pointer'
               }`}
             >
-              <p className="flex justify-center items-center gap-[0.5em] font-semibold text-[0.875em] text-white">
-                {isLoading && (
+              <p className="flex justify-center items-center gap-2 font-semibold text-[0.875em] text-white">
+                {!isLoading && (
                   <svg
                     aria-hidden="true"
                     role="status"
-                    className="inline w-4 h-4 me-2 text-white animate-spin"
+                    className="inline w-5 h-5 text-white animate-spin"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
