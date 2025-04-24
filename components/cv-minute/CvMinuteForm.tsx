@@ -152,7 +152,7 @@ export default function CvMinuteForm() {
               }`}
             >
               <p className="flex justify-center items-center gap-2 font-semibold text-[0.875em] text-white">
-                {!isLoading && (
+                {isLoading && (
                   <svg
                     aria-hidden="true"
                     role="status"
