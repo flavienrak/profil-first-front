@@ -8,10 +8,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getUserService } from '@/services/user.service';
 import { useDispatch } from 'react-redux';
 import { setUserReducer } from '@/redux/slices/user.slice';
-import { setCvMinuteReducer } from '@/redux/slices/cvMinute.slice';
-import { getCvMinuteService } from '@/services/cvMinute.service';
-import { setQuestionReducer } from '@/redux/slices/qualiCarriere.slice';
-import { getQuestionService } from '@/services/qualiCarriere.service';
 
 interface CurrentQueryInterface {
   step?: string | number;
@@ -22,6 +18,7 @@ interface UidContextType {
   isLoading: boolean;
   currentQuery: CurrentQueryInterface | null;
   loadingQuestion: boolean | null;
+  setLoadingQuestion: (value: boolean) => void;
   handleVideo: (value: string) => string;
   handleRemoveQuery: (value: string) => void;
 }
@@ -70,7 +67,7 @@ export default function UidProvider({
 
       setIsLoading(false);
     })();
-  }, []);
+  }, [pathname]);
 
   React.useEffect(() => {
     if (userId) {
@@ -92,100 +89,6 @@ export default function UidProvider({
     const updateQuery = qs.parse(params.toString());
     setCurrentQuery(updateQuery as CurrentQueryInterface);
   }, [params]);
-
-  React.useEffect(() => {
-    const updateQuery = currentQuery;
-
-    if (updateQuery?.cvMinute) {
-      const cvMinute = updateQuery.cvMinute;
-
-      if (isNaN(Number(updateQuery.cvMinute))) {
-        delete updateQuery.cvMinute;
-
-        const url = qs.stringifyUrl({
-          url: pathname,
-          query: updateQuery,
-        });
-        router.push(url);
-      } else {
-        (async () => {
-          const res = await getCvMinuteService(Number(cvMinute));
-          if (res.cvMinute) {
-            dispatch(
-              setCvMinuteReducer({
-                cvMinute: res.cvMinute,
-                sections: res.sections,
-                cvMinuteSections: res.cvMinuteSections,
-                files: res.files,
-              }),
-            );
-          }
-        })();
-      }
-    }
-
-    if (updateQuery?.step) {
-      if (isNaN(Number(updateQuery.step))) {
-        delete updateQuery.step;
-
-        const url = qs.stringifyUrl({
-          url: pathname,
-          query: updateQuery,
-        });
-        router.push(url);
-      } else {
-        (async () => {
-          setLoadingQuestion(true);
-          const res = await getQuestionService();
-          setLoadingQuestion(false);
-
-          if (res.nextStep) {
-            let currentQuery = null;
-            currentQuery = qs.parse(params.toString());
-            const updateQuery = {
-              ...currentQuery,
-              step: 2,
-            };
-            const url = qs.stringifyUrl({
-              url: pathname,
-              query: updateQuery,
-            });
-
-            dispatch(
-              setQuestionReducer({
-                experiences: res.experiences,
-                messages: res.messages,
-              }),
-            );
-            router.push(url);
-          } else if (res.qualiCarriereQuestion) {
-            if (Number(currentQuery?.step) !== 1) {
-              let currentQuery = null;
-              currentQuery = qs.parse(params.toString());
-              const updateQuery = {
-                ...currentQuery,
-                step: 1,
-              };
-              const url = qs.stringifyUrl({
-                url: pathname,
-                query: updateQuery,
-              });
-
-              router.push(url);
-            }
-
-            dispatch(
-              setQuestionReducer({
-                experience: res.experience,
-                qualiCarriereQuestion: res.qualiCarriereQuestion,
-                totalQuestions: res.totalQuestions,
-              }),
-            );
-          }
-        })();
-      }
-    }
-  }, [currentQuery]);
 
   const handleRemoveQuery = (value: string) => {
     if (currentQuery) {
@@ -222,6 +125,7 @@ export default function UidProvider({
         currentQuery,
         loadingQuestion,
         handleVideo,
+        setLoadingQuestion,
         handleRemoveQuery,
       }}
     >

@@ -64,9 +64,9 @@ export default function AudioRecorder({
   };
 
   return (
-    <div className="w-full flex justify-end p-4">
+    <div className="flex gap-2">
       {audioURL ? (
-        <div className="flex gap-2 pointer-events-auto">
+        <>
           <audio controls src={audioURL} className="w-72 h-10" />
           <i
             onClick={handleRestart}
@@ -74,23 +74,23 @@ export default function AudioRecorder({
           >
             <RotateCcw size={16} />
           </i>
-        </div>
+        </>
       ) : (
         <>
           {recording ? (
             <button
               onClick={stopRecording}
-              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full select-none cursor-pointer pointer-events-auto"
+              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full select-none cursor-pointer"
             >
               <i>
                 <AudioLines />
               </i>
-              <span>Terminer</span>
+              <span>Valider</span>
             </button>
           ) : (
             <button
               onClick={startRecording}
-              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full select-none cursor-pointer pointer-events-auto"
+              className="flex items-center justify-center gap-2 bg-[var(--primary-color)] text-sm text-white px-4 py-2 rounded-full select-none cursor-pointer"
             >
               <i>
                 <Mic size={16} />

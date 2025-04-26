@@ -25,6 +25,15 @@ const respondQuestionService = async (data: {
   }
 };
 
+const changeQualiCarriereStatusService = async () => {
+  try {
+    const res = await api.post('/quali-carriere/status');
+    return res.data;
+  } catch (error) {
+    return { error: `CHANGE QUALICARRIERE STATUS ERROR: ${error}` };
+  }
+};
+
 const editQualiCarriereResumeService = async ({
   id,
   content,
@@ -68,6 +77,7 @@ const sendQualiCarriereMessageService = async (message: string) => {
 export {
   getQuestionService,
   respondQuestionService,
+  changeQualiCarriereStatusService,
   editQualiCarriereResumeService,
   editQualiCarriereCompetenceService,
   sendQualiCarriereMessageService,

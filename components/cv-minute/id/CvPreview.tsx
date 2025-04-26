@@ -3,11 +3,11 @@
 import React from 'react';
 import Image from 'next/image';
 import DOMPurify from 'dompurify';
-import Popup from '../utils/Popup';
-import Guide from '../utils/Guide';
+import Popup from '@/components/utils/Popup';
+import Guide from '@/components/utils/Guide';
 import EditPopup from './EditPopup';
 import PdfTempldate from './PdfTempldate';
-import PrimaryButton from '../utils/PrimaryButton';
+import PrimaryButton from '@/components/utils/button/PrimaryButton';
 
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,8 +26,13 @@ import {
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
+import { saveAs } from 'file-saver';
 import { IconInterface } from '@/interfaces/icon.interface';
-import { Tooltip, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { TooltipContent } from '@radix-ui/react-tooltip';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import {
@@ -57,9 +62,8 @@ import {
 import { UidContext, videoUri } from '@/providers/UidProvider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
-import { LucideIcon } from '../utils/LucideIcon';
+import { LucideIcon } from '@/components/utils/LucideIcon';
 import { CvMinuteSectionInterface } from '@/interfaces/cv-minute/cvMinuteSection.interface';
-import { saveAs } from 'file-saver';
 
 export interface FieldInterface {
   key: string;
@@ -171,9 +175,9 @@ const optimizeOptions = [
 ];
 
 export default function CvPreview() {
-  const dispatch = useDispatch();
   const context = React.useContext(UidContext);
   const cvRef = React.useRef<HTMLDivElement | null>(null);
+  const dispatch = useDispatch();
 
   const { user } = useSelector((state: RootState) => state.user);
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
@@ -206,8 +210,6 @@ export default function CvPreview() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [tempData, setTempData] = React.useState<PopupInterface | null>(null);
   const [currentPosition, setCurrentPosition] = React.useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
   const [showGuide, setShowGuide] = React.useState(false);
   const [showVideo, setShowVideo] = React.useState(false);
   const [review, setReview] = React.useState(false);
@@ -252,28 +254,6 @@ export default function CvPreview() {
       x: position?.x ?? x,
       y: position?.y ?? rect.top * (fontSize / 16),
     });
-  };
-
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsDragging(true);
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isDragging) {
-      setCurrentPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
   };
 
   const handleOpenPopup = (data: PopupInterface) => {
@@ -622,34 +602,34 @@ export default function CvPreview() {
                   handleOpenPopup(data);
                 }
               }}
-              className="step-1 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none"
+              className="step-1 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none"
             >
               Guide de rédaction du CV
             </button>
             <button
               onClick={() => setReview(true)}
-              className="step-2 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none"
+              className="step-2 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none"
             >
               Relire l’offre
             </button>
             <button
               onClick={() => setShowMatching(true)}
-              className="step-3 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none"
+              className="step-3 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none"
             >
               Matching score
             </button>
             <button
               onClick={() => setShowOptimize(true)}
-              className="step-4 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none"
+              className="step-4 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none"
             >
               Optimiser en un clic
             </button>
-            <button className="step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-90 cursor-pointer select-none">
+            <button className="step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-[0.25em] text-[0.875em] font-semibold bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none">
               Enregistrer le CV et l’offre
             </button>
             <button
               onClick={handleDownload}
-              className="step-6 flex justify-center items-center gap-2 h-12 py-3 ps-4 pe-6 rounded-[0.25em] text-white bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] hover:opacity-90 cursor-pointer select-none"
+              className="step-6 flex justify-center items-center gap-2 h-12 py-3 ps-4 pe-6 rounded-[0.25em] text-white bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] hover:opacity-80 cursor-pointer select-none"
             >
               <Download />
               <span className="text-[0.875em] font-semibold">
@@ -705,7 +685,7 @@ export default function CvPreview() {
                   </i>
                   <p
                     onClick={resetFontSize}
-                    className="h-full px-[1em] flex justify-center items-center bg-[#e5e7eb] text-[0.875em] rounded-[0.35em] select-none hover:opacity-90 cursor-pointer"
+                    className="h-full px-[1em] flex justify-center items-center bg-[#e5e7eb] text-[0.875em] rounded-[0.35em] select-none hover:opacity-80 cursor-pointer"
                   >
                     Réinitialiser
                   </p>
@@ -1461,13 +1441,29 @@ export default function CvPreview() {
                                   cvMinuteSectionId: experiences.id,
                                 })
                               }
-                              onClick={(event) => {
+                              onClick={(
+                                event: React.MouseEvent<HTMLButtonElement>,
+                              ) => {
+                                event.stopPropagation();
+
                                 const data: PopupInterface = {
                                   align: 'right',
-                                  title: "Modifier ou supprimer l'expérience",
-                                  actionLabel: "Supprimer l'expérience",
+                                  section: 'experience',
+                                  title: "Optimiser l'expérience",
+                                  actionLabel:
+                                    'Recalculer le score de  matching',
+                                  large: true,
+                                  openly: true,
+                                  withScore: true,
+                                  suggestionTitle: 'Idées de redactions',
+                                  suggestionKey: 'content',
                                   onClick: async () =>
-                                    await handleDeleteSectionInfo({
+                                    await handleRecalculateExperienceMatching(
+                                      item.id,
+                                      experiences.id,
+                                    ),
+                                  onGenerate: async () =>
+                                    await handleGenerateSectionInfoProposition({
                                       sectionInfoId: item.id,
                                       cvMinuteSectionId: experiences.id,
                                     }),
@@ -1483,6 +1479,7 @@ export default function CvPreview() {
                                       placeholder: item.title ?? 'Titre...',
                                       value: item.title ?? '',
                                       initialValue: item.title ?? '',
+                                      show: false,
                                     },
                                     {
                                       label: "Nom de l'entreprise",
@@ -1494,6 +1491,7 @@ export default function CvPreview() {
                                         item.company ?? 'Entreprise...',
                                       value: item.company ?? '',
                                       initialValue: item.company ?? '',
+                                      show: false,
                                     },
                                     {
                                       label: 'Mois début - Mois fin',
@@ -1504,6 +1502,7 @@ export default function CvPreview() {
                                       placeholder: item.date ?? 'Mois...',
                                       value: item.date ?? '',
                                       initialValue: item.date ?? '',
+                                      show: false,
                                     },
                                     {
                                       label: 'Type de contrat',
@@ -1514,12 +1513,12 @@ export default function CvPreview() {
                                       placeholder: item.contrat ?? 'Contrat...',
                                       value: item.contrat ?? '',
                                       initialValue: item.contrat ?? '',
+                                      show: false,
                                     },
                                     {
                                       label: 'Description',
                                       type: 'text',
                                       key: 'content',
-                                      show: false,
                                       requiredError: 'Description requise',
                                       placeholder:
                                         item.content ?? 'Description...',
@@ -1529,7 +1528,10 @@ export default function CvPreview() {
                                   ],
                                 };
 
-                                handleGetPosition(event, 'right', { y: 80 });
+                                handleGetPosition(event, 'right', {
+                                  y: 80,
+                                  x: 255,
+                                });
                                 if (isOpen) {
                                   handleClosePopup();
                                   setTempData(data);
@@ -1537,24 +1539,109 @@ export default function CvPreview() {
                                   handleOpenPopup(data);
                                 }
                               }}
-                              className="flex-1 flex flex-col gap-[0.25em] p-[0.25em] hover:bg-[#f3f4f6]"
+                              className="flex-1 flex flex-col gap-[0.5em] p-[0.25em] hover:bg-[#f3f4f6]"
                               style={{ order: item.order }}
                             >
-                              <div className="flex items-end gap-[0.5em] font-semibold">
-                                <p
-                                  className="text-nowrap text-[0.875em] word-spacing"
-                                  style={{ color: cvMinute.primaryBg }}
-                                >
-                                  {item.date} :
-                                </p>
-                                <h3>{item.title}</h3>
-                              </div>
-                              <p
-                                className="text-[0.75em] tracking-[0.025em] p-[0.25em]"
-                                style={{ background: cvMinute.tertiaryBg }}
+                              <div
+                                onClick={(
+                                  event: React.MouseEvent<HTMLDivElement>,
+                                ) => {
+                                  event.stopPropagation();
+
+                                  const data: PopupInterface = {
+                                    align: 'right',
+                                    title: "Modifier ou supprimer l'expérience",
+                                    actionLabel: "Supprimer l'expérience",
+                                    onClick: async () =>
+                                      await handleDeleteSectionInfo({
+                                        sectionInfoId: item.id,
+                                        cvMinuteSectionId: experiences.id,
+                                      }),
+                                    sectionInfoId: item.id,
+                                    cvMinuteSectionId: experiences.id,
+                                    updateExperience: true,
+                                    fields: [
+                                      {
+                                        label: 'Titre du poste',
+                                        type: 'input',
+                                        key: 'title',
+                                        requiredError: 'Titre du poste requis',
+                                        placeholder: item.title ?? 'Titre...',
+                                        value: item.title ?? '',
+                                        initialValue: item.title ?? '',
+                                      },
+                                      {
+                                        label: "Nom de l'entreprise",
+                                        type: 'input',
+                                        key: 'company',
+                                        requiredError:
+                                          "Nom de l'entreprise requis",
+                                        placeholder:
+                                          item.company ?? 'Entreprise...',
+                                        value: item.company ?? '',
+                                        initialValue: item.company ?? '',
+                                      },
+                                      {
+                                        label: 'Mois début - Mois fin',
+                                        example: 'Ex : 03-2023 05-2025',
+                                        type: 'input',
+                                        key: 'date',
+                                        requiredError: 'Mois requis',
+                                        placeholder: item.date ?? 'Mois...',
+                                        value: item.date ?? '',
+                                        initialValue: item.date ?? '',
+                                      },
+                                      {
+                                        label: 'Type de contrat',
+                                        example: 'Ex : CDI, CDD, Intérim...',
+                                        type: 'input',
+                                        key: 'contrat',
+                                        requiredError: 'Type de contrat requis',
+                                        placeholder:
+                                          item.contrat ?? 'Contrat...',
+                                        value: item.contrat ?? '',
+                                        initialValue: item.contrat ?? '',
+                                      },
+                                      {
+                                        label: 'Description',
+                                        type: 'text',
+                                        key: 'content',
+                                        show: false,
+                                        requiredError: 'Description requise',
+                                        placeholder:
+                                          item.content ?? 'Description...',
+                                        value: item.content ?? '',
+                                        initialValue: item.content ?? '',
+                                      },
+                                    ],
+                                  };
+
+                                  handleGetPosition(event, 'right', { y: 80 });
+                                  if (isOpen) {
+                                    handleClosePopup();
+                                    setTempData(data);
+                                  } else {
+                                    handleOpenPopup(data);
+                                  }
+                                }}
+                                className="flex flex-col gap-[0.25em] hover:bg-[#f3f4f6]"
                               >
-                                {item.company} - <span>({item.contrat})</span>
-                              </p>
+                                <div className="flex items-end gap-[0.5em] font-semibold">
+                                  <p
+                                    className="text-nowrap text-[0.875em] word-spacing"
+                                    style={{ color: cvMinute.primaryBg }}
+                                  >
+                                    {item.date} :
+                                  </p>
+                                  <h3>{item.title}</h3>
+                                </div>
+                                <p
+                                  className="text-[0.75em] tracking-[0.025em] p-[0.25em]"
+                                  style={{ background: cvMinute.tertiaryBg }}
+                                >
+                                  {item.company} - <span>({item.contrat})</span>
+                                </p>
+                              </div>
                               <div
                                 className={`text-[0.75em] ${getSpacing(
                                   (experiences.sectionInfos.length /
@@ -1591,115 +1678,7 @@ export default function CvPreview() {
                                       }}
                                     />
                                   </div>
-                                  <button
-                                    onClick={(
-                                      event: React.MouseEvent<HTMLButtonElement>,
-                                    ) => {
-                                      event.stopPropagation();
-
-                                      const data: PopupInterface = {
-                                        align: 'right',
-                                        section: 'experience',
-                                        title: "Optimiser l'expérience",
-                                        actionLabel:
-                                          'Recalculer le score de  matching',
-                                        large: true,
-                                        openly: true,
-                                        withScore: true,
-                                        suggestionTitle: 'Idées de redactions',
-                                        suggestionKey: 'content',
-                                        onClick: async () =>
-                                          await handleRecalculateExperienceMatching(
-                                            item.id,
-                                            experiences.id,
-                                          ),
-                                        onGenerate: async () =>
-                                          await handleGenerateSectionInfoProposition(
-                                            {
-                                              sectionInfoId: item.id,
-                                              cvMinuteSectionId: experiences.id,
-                                            },
-                                          ),
-                                        sectionInfoId: item.id,
-                                        cvMinuteSectionId: experiences.id,
-                                        updateExperience: true,
-                                        fields: [
-                                          {
-                                            label: 'Titre du poste',
-                                            type: 'input',
-                                            key: 'title',
-                                            requiredError:
-                                              'Titre du poste requis',
-                                            placeholder:
-                                              item.title ?? 'Titre...',
-                                            value: item.title ?? '',
-                                            initialValue: item.title ?? '',
-                                            show: false,
-                                          },
-                                          {
-                                            label: "Nom de l'entreprise",
-                                            type: 'input',
-                                            key: 'company',
-                                            requiredError:
-                                              "Nom de l'entreprise requis",
-                                            placeholder:
-                                              item.company ?? 'Entreprise...',
-                                            value: item.company ?? '',
-                                            initialValue: item.company ?? '',
-                                            show: false,
-                                          },
-                                          {
-                                            label: 'Mois début - Mois fin',
-                                            example: 'Ex : 03-2023 05-2025',
-                                            type: 'input',
-                                            key: 'date',
-                                            requiredError: 'Mois requis',
-                                            placeholder: item.date ?? 'Mois...',
-                                            value: item.date ?? '',
-                                            initialValue: item.date ?? '',
-                                            show: false,
-                                          },
-                                          {
-                                            label: 'Type de contrat',
-                                            example:
-                                              'Ex : CDI, CDD, Intérim...',
-                                            type: 'input',
-                                            key: 'contrat',
-                                            requiredError:
-                                              'Type de contrat requis',
-                                            placeholder:
-                                              item.contrat ?? 'Contrat...',
-                                            value: item.contrat ?? '',
-                                            initialValue: item.contrat ?? '',
-                                            show: false,
-                                          },
-                                          {
-                                            label: 'Description',
-                                            type: 'text',
-                                            key: 'content',
-                                            requiredError:
-                                              'Description requise',
-                                            placeholder:
-                                              item.content ?? 'Description...',
-                                            value: item.content ?? '',
-                                            initialValue: item.content ?? '',
-                                          },
-                                        ],
-                                      };
-
-                                      handleGetPosition(event, 'right', {
-                                        y: 80,
-                                        x: 255,
-                                      });
-                                      if (isOpen) {
-                                        handleClosePopup();
-                                        setTempData(data);
-                                      } else {
-                                        handleOpenPopup(data);
-                                      }
-                                    }}
-                                    className="w-full text-[0.75em] font-semibold hover:text-[var(--primary-color)] cursor-pointer"
-                                  >
+                                  <button className="w-full text-[0.75em] font-semibold hover:text-[var(--primary-color)] cursor-pointer">
                                     Optimiser cette expérience
                                   </button>
                                 </div>
@@ -1731,10 +1710,8 @@ export default function CvPreview() {
                   popup={popup}
                   cvMinuteId={cvMinute.id}
                   currentPosition={currentPosition}
+                  setCurrentPosition={setCurrentPosition}
                   handleClosePopup={handleClosePopup}
-                  handleMouseDown={handleMouseDown}
-                  handleMouseMove={handleMouseMove}
-                  handleMouseUp={handleMouseUp}
                 />
               )}
 

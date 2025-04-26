@@ -1,5 +1,6 @@
 import api from '@/axios/axios.instance';
-import { PopupInterface } from '@/components/cv-minute/CvPreview';
+
+import { PopupInterface } from '@/components/cv-minute/id/CvPreview';
 import { IconInterface } from '@/interfaces/icon.interface';
 
 const getCvMinuteService = async (id: number) => {
@@ -8,6 +9,38 @@ const getCvMinuteService = async (id: number) => {
     return res.data;
   } catch (error) {
     return { error: `GET CVMINUTE ERROR: ${error}` };
+  }
+};
+
+const updateCvMinuteNameService = async (data: {
+  id: number;
+  name: string;
+}) => {
+  try {
+    const res = await api.put(`/cv-minute/${data.id}/name`, {
+      name: data.name,
+    });
+    return res.data;
+  } catch (error) {
+    return { error: `UPDATE CVMINUTE NAME ERROR: ${error}` };
+  }
+};
+
+const updateCvMinuteVisibilityService = async (id: number) => {
+  try {
+    const res = await api.put(`/cv-minute/${id}/visibility`);
+    return res.data;
+  } catch (error) {
+    return { error: `UPDATE CVMINUTE VISIBILITY ERROR: ${error}` };
+  }
+};
+
+const getAllCvMinuteService = async () => {
+  try {
+    const res = await api.get('/cv-minute');
+    return res.data;
+  } catch (error) {
+    return { error: `GET ALL CVMINUTE ERROR: ${error}` };
   }
 };
 
@@ -202,6 +235,9 @@ const deleteSectionInfoService = async (data: {
 
 export {
   getCvMinuteService,
+  updateCvMinuteNameService,
+  updateCvMinuteVisibilityService,
+  getAllCvMinuteService,
   generateCvMinuteSectionAdviceService,
   updateCvMinuteScoreService,
   addCvMinuteService,

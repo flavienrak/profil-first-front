@@ -117,7 +117,9 @@ export default function Guide({
                   onClick={onPrevious}
                   disabled={currentStep === 0}
                   className={`flex-1 px-4 py-2 bg-gray-200 select-none ${
-                    currentStep === 0 ? 'opacity-50' : 'cursor-pointer'
+                    currentStep === 0
+                      ? 'opacity-50 pointer-events-none'
+                      : 'cursor-pointer'
                   }`}
                 >
                   Précédent

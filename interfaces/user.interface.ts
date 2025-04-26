@@ -7,6 +7,7 @@ export interface UserInterface {
   email: string;
   acceptConditions: boolean;
   role: 'user' | 'recruiter' | 'admin';
+  qualiCarriere: string;
 
   files: FileInterface[];
   cvMinutes: CvMinuteInterface[];
