@@ -1442,7 +1442,7 @@ export default function CvPreview() {
                                 })
                               }
                               onClick={(
-                                event: React.MouseEvent<HTMLButtonElement>,
+                                event: React.MouseEvent<HTMLDivElement>,
                               ) => {
                                 event.stopPropagation();
 

@@ -46,7 +46,6 @@ import { AdviceInterface } from '@/interfaces/cv-minute/advice.interface';
 interface EditPopupInterface {
   popup: PopupInterface;
   cvMinuteId: number;
-  isDragging: boolean;
   currentPosition: { x: number; y: number };
   handleClosePopup: () => void;
   setCurrentPosition: React.Dispatch<

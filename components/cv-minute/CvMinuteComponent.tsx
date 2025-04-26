@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Popup from '@/components/utils/Popup';
-import qs from 'query-string';
 import Title from '@/components/utils/styles/Title';
 import PrimaryButton from '@/components/utils/button/PrimaryButton';
 
@@ -37,7 +36,6 @@ export default function CvMinuteComponent() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let currentQuery = null;
     const formData = new FormData();
 
     if (file && position.trim().length > 5) {
