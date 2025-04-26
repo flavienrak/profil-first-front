@@ -3,8 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Popup from '../utils/Popup';
-import AuthComponent from '../auth/AuthComponent';
+import Popup from '@/components/utils/Popup';
+import AuthComponent from '@/components/auth/AuthComponent';
+import PrimaryButton from '@/components/utils/button/PrimaryButton';
 
 import {
   Users,
@@ -66,12 +67,11 @@ export default function LandingComponent() {
               ProfilFirst
             </span>
           </div>
-          <button
+          <PrimaryButton
+            label="Se connecter"
+            className="w-max px-8 py-2 rounded-full"
             onClick={() => handleShowAuth('user')}
-            className="px-6 py-2 bg-[#4461F2] text-white rounded-full font-semibold hover:bg-[#3451E2] transition-colors duration-300 cursor-pointer"
-          >
-            Se connecter
-          </button>
+          />
         </motion.div>
 
         {/* Header Section */}
@@ -231,7 +231,7 @@ export default function LandingComponent() {
             </motion.div>
             <button
               onClick={() => handleShowAuth('user')}
-              className="px-8 py-3 bg-[#6B2CF5] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300 cursor-pointer"
+              className="px-8 py-3 bg-[#6B2CF5] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 cursor-pointer"
             >
               Je me connecte
             </button>
@@ -277,7 +277,7 @@ export default function LandingComponent() {
             </motion.div>
             <button
               onClick={() => handleShowAuth('recruiter')}
-              className="px-8 py-3 bg-[#06B6D4] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300 cursor-pointer"
+              className="px-8 py-3 bg-[#06B6D4] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 cursor-pointer"
             >
               Je me connecte
             </button>
@@ -457,7 +457,7 @@ export default function LandingComponent() {
               <span className="text-lg font-medium text-gray-600 mb-3">
                 Candidats
               </span>
-              <button className="px-8 py-4 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300 shadow-lg">
+              <button className="px-8 py-4 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 shadow-lg">
                 Go faire mon CV
               </button>
             </div>
@@ -465,7 +465,7 @@ export default function LandingComponent() {
               <span className="text-lg font-medium text-gray-600 mb-3">
                 Recruteur
               </span>
-              <button className="px-8 py-4 bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] text-white rounded-full font-semibold hover:opacity-90 transition-opacity duration-300 shadow-lg">
+              <button className="px-8 py-4 bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 shadow-lg">
                 Go recruter facilement
               </button>
             </div>

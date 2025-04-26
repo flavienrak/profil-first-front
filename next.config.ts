@@ -1,16 +1,26 @@
 import type { NextConfig } from 'next';
 
-const backendUri = process.env.NEXT_PUBLIC_API_URL;
-const domains: string[] = ['images.unsplash.com'];
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const remotePatterns: { protocol: 'http' | 'https'; hostname: string }[] = [
+  { protocol: 'https', hostname: 'images.unsplash.com' },
+];
 
-if (backendUri) {
-  domains.push(new URL(backendUri).hostname);
+if (apiUrl) {
+  const url = new URL(apiUrl);
+  const protocol = url.protocol.replace(':', '');
+
+  if (protocol === 'http' || protocol === 'https') {
+    remotePatterns.push({
+      protocol,
+      hostname: url.hostname,
+    });
+  }
 }
 
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: domains,
+    remotePatterns,
   },
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,

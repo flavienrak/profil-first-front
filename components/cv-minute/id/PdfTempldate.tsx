@@ -1,8 +1,8 @@
 import React from 'react';
-import HtmlToPdfText from '../utils/HtmlToPDFText';
+import HtmlToPdfText from '@/components/utils/HtmlToPDFText';
 
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
-import { LucidePDFIcon } from '../utils/LucidePDFIcon';
+import { LucidePDFIcon } from '@/components/utils/LucidePDFIcon';
 import { SectionInfoInterface } from '@/interfaces/cv-minute/sectionInfo.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/cv-minute/cvMinuteSection.interface';
 

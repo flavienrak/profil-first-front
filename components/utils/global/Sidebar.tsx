@@ -52,12 +52,10 @@ export default function Sidebar({ showMenu }: { showMenu: boolean }) {
         showMenu ? 'w-64' : 'w-20'
       }`}
     >
-      {/* Logo */}
       <div className="px-6 h-20 flex items-center border-b border-gray-200">
         <Logo href={'/cv-minute'} showText={showMenu} />
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 p-4">
         <ul className="flex flex-col gap-2">
           {menuItems.map((item) => (
@@ -68,14 +66,14 @@ export default function Sidebar({ showMenu }: { showMenu: boolean }) {
               <Link
                 href={item.href}
                 className={`flex items-center gap-3 h-12 rounded-lg transition-colors duration-200 group select-none ${
-                  pathname === item.href
+                  pathname.startsWith(item.href)
                     ? 'bg-[#6B2CF5] text-white'
                     : 'text-gray-600 hover:bg-[#6B2CF5]/5'
                 } ${showMenu ? 'px-4' : 'justify-center px-2'}`}
               >
                 <item.icon
                   className={`w-5 h-5 ${
-                    pathname === item.href
+                    pathname.startsWith(item.href)
                       ? 'text-white'
                       : 'text-gray-400 group-hover:text-[#6B2CF5]'
                   }`}

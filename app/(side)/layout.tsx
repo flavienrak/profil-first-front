@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import Sidebar from '@/components/utils/Sidebar';
-import Footer from '@/components/utils/Footer';
+import Sidebar from '@/components/utils/global/Sidebar';
+import Footer from '@/components/utils/global/Footer';
 import ProtectedRoute from '@/components/utils/ProtectedRoute';
 
 import { useSelector } from 'react-redux';

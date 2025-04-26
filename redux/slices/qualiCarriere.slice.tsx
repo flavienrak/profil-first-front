@@ -27,16 +27,22 @@ const qualiCarriereSlice = createSlice({
       const {
         experience,
         experiences,
+        messages,
         qualiCarriereQuestion,
         totalQuestions,
       }: {
         experience: SectionInfoInterface;
-        qualiCarriereQuestion: QualiCarriereQuestionInteface;
         experiences?: SectionInfoInterface[];
+        messages?: QualiCarriereChatInterface[];
+        qualiCarriereQuestion: QualiCarriereQuestionInteface;
         totalQuestions?: number;
       } = action.payload;
       state.experience = experience;
       state.qualiCarriereQuestion = qualiCarriereQuestion;
+
+      if (messages) {
+        state.messages = messages;
+      }
 
       if (experiences) {
         state.experiences = experiences;
@@ -47,20 +53,8 @@ const qualiCarriereSlice = createSlice({
       }
     },
     newMessageReducer: (state, action) => {
-      const {
-        message,
-        response,
-      }: {
-        message: QualiCarriereChatInterface;
-        response: QualiCarriereChatInterface;
-      } = action.payload;
-      state.messages.push(message);
-      state.messages.push(response);
-
-      state.messages.sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-      );
+      const data: { message: QualiCarriereChatInterface } = action.payload;
+      state.messages.push(data.message);
     },
     updateResumeReducer: (state, action) => {
       const {
