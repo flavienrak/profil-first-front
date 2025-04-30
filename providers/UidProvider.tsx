@@ -3,11 +3,12 @@
 import React from 'react';
 import qs from 'query-string';
 
-import { jwtIdService } from '@/services/auth.service';
+import { jwtService } from '@/services/auth.service';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getUserService } from '@/services/user.service';
 import { useDispatch } from 'react-redux';
 import { setUserReducer } from '@/redux/slices/user.slice';
+import { userRoutes } from '@/lib/constants';
 
 interface CurrentQueryInterface {
   step?: string | number;
@@ -51,12 +52,17 @@ export default function UidProvider({
 
   React.useEffect(() => {
     (async () => {
-      const res = await jwtIdService();
+      const res = await jwtService();
 
-      if (res.userId) {
-        setUserId(res.userId);
+      if (res.user) {
+        setUserId(res.user.id);
+
         if (notProtectedPaths.includes(pathname)) {
-          window.location.href = '/cv-minute';
+          if (userRoutes.some((r) => pathname.startsWith(r.href))) {
+            window.location.href = '/cv-minute';
+          } else {
+            window.location.href = '/dashboard';
+          }
         }
       } else if (
         res.notAuthenticated &&
@@ -73,6 +79,7 @@ export default function UidProvider({
     if (userId) {
       (async () => {
         const res = await getUserService();
+
         if (res.user) {
           dispatch(
             setUserReducer({

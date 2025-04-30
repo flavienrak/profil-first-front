@@ -2,12 +2,12 @@ import api from '@/axios/axios.instance';
 
 import { UserInterface } from '@/interfaces/user.interface';
 
-const jwtIdService = async () => {
+const jwtService = async () => {
   try {
-    const res = await api.get('/jwtid');
+    const res = await api.get('/auth/jwt');
     return res.data;
   } catch (error) {
-    return { error: `JWTID ERROR: ${error}` };
+    return { error: `JWT VERIFICATION ERROR: ${error}` };
   }
 };
 
@@ -62,4 +62,4 @@ const logoutService = async () => {
   }
 };
 
-export { jwtIdService, loginService, registerService, logoutService };
+export { jwtService, loginService, registerService, logoutService };

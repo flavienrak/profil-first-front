@@ -147,7 +147,7 @@ const cvMinuteSlice = createSlice({
         }
       });
     },
-    updateSectionInfoAdviceReducer: (state, action) => {
+    updateSectionInfoPropositionReducer: (state, action) => {
       const data: {
         sectionInfo: SectionInfoInterface;
         cvMinuteSectionId: number;
@@ -233,7 +233,7 @@ export const {
   updateCvMinuteSectionPropositionReducer,
   updateCvMinuteScoreReducer,
   updateSectionInfoOrderReducer,
-  updateSectionInfoAdviceReducer,
+  updateSectionInfoPropositionReducer,
   updateSectionInfoScoreReducer,
   updateCvMinuteSectionOrderReducer,
   deleteSectionInfoReducer,

@@ -56,11 +56,16 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
         role: parseRes.data.role,
       });
 
-      if (res.userId) {
+      if (res.user) {
         toast.success('Connexion réussie!', {
           description: 'Accès à la plateforme',
         });
-        window.location.href = '/cv-minute';
+
+        if (res.user.role === 'user') {
+          window.location.href = '/cv-minute';
+        } else {
+          window.location.href = '/dashboard';
+        }
       } else if (res.userNotFound) {
         form.setError('email', {
           type: 'manual',
