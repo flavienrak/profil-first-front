@@ -35,9 +35,7 @@ export default function UserMessageComponent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [isJobOfferModalOpen, setIsJobOfferModalOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [isCVModalOpen, setIsCVModalOpen] = useState(false);
 
   const conversations: Message[] = [
     {
@@ -220,16 +218,10 @@ export default function UserMessageComponent() {
                       </p>
                     </div>
                     <div className="flex items-center gap-3 mr-4">
-                      <button
-                        onClick={() => setIsCVModalOpen(true)}
-                        className="px-4 py-2 bg-[#06B6D4] text-white rounded-full hover:bg-[#0891b2] transition-colors text-sm font-medium"
-                      >
+                      <button className="px-4 py-2 bg-[#06B6D4] text-white rounded-full hover:bg-[#0891b2] transition-colors text-sm font-medium">
                         Mon CV pour ce poste
                       </button>
-                      <button
-                        onClick={() => setIsJobOfferModalOpen(true)}
-                        className="px-4 py-2 bg-[#8B5CF6] text-white rounded-full hover:bg-[#7c3aed] transition-colors text-sm font-medium"
-                      >
+                      <button className="px-4 py-2 bg-[#8B5CF6] text-white rounded-full hover:bg-[#7c3aed] transition-colors text-sm font-medium">
                         La fiche de poste
                       </button>
                     </div>

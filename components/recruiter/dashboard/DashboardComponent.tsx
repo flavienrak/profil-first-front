@@ -19,7 +19,6 @@ interface Application {
   hasCV: boolean;
 }
 export default function DashboardComponent() {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredApplications, setFilteredApplications] = useState<
     Application[]
@@ -48,47 +47,47 @@ export default function DashboardComponent() {
       rdvDate: '',
       hasCV: true,
     },
-    ...Array(29)
-      .fill(0)
-      .map((_, i) => ({
-        position: [
-          'Développeur Full Stack',
-          'Chef de projet IT',
-          'DevOps Engineer',
-        ][i % 3],
-        period: ['Avril 2025', 'Mars 2025', 'Mai 2025'][i % 3],
-        candidate:
-          i % 2 === 0
-            ? `Profil First ${i + 128}`
-            : [
-                'Thomas DUPONT',
-                'Marie LAURENT',
-                'Lucas MARTIN',
-                'Emma BERNARD',
-                'Hugo PETIT',
-                'Sarah MOREAU',
-                'Jules DUBOIS',
-                'Léa ROBERT',
-                'Nathan MICHEL',
-                'Camille LEROY',
-                'Louis GIRARD',
-                'Chloé ROUX',
-                'Paul SIMON',
-                'Alice LEFEBVRE',
-                'Antoine GARCIA',
-              ][i % 15],
-        rdvStatus: i % 2 === 0 ? 'En attente' : 'Accepté',
-        status: i % 3 === 0 ? 'En attente' : 'Accepté',
-        rdvDate:
-          i % 2 === 0
-            ? ''
-            : Math.random() > 0.5
-            ? possibleRdvDates[
-                Math.floor(Math.random() * possibleRdvDates.length)
-              ]
-            : 'Process terminé',
-        hasCV: true,
-      })),
+    // ...Array(29)
+    //   .fill(0)
+    //   .map((_, i) => ({
+    //     position: [
+    //       'Développeur Full Stack',
+    //       'Chef de projet IT',
+    //       'DevOps Engineer',
+    //     ][i % 3],
+    //     period: ['Avril 2025', 'Mars 2025', 'Mai 2025'][i % 3],
+    //     candidate:
+    //       i % 2 === 0
+    //         ? `Profil First ${i + 128}`
+    //         : [
+    //             'Thomas DUPONT',
+    //             'Marie LAURENT',
+    //             'Lucas MARTIN',
+    //             'Emma BERNARD',
+    //             'Hugo PETIT',
+    //             'Sarah MOREAU',
+    //             'Jules DUBOIS',
+    //             'Léa ROBERT',
+    //             'Nathan MICHEL',
+    //             'Camille LEROY',
+    //             'Louis GIRARD',
+    //             'Chloé ROUX',
+    //             'Paul SIMON',
+    //             'Alice LEFEBVRE',
+    //             'Antoine GARCIA',
+    //           ][i % 15],
+    //     rdvStatus: i % 2 === 0 ? 'En attente' : 'Accepté',
+    //     status: i % 3 === 0 ? 'En attente' : 'Accepté',
+    //     rdvDate:
+    //       i % 2 === 0
+    //         ? ''
+    //         : Math.random() > 0.5
+    //         ? possibleRdvDates[
+    //             Math.floor(Math.random() * possibleRdvDates.length)
+    //           ]
+    //         : 'Process terminé',
+    //     hasCV: true,
+    //   })),
   ];
 
   const getCurrentPageItems = () => {
@@ -100,9 +99,7 @@ export default function DashboardComponent() {
   };
 
   React.useEffect(() => {
-    const handleSidebarStateChange = (e: CustomEvent) => {
-      setIsExpanded(e.detail);
-    };
+    const handleSidebarStateChange = (e: CustomEvent) => {};
 
     window.addEventListener(
       'sidebarStateChange',
