@@ -1,6 +1,6 @@
 import api from '@/axios/axios.instance';
 
-import { PopupInterface } from '@/components/cv-minute/id/CvPreview';
+import { PopupInterface } from '@/components/user/cv-minute/id/CvPreview';
 import { IconInterface } from '@/interfaces/icon.interface';
 
 const getCvMinuteService = async (id: number) => {
@@ -9,6 +9,15 @@ const getCvMinuteService = async (id: number) => {
     return res.data;
   } catch (error) {
     return { error: `GET CVMINUTE ERROR: ${error}` };
+  }
+};
+
+const copyCvMinuteService = async (id: number) => {
+  try {
+    const res = await api.post(`/cv-minute/${id}/copy`);
+    return res.data;
+  } catch (error) {
+    return { error: `COPY CVMINUTE ERROR: ${error}` };
   }
 };
 
@@ -44,7 +53,7 @@ const getAllCvMinuteService = async () => {
   }
 };
 
-const generateCvMinuteSectionAdviceService = async (id: number) => {
+const generateCvMinuteSectionPropositionService = async (id: number) => {
   try {
     const res = await api.post(`/cv-minute/${id}`);
     return res.data;
@@ -173,7 +182,7 @@ const updateSectionInfoOrderService = async (data: {
   }
 };
 
-const generateSectionInfoAdviceService = async (data: {
+const generateSectionInfoPropositionService = async (data: {
   id: number;
   sectionInfoId: number;
   section: string;
@@ -235,10 +244,11 @@ const deleteSectionInfoService = async (data: {
 
 export {
   getCvMinuteService,
+  copyCvMinuteService,
   updateCvMinuteNameService,
   updateCvMinuteVisibilityService,
   getAllCvMinuteService,
-  generateCvMinuteSectionAdviceService,
+  generateCvMinuteSectionPropositionService,
   updateCvMinuteScoreService,
   addCvMinuteService,
   optimizeCvMinuteService,
@@ -246,7 +256,7 @@ export {
   updateCvMinuteSectionService,
   deleteCvMinuteSectionService,
   updateSectionInfoOrderService,
-  generateSectionInfoAdviceService,
+  generateSectionInfoPropositionService,
   updateSectionInfoScoreService,
   updateCvMinuteSectionOrderService,
   deleteSectionInfoService,

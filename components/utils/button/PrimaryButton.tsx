@@ -10,6 +10,7 @@ export default function PrimaryButton({
   icon,
   size = 24,
   rotate = 0,
+  isDisabled = false,
   isLoading = false,
   className,
   ...props
@@ -19,6 +20,7 @@ export default function PrimaryButton({
   icon?: IconInterface;
   size?: number;
   rotate?: number;
+  isDisabled?: boolean;
   isLoading?: boolean;
   className?: string;
 }) {
@@ -36,7 +38,7 @@ export default function PrimaryButton({
         className,
       )}
     >
-      {isLoading ? (
+      {isLoading && !isDisabled ? (
         <svg
           aria-hidden="true"
           role="status"

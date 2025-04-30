@@ -6,12 +6,20 @@ import io, { Socket } from 'socket.io-client';
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { QualiCarriereChatInterface } from '@/interfaces/quali-carriere/chatInterface';
-import { newMessageReducer } from '@/redux/slices/qualiCarriere.slice';
+import {
+  newMessageReducer,
+  setQuestionReducer,
+} from '@/redux/slices/qualiCarriere.slice';
+import { QualiCarriereQuestionInteface } from '@/interfaces/quali-carriere/questionInterface';
+import { SectionInfoInterface } from '@/interfaces/cv-minute/sectionInfo.interface';
 
 interface SocketContextType {
+  isSocketReady: boolean;
   onlineUsers: string[];
   isLoadingResponse: boolean;
   setIsLoadingResponse: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoadingQuestion: boolean;
+  setIsLoadingQuestion: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SocketContext = React.createContext<SocketContextType | undefined>(
@@ -29,8 +37,10 @@ export default function SocketProvider({
   const dispatch = useDispatch();
 
   const [socket, setSocket] = React.useState<Socket | null>(null);
+  const [isSocketReady, setIsSocketReady] = React.useState(false);
   const [onlineUsers, setOnlineUsers] = React.useState<string[]>([]);
   const [isLoadingResponse, setIsLoadingResponse] = React.useState(false);
+  const [isLoadingQuestion, setIsLoadingQuestion] = React.useState(false);
 
   React.useEffect(() => {
     if (user?.id && apiUrl) {
@@ -41,6 +51,10 @@ export default function SocketProvider({
 
   React.useEffect(() => {
     if (socket) {
+      socket.on('roomJoined', () => {
+        setIsSocketReady(true);
+      });
+
       socket.on('getOnlineUsers', (users: string[]) => {
         setOnlineUsers(users);
       });
@@ -53,9 +67,34 @@ export default function SocketProvider({
         },
       );
 
+      socket.on(
+        'qualiCarriereQuestion',
+        ({
+          experience,
+          question,
+          totalQuestions,
+        }: {
+          experience: SectionInfoInterface;
+          question: QualiCarriereQuestionInteface;
+          totalQuestions: number;
+        }) => {
+          dispatch(
+            setQuestionReducer({
+              experience,
+              qualiCarriereQuestion: question,
+              totalQuestions,
+            }),
+          );
+          setIsLoadingQuestion(true);
+        },
+      );
+
       return () => {
+        socket.off('roomJoined');
+
         socket.off('getOnlineUsers');
         socket.off('qualiCarriereMessage');
+        socket.off('qualiCarriereQuestion');
 
         socket.disconnect();
       };
@@ -64,7 +103,14 @@ export default function SocketProvider({
 
   return (
     <SocketContext.Provider
-      value={{ onlineUsers, isLoadingResponse, setIsLoadingResponse }}
+      value={{
+        isSocketReady,
+        onlineUsers,
+        isLoadingResponse,
+        setIsLoadingResponse,
+        isLoadingQuestion,
+        setIsLoadingQuestion,
+      }}
     >
       {children}
     </SocketContext.Provider>

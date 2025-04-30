@@ -1,5 +1,6 @@
 import LandingComponent from '@/components/landing/LandingComponent';
-import ProtectedRoute from '@/components/utils/ProtectedRoute';
+import ProtectedRoute from '@/components/utils/global/ProtectedRoute';
+
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
