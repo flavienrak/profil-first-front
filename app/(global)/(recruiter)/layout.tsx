@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import ProtectedRoute from '@/components/utils/global/ProtectedRoute';
-import RecruiterSidebar from '@/components/utils/recruiter/RecruiterSidebar';
+import RecruiterSidebar from '@/components/role/recruiter/RecruiterSidebar';
 
 import { RootState } from '@/redux/store';
 import { useSelector } from 'react-redux';
@@ -22,7 +21,7 @@ export default function RecruiterSideLayout({
         }`}
       >
         <div className="h-full transition-[max-height] duration-500 max-h-[calc(100vh-2px)]">
-          <ProtectedRoute>{children}</ProtectedRoute>
+          {children}
         </div>
       </div>
     </div>

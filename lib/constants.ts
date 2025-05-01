@@ -19,6 +19,7 @@ const userRoutes = [
   { name: 'Ma messagerie', icon: MessageSquare, href: '/user-message' },
   { name: 'Mon Compte', icon: User, href: '/user-compte' },
 ];
+
 const recruiterRoutes = [
   { name: 'Cross Sourcing', icon: Target, href: '/cross-sourcing' },
   { name: 'CVthèque', icon: FileText, href: '/cvtheque' },
@@ -29,7 +30,15 @@ const recruiterRoutes = [
     href: '/recruiter-message',
     hasNotification: true,
   },
-  { name: 'Mon compte recruteur', icon: User, href: '/recruiter-compte' },
+  { name: 'Mon compte', icon: User, href: '/recruiter-compte' },
 ];
 
-export { questionNumber, userRoutes, recruiterRoutes };
+const educationLevels = [
+  { value: 'bac', label: 'Bac' },
+  { value: 'bts', label: 'BTS' },
+  { value: 'licence', label: 'Licence' },
+  { value: 'master', label: 'Master' },
+  { value: 'doctorat', label: 'Doctorat' },
+];
+
+export { questionNumber, userRoutes, recruiterRoutes, educationLevels };

@@ -1,5 +1,5 @@
 import React from 'react';
-import UserMessageComponent from '@/components/user/user-message/UserMessageComponent';
+import UserMessageComponent from '@/components/role/user/user-message/UserMessageComponent';
 
 import { Metadata } from 'next';
 

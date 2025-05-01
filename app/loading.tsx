@@ -9,7 +9,7 @@ export default function Loading() {
         className="flex items-center space-x-2"
       >
         <svg
-          className="h-20 w-20 animate-spin stroke-[var(--primary-color)]"
+          className="h-20 w-20 animate-spin stroke-[var(--u-primary-color)]"
           viewBox="0 0 256 256"
         >
           <line

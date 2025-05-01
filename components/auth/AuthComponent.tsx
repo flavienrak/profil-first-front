@@ -27,10 +27,10 @@ export default function AuthComponent({
             </h2>
           </div>
         </div>
-        <div className="flex-1 flex justify-center p-10 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] rounded-lg">
+        <div className="flex-1 flex justify-center p-10 bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] rounded-lg">
           <div className="w-full flex flex-col gap-10 justify-center items-center">
             <Card className="w-full p-8">
-              <h1 className="text-4xl text-[var(--primary-color)] text-center font-semibold mb-4">
+              <h1 className="text-4xl text-[var(--u-primary-color)] text-center font-semibold mb-4">
                 {isRegister ? 'Inscription' : 'Connexion'}
               </h1>
               {isRegister ? (

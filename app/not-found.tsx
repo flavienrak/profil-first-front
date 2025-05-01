@@ -25,7 +25,7 @@ export default function NotFound() {
             <div>
               <Link
                 href="/"
-                className="flex justify-center gap-4 py-3 sm:py-4 rounded-lg text-white bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] transition-opacity duration-150 hover:opacity-80"
+                className="flex justify-center gap-4 py-3 sm:py-4 rounded-lg text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] transition-opacity duration-150 hover:opacity-80"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

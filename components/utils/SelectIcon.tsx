@@ -123,8 +123,8 @@ export default function SelectIcon({
               onClick={() => onChange(i)}
               className={`h-[2em] w-[2em] min-h-[2em] min-w-[2em] flex justify-center items-center rounded-[0.25em] ${
                 icon === i
-                  ? 'bg-[var(--primary-color)] text-white'
-                  : 'text-gray-600 bg-gray-50 hover:bg-[var(--primary-color)] hover:text-white cursor-pointer'
+                  ? 'bg-[var(--u-primary-color)] text-white'
+                  : 'text-gray-600 bg-gray-50 hover:bg-[var(--u-primary-color)] hover:text-white cursor-pointer'
               }`}
             >
               <LucideIcon name={i} size={size * (fontSize / 16)} />

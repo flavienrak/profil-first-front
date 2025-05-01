@@ -1,4 +1,4 @@
-import { CvMinuteInterface } from './cv-minute/cvMinute.interface';
+import { CvMinuteInterface } from './role/user/cv-minute/cvMinute.interface';
 import { FileInterface } from './file.interface';
 
 export interface UserInterface {
@@ -8,9 +8,10 @@ export interface UserInterface {
   acceptConditions: boolean;
   role: 'user' | 'recruiter' | 'admin';
   qualiCarriere: string;
+  image: string;
 
   files: FileInterface[];
-  cvMinutes: CvMinuteInterface[];
+  cvMinutes?: CvMinuteInterface[];
   createdAt: Date;
   updatedAt: Date;
 }

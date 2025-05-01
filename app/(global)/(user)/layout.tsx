@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import UserSidebar from '@/components/utils/user/UserSidebar';
-import Footer from '@/components/utils/global/Footer';
-import ProtectedRoute from '@/components/utils/global/ProtectedRoute';
+import UserSidebar from '@/components/role/user/UserSidebar';
+import Footer from '@/components/utils/Footer';
 
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -32,7 +31,7 @@ export default function UserSideLayout({
               : 'max-h-[calc(100vh-2px)]'
           }`}
         >
-          <ProtectedRoute>{children}</ProtectedRoute>
+          {children}
         </div>
         <Footer />
       </div>

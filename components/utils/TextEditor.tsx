@@ -21,7 +21,7 @@ const MenuBar = () => {
   return (
     <div className="flex items-center gap-[0.25em] justify-between bg-gray-100 p-[0.5em] rounded-t-[0.25em]">
       <button
-        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+        onClick={(event) => {
           event.preventDefault();
           editor.chain().focus().toggleBold().run();
         }}
@@ -34,7 +34,7 @@ const MenuBar = () => {
         <Bold size={fontSize} />
       </button>
       <button
-        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+        onClick={(event) => {
           event.preventDefault();
           editor.chain().focus().toggleItalic().run();
         }}
@@ -47,7 +47,7 @@ const MenuBar = () => {
         <Italic size={fontSize} />
       </button>
       <button
-        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+        onClick={(event) => {
           event.preventDefault();
           editor.chain().focus().toggleUnderline().run();
         }}
@@ -60,7 +60,7 @@ const MenuBar = () => {
         <Underline size={fontSize + 2} />
       </button>
       <button
-        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+        onClick={(event) => {
           event.preventDefault();
           editor.chain().focus().undo().run();
         }}
@@ -75,7 +75,7 @@ const MenuBar = () => {
         <Undo size={fontSize + 6} />
       </button>
       <button
-        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+        onClick={(event) => {
           event.preventDefault();
           editor.chain().focus().redo().run();
         }}

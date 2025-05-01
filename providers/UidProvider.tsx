@@ -2,13 +2,14 @@
 
 import React from 'react';
 import qs from 'query-string';
+import Loading from '@/app/loading';
 
 import { jwtService } from '@/services/auth.service';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { getUserService } from '@/services/user.service';
+import { getUserService } from '@/services/all-user.service';
 import { useDispatch } from 'react-redux';
 import { setUserReducer } from '@/redux/slices/user.slice';
-import { userRoutes } from '@/lib/constants';
+import { recruiterRoutes, userRoutes } from '@/lib/constants';
 
 interface CurrentQueryInterface {
   step?: string | number;
@@ -18,15 +19,14 @@ interface CurrentQueryInterface {
 interface UidContextType {
   isLoading: boolean;
   currentQuery: CurrentQueryInterface | null;
-  loadingQuestion: boolean | null;
-  setLoadingQuestion: (value: boolean) => void;
-  handleVideo: (value: string) => string;
   handleRemoveQuery: (value: string) => void;
 }
 
-export const UidContext = React.createContext<UidContextType | undefined>(
-  undefined,
-);
+export const UidContext = React.createContext<UidContextType>({
+  isLoading: true,
+  currentQuery: null,
+  handleRemoveQuery: (_value: string) => {},
+});
 
 export const videoUri = process.env.NEXT_PUBLIC_VIDEO_URI;
 
@@ -43,9 +43,6 @@ export default function UidProvider({
   const [currentQuery, setCurrentQuery] =
     React.useState<CurrentQueryInterface | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [loadingQuestion, setLoadingQuestion] = React.useState<boolean | null>(
-    null,
-  );
   const [userId, setUserId] = React.useState<string | number | null>(null);
 
   const notProtectedPaths = ['/'];
@@ -57,21 +54,26 @@ export default function UidProvider({
       if (res.user) {
         setUserId(res.user.id);
 
-        if (notProtectedPaths.includes(pathname)) {
-          if (userRoutes.some((r) => pathname.startsWith(r.href))) {
+        if (res.user.role === 'user') {
+          if (!userRoutes.some((r) => pathname.startsWith(r.href))) {
             window.location.href = '/cv-minute';
           } else {
+            setIsLoading(false);
+          }
+        } else {
+          if (!recruiterRoutes.some((r) => pathname.startsWith(r.href))) {
             window.location.href = '/dashboard';
+          } else {
+            setIsLoading(false);
           }
         }
-      } else if (
-        res.notAuthenticated &&
-        !notProtectedPaths.includes(pathname)
-      ) {
-        window.location.href = '/';
+      } else if (res.notAuthenticated) {
+        if (!notProtectedPaths.includes(pathname)) {
+          window.location.href = '/';
+        } else {
+          setIsLoading(false);
+        }
       }
-
-      setIsLoading(false);
     })();
   }, [pathname]);
 
@@ -110,33 +112,15 @@ export default function UidProvider({
     }
   };
 
-  const handleVideo = (link: string) => {
-    let newLink = link;
-    const findLink = link.split(' ');
-    for (let i = 0; i < findLink.length; i++) {
-      if (
-        findLink[i].includes('https://www.yout') ||
-        findLink[i].includes('https://yout')
-      ) {
-        const embed = findLink[i].replace('watch?v=', 'embed/');
-        newLink = embed.split('&')[0];
-      }
-    }
-    return newLink;
-  };
-
   return (
     <UidContext.Provider
       value={{
         isLoading,
         currentQuery,
-        loadingQuestion,
-        handleVideo,
-        setLoadingQuestion,
         handleRemoveQuery,
       }}
     >
-      {children}
+      {isLoading ? <Loading /> : children}
     </UidContext.Provider>
   );
 }

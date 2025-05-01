@@ -11,9 +11,15 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserReducer: (state, action) => {
-      const { user, cvMinuteCount } = action.payload;
+      const {
+        user,
+        cvMinuteCount,
+      }: { user: UserInterface; cvMinuteCount?: number } = action.payload;
       state.user = user;
-      state.cvMinuteCount = cvMinuteCount;
+
+      if (cvMinuteCount) {
+        state.cvMinuteCount = cvMinuteCount;
+      }
     },
     updateUserReducer: (state, action) => {
       const {
