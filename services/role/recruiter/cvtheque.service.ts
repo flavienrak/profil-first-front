@@ -1,8 +1,12 @@
 import api from '@/axios/axios.instance';
+import {
+  AddPayload,
+  UpdatePayload,
+} from '@/components/role/recruiter/cvtheque/id/CvThequeDetails';
 
 const cvThequePrefix = '/role/recruiter/cvtheque';
 
-const getCvCritereService = async (id: number) => {
+const getCvThequeCritereService = async (id: number) => {
   try {
     const res = await api.get(`${cvThequePrefix}/${id}`);
     return res.data;
@@ -11,19 +15,12 @@ const getCvCritereService = async (id: number) => {
   }
 };
 
-const addCvCritereService = async (data: {
-  position: string;
-  description?: string;
-  competences?: string[];
-  experience?: number;
-  diplome?: string;
-  localisation?: string;
-  distance?: number;
-}) => {
+const addCvThequeCritereService = async (data: AddPayload) => {
   try {
     const res = await api.post(`${cvThequePrefix}`, {
       position: data.position,
       description: data.description,
+      domain: data.domain,
       competences: data.competences,
       experience: data.experience,
       diplome: data.diplome,
@@ -36,20 +33,14 @@ const addCvCritereService = async (data: {
   }
 };
 
-const updateCvCritereService = async (data: {
-  id: number;
-  position: string;
-  description?: string;
-  competences?: string[];
-  experience?: number;
-  diplome?: string;
-  localisation?: string;
-  distance?: number;
-}) => {
+const updateCvThequeCritereService = async (
+  data: { id: number } & UpdatePayload,
+) => {
   try {
     const res = await api.put(`${cvThequePrefix}/${data.id}`, {
       position: data.position,
       description: data.description,
+      domain: data.domain,
       competences: data.competences,
       experience: data.experience,
       diplome: data.diplome,
@@ -62,4 +53,18 @@ const updateCvCritereService = async (data: {
   }
 };
 
-export { getCvCritereService, addCvCritereService, updateCvCritereService };
+const addCvThequeHistory = async (id: number) => {
+  try {
+    const res = await api.post(`${cvThequePrefix}/${id}/history`);
+    return res.data;
+  } catch (error) {
+    return { error: `ADD CVTHEQUE HISTORY ERROR: ${error}` };
+  }
+};
+
+export {
+  getCvThequeCritereService,
+  addCvThequeCritereService,
+  updateCvThequeCritereService,
+  addCvThequeHistory,
+};

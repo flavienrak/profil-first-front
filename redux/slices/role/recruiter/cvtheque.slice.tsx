@@ -1,25 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/critere.interface';
+import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-critere.interface';
 
-const initialState: { cvCritere: CvThequeCritereInterface | null } = {
-  cvCritere: null,
+const initialState: { cvThequeCritere: CvThequeCritereInterface | null } = {
+  cvThequeCritere: null,
 };
 
 const cvThequeSlice = createSlice({
-  name: 'user',
+  name: 'cvTheque',
   initialState,
   reducers: {
-    setCvThequeReducer: (state, action) => {
-      const { cvCritere }: { cvCritere?: CvThequeCritereInterface } =
+    setCvThequeCritereReducer: (state, action) => {
+      const { cvThequeCritere }: { cvThequeCritere: CvThequeCritereInterface } =
         action.payload;
-
-      if (cvCritere) {
-        state.cvCritere = cvCritere;
-      }
+      state.cvThequeCritere = cvThequeCritere;
     },
   },
 });
 
-export const { setCvThequeReducer } = cvThequeSlice.actions;
+export const { setCvThequeCritereReducer } = cvThequeSlice.actions;
 
 export default cvThequeSlice.reducer;

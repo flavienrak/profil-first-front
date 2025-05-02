@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCvMinuteReducer } from '@/redux/slices/role/user/cvMinute.slice';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RootState } from '@/redux/store';
-import { acceptConditionsService } from '@/services/role/user/user.service';
+import { acceptConditionsService } from '@/services/role/user/user-role.service';
 import { updateUserReducer } from '@/redux/slices/user.slice';
 import { videoUri } from '@/providers/UidProvider';
 import { handleVideo } from '@/lib/function';

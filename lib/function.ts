@@ -13,4 +13,14 @@ const handleVideo = (link: string) => {
   return newLink;
 };
 
-export { handleVideo };
+const isArraysEqual = (a: string[], b: string[]) => {
+  return (
+    a.length === b.length &&
+    a
+      .slice()
+      .sort()
+      .every((val, index) => val === b.slice().sort()[index])
+  );
+};
+
+export { handleVideo, isArraysEqual };

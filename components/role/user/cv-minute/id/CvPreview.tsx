@@ -182,13 +182,13 @@ export default function CvPreview() {
 
   const { user } = useSelector((state: RootState) => state.user);
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
-  const { cvMinute, files, sections, cvMinuteSections } = useSelector(
+  const { cvMinute, files, sections } = useSelector(
     (state: RootState) => state.cvMinute,
   );
 
   const getCvMinuteSection = (value: string) => {
     const section = sections.find((s) => s.name === value);
-    return cvMinuteSections.find((c) => c.sectionId === section?.id);
+    return cvMinute?.cvMinuteSections?.find((c) => c.sectionId === section?.id);
   };
 
   const profile = getCvMinuteSection('profile');
@@ -447,7 +447,6 @@ export default function CvPreview() {
           setCvMinuteReducer({
             cvMinute: res.cvMinute,
             sections: res.sections,
-            cvMinuteSections: res.cvMinuteSections,
           }),
         );
       }
@@ -545,8 +544,8 @@ export default function CvPreview() {
             profileImg[0]?.name &&
             `${backendUri}/uploads/files/user-${user?.id}/${profileImg[0].name}`
           }
-          name={name?.sectionInfos[0]?.content}
-          firstname={firstname?.sectionInfos[0]?.content}
+          name={name?.sectionInfos?.[0]?.content}
+          firstname={firstname?.sectionInfos?.[0]?.content}
           contacts={contacts?.sectionInfos
             ?.slice()
             .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))}
@@ -560,8 +559,8 @@ export default function CvPreview() {
               (a, b) =>
                 (a.sectionOrder ?? Infinity) - (b.sectionOrder ?? Infinity),
             )}
-          title={title?.sectionInfos[0]?.content}
-          presentation={presentation?.sectionInfos[0]?.content}
+          title={title?.sectionInfos?.[0]?.content}
+          presentation={presentation?.sectionInfos?.[0]?.content}
           experiences={experiences?.sectionInfos}
           primaryBg={cvMinute.primaryBg}
           secondaryBg={cvMinute.secondaryBg}
@@ -735,7 +734,7 @@ export default function CvPreview() {
                               title: 'Ajouter une rubrique',
                               large: true,
                               openly: true,
-                              conseil: cvMinute.advices.find(
+                              conseil: cvMinute.advices?.find(
                                 (a) =>
                                   a.cvMinuteId === cvMinute.id &&
                                   a.type === 'advice',
@@ -929,7 +928,7 @@ export default function CvPreview() {
                               onChange={(event) =>
                                 handleChangeProfile({
                                   event,
-                                  sectionInfoId: profile.sectionInfos[0]?.id,
+                                  sectionInfoId: profile.sectionInfos?.[0]?.id,
                                   cvMinuteSectionId: profile.id,
                                 })
                               }
@@ -947,7 +946,7 @@ export default function CvPreview() {
                           <h2
                             onClick={(event) => {
                               const data: PopupInterface = {
-                                sectionInfoId: firstname.sectionInfos[0]?.id,
+                                sectionInfoId: firstname.sectionInfos?.[0]?.id,
                                 cvMinuteSectionId: firstname.id,
                                 updateCvMinuteSection: true,
                                 fields: [
@@ -957,12 +956,14 @@ export default function CvPreview() {
                                     key: 'content',
                                     requiredError: 'Prénom requis',
                                     placeholder:
-                                      firstname?.sectionInfos[0]?.content ??
+                                      firstname?.sectionInfos?.[0]?.content ??
                                       'Prénom',
                                     value:
-                                      firstname?.sectionInfos[0]?.content ?? '',
+                                      firstname?.sectionInfos?.[0]?.content ??
+                                      '',
                                     initialValue:
-                                      firstname?.sectionInfos[0]?.content ?? '',
+                                      firstname?.sectionInfos?.[0]?.content ??
+                                      '',
                                   },
                                 ],
                               };
@@ -977,14 +978,14 @@ export default function CvPreview() {
                             }}
                             className="w-full text-[1em] text-center font-medium hover:bg-[#f3f4f6]/25"
                           >
-                            {firstname?.sectionInfos[0]?.content ?? 'Prénom'}
+                            {firstname?.sectionInfos?.[0]?.content ?? 'Prénom'}
                           </h2>
                         )}
                         {name && (
                           <h1
                             onClick={(event) => {
                               const data: PopupInterface = {
-                                sectionInfoId: name.sectionInfos[0]?.id,
+                                sectionInfoId: name.sectionInfos?.[0]?.id,
                                 cvMinuteSectionId: name.id,
                                 updateCvMinuteSection: true,
                                 fields: [
@@ -994,10 +995,11 @@ export default function CvPreview() {
                                     key: 'content',
                                     requiredError: 'Nom requis',
                                     placeholder:
-                                      name?.sectionInfos[0]?.content ?? 'Nom',
-                                    value: name?.sectionInfos[0]?.content ?? '',
+                                      name?.sectionInfos?.[0]?.content ?? 'Nom',
+                                    value:
+                                      name?.sectionInfos?.[0]?.content ?? '',
                                     initialValue:
-                                      name?.sectionInfos[0]?.content ?? '',
+                                      name?.sectionInfos?.[0]?.content ?? '',
                                   },
                                 ],
                               };
@@ -1012,7 +1014,7 @@ export default function CvPreview() {
                             }}
                             className="w-full text-[1.125em] text-center font-bold mb-3 hover:bg-[#f3f4f6]/25"
                           >
-                            {name?.sectionInfos[0]?.content ?? 'NOM'}
+                            {name?.sectionInfos?.[0]?.content ?? 'NOM'}
                           </h1>
                         )}
                       </div>
@@ -1119,7 +1121,7 @@ export default function CvPreview() {
                                 onClick={(event) => {
                                   const data: PopupInterface = {
                                     title: 'Modifier ou supprimer la rubrique',
-                                    conseil: cvMinuteSection.advices.find(
+                                    conseil: cvMinuteSection.advices?.find(
                                       (a) =>
                                         a.cvMinuteSectionId ===
                                           cvMinuteSection.id &&
@@ -1132,7 +1134,7 @@ export default function CvPreview() {
                                     updateCvMinuteSection: true,
                                     cvMinuteSectionId: cvMinuteSection.id,
                                     sectionInfoId:
-                                      cvMinuteSection?.sectionInfos[0]?.id,
+                                      cvMinuteSection?.sectionInfos?.[0]?.id,
                                     fields: [
                                       {
                                         label: 'Nom de la rubrique',
@@ -1155,13 +1157,13 @@ export default function CvPreview() {
                                         requiredError:
                                           'Description de la rubrique requise',
                                         placeholder:
-                                          cvMinuteSection?.sectionInfos[0]
+                                          cvMinuteSection?.sectionInfos?.[0]
                                             ?.content ?? 'Description...',
                                         value:
-                                          cvMinuteSection?.sectionInfos[0]
+                                          cvMinuteSection?.sectionInfos?.[0]
                                             ?.content ?? '',
                                         initialValue:
-                                          cvMinuteSection?.sectionInfos[0]
+                                          cvMinuteSection?.sectionInfos?.[0]
                                             ?.content ?? '',
                                       },
                                     ],
@@ -1236,21 +1238,24 @@ export default function CvPreview() {
                           title: 'Titre du CV',
                           large: true,
                           openly: true,
-                          conseil: title.sectionInfos[0]?.advices.find(
+                          conseil: title.sectionInfos?.[0]?.advices?.find(
                             (a) =>
-                              a.sectionInfoId === title.sectionInfos[0]?.id &&
+                              a.sectionInfoId === title.sectionInfos?.[0]?.id &&
                               a.type === 'advice',
                           )?.content,
-                          onGenerate: async () =>
-                            await handleGenerateSectionInfoProposition({
-                              sectionInfoId: title.sectionInfos[0]?.id,
-                              cvMinuteSectionId: title.id,
-                              section: 'title',
-                            }),
+                          onGenerate: async () => {
+                            if (title.sectionInfos) {
+                              await handleGenerateSectionInfoProposition({
+                                sectionInfoId: title.sectionInfos?.[0]?.id,
+                                cvMinuteSectionId: title.id,
+                                section: 'title',
+                              });
+                            }
+                          },
                           suggestionTitle: 'Idées de titre du CV',
                           suggestionKey: 'content',
                           actionLabel: 'Supprimer le titre',
-                          sectionInfoId: title.sectionInfos[0]?.id,
+                          sectionInfoId: title.sectionInfos?.[0]?.id,
                           cvMinuteSectionId: title.id,
                           updateCvMinuteSection: true,
                           compare: false,
@@ -1264,10 +1269,10 @@ export default function CvPreview() {
                               description:
                                 'Si vous souhaitez un CV sans titre, mettez un espace',
                               placeholder:
-                                title?.sectionInfos[0]?.content ?? 'Titre...',
-                              value: title?.sectionInfos[0]?.content ?? '',
+                                title?.sectionInfos?.[0]?.content ?? 'Titre...',
+                              value: title?.sectionInfos?.[0]?.content ?? '',
                               initialValue:
-                                title?.sectionInfos[0]?.content ?? '',
+                                title?.sectionInfos?.[0]?.content ?? '',
                             },
                           ],
                         };
@@ -1283,7 +1288,7 @@ export default function CvPreview() {
                       className="step-7 flex justify-between items-center hover:bg-[#f3f4f6] px-[0.25em] py-[0.25em]"
                     >
                       <h1 className="text-[1.75em] leading-[1.125em] font-bold text-[#101828]">
-                        {title?.sectionInfos[0]?.content ?? 'Titre du CV'}
+                        {title?.sectionInfos?.[0]?.content ?? 'Titre du CV'}
                       </h1>
                     </div>
                   )}
@@ -1295,23 +1300,27 @@ export default function CvPreview() {
                           align: 'right',
                           section: 'presentation',
                           title: 'Ajouter une presentation',
-                          conseil: presentation.sectionInfos[0]?.advices.find(
-                            (a) =>
-                              a.sectionInfoId ===
-                                presentation.sectionInfos[0]?.id &&
-                              a.type === 'advice',
-                          )?.content,
-                          onGenerate: async () =>
-                            await handleGenerateSectionInfoProposition({
-                              sectionInfoId: presentation.sectionInfos[0]?.id,
-                              cvMinuteSectionId: presentation.id,
-                              section: 'presentation',
-                            }),
+                          conseil:
+                            presentation.sectionInfos?.[0]?.advices?.find(
+                              (a) =>
+                                a.sectionInfoId ===
+                                  presentation.sectionInfos?.[0]?.id &&
+                                a.type === 'advice',
+                            )?.content,
+                          onGenerate: async () => {
+                            if (presentation.sectionInfos) {
+                              await handleGenerateSectionInfoProposition({
+                                sectionInfoId: presentation.sectionInfos[0]?.id,
+                                cvMinuteSectionId: presentation.id,
+                                section: 'presentation',
+                              });
+                            }
+                          },
                           large: true,
                           openly: true,
                           suggestionTitle: 'Idées de présentation',
                           suggestionKey: 'content',
-                          sectionInfoId: presentation.sectionInfos[0]?.id,
+                          sectionInfoId: presentation.sectionInfos?.[0]?.id,
                           cvMinuteSectionId: presentation.id,
                           updateCvMinuteSection: true,
                           fields: [
@@ -1321,12 +1330,12 @@ export default function CvPreview() {
                               key: 'content',
                               requiredError: 'Présentation requise',
                               placeholder:
-                                presentation?.sectionInfos[0]?.content ??
+                                presentation?.sectionInfos?.[0]?.content ??
                                 'Présentation...',
                               value:
-                                presentation?.sectionInfos[0]?.content ?? '',
+                                presentation?.sectionInfos?.[0]?.content ?? '',
                               initialValue:
-                                presentation?.sectionInfos[0]?.content ?? '',
+                                presentation?.sectionInfos?.[0]?.content ?? '',
                             },
                           ],
                         };
@@ -1342,7 +1351,7 @@ export default function CvPreview() {
                       className="step-8 flex justify-between text-[#364153] hover:bg-[#f3f4f6] p-[0.5em] text-[0.875em] whitespace-pre-line"
                     >
                       <p>
-                        {presentation?.sectionInfos[0]?.content ??
+                        {presentation?.sectionInfos?.[0]?.content ??
                           'Résumé du profil professionnel'}
                       </p>
                     </div>
@@ -1674,9 +1683,11 @@ export default function CvPreview() {
                               </div>
                               <div
                                 className={`text-[0.75em] ${getSpacing(
-                                  (experiences.sectionInfos.length /
-                                    getParagraphCount(item.content)) *
-                                    experiences.sectionInfos.length,
+                                  experiences.sectionInfos
+                                    ? (experiences.sectionInfos.length /
+                                        getParagraphCount(item.content)) *
+                                        experiences.sectionInfos.length
+                                    : 6,
                                 )}`}
                                 dangerouslySetInnerHTML={{
                                   __html: DOMPurify.sanitize(item.content),
@@ -1862,94 +1873,96 @@ export default function CvPreview() {
                       Score de Matching
                     </h3>
 
-                    <div className="flex justify-around items-center mb-8">
-                      <div className="text-center">
-                        <p className="text-sm text-gray-600 mb-2">
-                          Score initial
-                        </p>
-                        <div className="relative inline-flex items-center justify-center">
-                          <svg className="w-20 h-20">
-                            <circle
-                              className="text-gray-200"
-                              strokeWidth="5"
-                              stroke="currentColor"
-                              fill="transparent"
-                              r="30"
-                              cx="40"
-                              cy="40"
-                            />
-                            <circle
-                              className="text-blue-600"
-                              strokeWidth="5"
-                              strokeLinecap="round"
-                              stroke="currentColor"
-                              fill="transparent"
-                              r="30"
-                              cx="40"
-                              cy="40"
-                              strokeDasharray={`${2 * Math.PI * 30}`}
-                              strokeDashoffset={`${
-                                2 *
-                                Math.PI *
-                                30 *
-                                (1 - cvMinute.evaluation.initialScore / 100)
-                              }`}
-                              transform="rotate(90 40 40)"
-                            />
-                          </svg>
-                          <span className="absolute text-lg font-bold">
-                            {cvMinute.evaluation.initialScore}%
-                          </span>
+                    {cvMinute.evaluation && (
+                      <div className="flex justify-around items-center mb-8">
+                        <div className="text-center">
+                          <p className="text-sm text-gray-600 mb-2">
+                            Score initial
+                          </p>
+                          <div className="relative inline-flex items-center justify-center">
+                            <svg className="w-20 h-20">
+                              <circle
+                                className="text-gray-200"
+                                strokeWidth="5"
+                                stroke="currentColor"
+                                fill="transparent"
+                                r="30"
+                                cx="40"
+                                cy="40"
+                              />
+                              <circle
+                                className="text-blue-600"
+                                strokeWidth="5"
+                                strokeLinecap="round"
+                                stroke="currentColor"
+                                fill="transparent"
+                                r="30"
+                                cx="40"
+                                cy="40"
+                                strokeDasharray={`${2 * Math.PI * 30}`}
+                                strokeDashoffset={`${
+                                  2 *
+                                  Math.PI *
+                                  30 *
+                                  (1 - cvMinute.evaluation.initialScore / 100)
+                                }`}
+                                transform="rotate(90 40 40)"
+                              />
+                            </svg>
+                            <span className="absolute text-lg font-bold">
+                              {cvMinute.evaluation.initialScore}%
+                            </span>
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="text-center">
-                        <p className="text-sm text-gray-600 mb-2">
-                          Score actuel
-                        </p>
-                        <div className="relative inline-flex items-center justify-center">
-                          <svg className="w-20 h-20">
-                            <circle
-                              className="text-gray-200"
-                              strokeWidth="5"
-                              stroke="currentColor"
-                              fill="transparent"
-                              r="30"
-                              cx="40"
-                              cy="40"
-                            />
-                            <circle
-                              className="text-green-600"
-                              strokeWidth="5"
-                              strokeLinecap="round"
-                              stroke="currentColor"
-                              fill="transparent"
-                              r="30"
-                              cx="40"
-                              cy="40"
-                              strokeDasharray={`${2 * Math.PI * 30}`}
-                              strokeDashoffset={`${
-                                2 *
-                                Math.PI *
-                                30 *
-                                (1 -
-                                  (cvMinute.evaluation.actualScore
-                                    ? cvMinute.evaluation.actualScore
-                                    : cvMinute.evaluation.initialScore) /
-                                    100)
-                              }`}
-                              transform="rotate(90 40 40)"
-                            />
-                          </svg>
-                          <span className="absolute text-lg font-bold">
-                            {cvMinute.evaluation.actualScore
-                              ? cvMinute.evaluation.actualScore
-                              : cvMinute.evaluation.initialScore}
-                            %
-                          </span>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-600 mb-2">
+                            Score actuel
+                          </p>
+                          <div className="relative inline-flex items-center justify-center">
+                            <svg className="w-20 h-20">
+                              <circle
+                                className="text-gray-200"
+                                strokeWidth="5"
+                                stroke="currentColor"
+                                fill="transparent"
+                                r="30"
+                                cx="40"
+                                cy="40"
+                              />
+                              <circle
+                                className="text-green-600"
+                                strokeWidth="5"
+                                strokeLinecap="round"
+                                stroke="currentColor"
+                                fill="transparent"
+                                r="30"
+                                cx="40"
+                                cy="40"
+                                strokeDasharray={`${2 * Math.PI * 30}`}
+                                strokeDashoffset={`${
+                                  2 *
+                                  Math.PI *
+                                  30 *
+                                  (1 -
+                                    (cvMinute.evaluation.actualScore
+                                      ? cvMinute.evaluation.actualScore
+                                      : cvMinute.evaluation.initialScore) /
+                                      100)
+                                }`}
+                                transform="rotate(90 40 40)"
+                              />
+                            </svg>
+                            <span className="absolute text-lg font-bold">
+                              {cvMinute.evaluation.actualScore
+                                ? cvMinute.evaluation.actualScore
+                                : cvMinute.evaluation.initialScore}
+                              %
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
                     <div className="mb-6">
                       <h4 className="text-base font-semibold mb-2">
@@ -1964,7 +1977,7 @@ export default function CvPreview() {
                         vos objectifs.
                       </p>
                       <p className="text-sm text-gray-500 mt-2 italic">
-                        {cvMinute.evaluation.content}
+                        {cvMinute.evaluation?.content}
                       </p>
                     </div>
 

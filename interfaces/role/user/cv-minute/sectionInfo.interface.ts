@@ -16,8 +16,8 @@ export interface SectionInfoInterface {
   iconSize?: number;
   cvMinuteSectionId: number;
 
-  evaluation: EvaluationInterface;
-  advices: AdviceInterface[];
+  evaluation?: EvaluationInterface;
+  advices?: AdviceInterface[];
   qualiCarriereCompetences?: QualiCarriereCompetenceInteface[];
   qualiCarriereResumes?: QualiCarriereResumeInterface[];
 

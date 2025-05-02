@@ -1,7 +1,7 @@
-export interface CvThequeCompetenceInterface {
+export interface UserDomainInterface {
   id: number;
   content: string;
-  cvCritereId: number;
+  userId: number;
 
   createdAt: Date;
   updatedAt: Date;

@@ -2,6 +2,7 @@ import { AdviceInterface } from './advice.interface';
 import { CvMinuteSectionInterface } from './cvMinuteSection.interface';
 import { EvaluationInterface } from './evaluation.interface';
 import { FileInterface } from '../../../file.interface';
+import { CvThequeViewInterface } from '../../recruiter/cvtheque/cvtheque-view.interface';
 
 export interface CvMinuteInterface {
   id: number;
@@ -13,10 +14,12 @@ export interface CvMinuteInterface {
   userId: number;
   visible: boolean;
 
-  files: FileInterface[];
-  advices: AdviceInterface[];
-  cvMinuteSections: CvMinuteSectionInterface[];
-  evaluation: EvaluationInterface;
+  files?: FileInterface[];
+  advices?: AdviceInterface[];
+  cvMinuteSections?: CvMinuteSectionInterface[];
+  evaluation?: EvaluationInterface;
+  cvThequeViews?: CvThequeViewInterface[];
+
   createdAt: Date;
   updatedAt: Date;
 }

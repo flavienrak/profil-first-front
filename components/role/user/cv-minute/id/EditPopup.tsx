@@ -81,12 +81,12 @@ export default function EditPopup({
 }: EditPopupInterface) {
   const dispatch = useDispatch();
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
-  const { cvMinute, sections, cvMinuteSections } = useSelector(
+  const { cvMinute, sections } = useSelector(
     (state: RootState) => state.cvMinute,
   );
   const getCvMinuteSection = (value: string) => {
     const section = sections.find((s) => s.name === value);
-    return cvMinuteSections.find((c) => c.sectionId === section?.id);
+    return cvMinute?.cvMinuteSections?.find((c) => c.sectionId === section?.id);
   };
   const experiences = getCvMinuteSection('experiences');
 
@@ -136,7 +136,7 @@ export default function EditPopup({
 
   React.useEffect(() => {
     if (popup.withScore) {
-      const sectionInfo = experiences?.sectionInfos.find(
+      const sectionInfo = experiences?.sectionInfos?.find(
         (item) => item.id === popup.sectionInfoId,
       );
 
@@ -149,22 +149,25 @@ export default function EditPopup({
   React.useEffect(() => {
     if (cvMinute?.advices && popup.suggestionKey === 'title') {
       setSuggestions(cvMinute.advices.filter((a) => a.type === 'suggestion'));
-    } else if (cvMinuteSections && popup.suggestionKey === 'content') {
-      const cvMinuteSection = cvMinuteSections.find(
+    } else if (
+      cvMinute?.cvMinuteSections &&
+      popup.suggestionKey === 'content'
+    ) {
+      const cvMinuteSection = cvMinute?.cvMinuteSections.find(
         (s) => s.id === popup.cvMinuteSectionId,
       );
 
-      const sectionInfo = cvMinuteSection?.sectionInfos.find(
+      const sectionInfo = cvMinuteSection?.sectionInfos?.find(
         (s) => s.id === popup.sectionInfoId,
       );
 
-      if (sectionInfo) {
+      if (sectionInfo && sectionInfo.advices) {
         setSuggestions(
           sectionInfo.advices.filter((a) => a.type === 'suggestion'),
         );
       }
     }
-  }, [cvMinute?.advices, cvMinuteSections, popup.suggestionKey]);
+  }, [cvMinute?.advices, cvMinute?.cvMinuteSections, popup.suggestionKey]);
 
   const dynamicSchema = (fields: FieldInterface[]) => {
     const shape: Record<string, z.ZodTypeAny> = {};

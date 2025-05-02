@@ -8,6 +8,7 @@ import StepLoader from '../StepLoader';
 import Title from '@/components/utils/role/user/Title';
 import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
 
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -89,6 +90,9 @@ export default function QualiCarriereChat() {
         formData,
       });
 
+      toast.success('Entretien terminé !', {
+        description: 'Génération des synthèses en cours...',
+      });
       if (res.nextStep) {
         router.push('/quali-carriere/2');
       } else if (res.nextQuestion) {

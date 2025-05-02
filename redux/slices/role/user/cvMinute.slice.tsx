@@ -11,13 +11,11 @@ const initialState: {
   cvMinutes: CvMinuteInterface[];
   files: FileInterface[];
   sections: SectionInterface[];
-  cvMinuteSections: CvMinuteSectionInterface[];
 } = {
   cvMinute: null,
   cvMinutes: [],
   files: [],
   sections: [],
-  cvMinuteSections: [],
 };
 
 const cvMinuteSlice = createSlice({
@@ -30,7 +28,6 @@ const cvMinuteSlice = createSlice({
         cvMinutes: CvMinuteInterface[];
         files: FileInterface[];
         sections: SectionInterface[];
-        cvMinuteSections: CvMinuteSectionInterface[];
       } = action.payload;
 
       if (data.cvMinute) {
@@ -44,9 +41,6 @@ const cvMinuteSlice = createSlice({
       }
       if (data.sections) {
         state.sections = data.sections;
-      }
-      if (data.cvMinuteSections) {
-        state.cvMinuteSections = data.cvMinuteSections;
       }
     },
     updateCvMinuteReducer: (state, action) => {
@@ -76,15 +70,15 @@ const cvMinuteSlice = createSlice({
         }
       }
 
-      if (data.cvMinuteSection) {
-        const index = state.cvMinuteSections.findIndex(
+      if (data.cvMinuteSection && state.cvMinute?.cvMinuteSections) {
+        const index = state.cvMinute.cvMinuteSections.findIndex(
           (c) => c.id === data.cvMinuteSection?.id,
         );
 
         if (index !== -1) {
-          state.cvMinuteSections[index] = data.cvMinuteSection;
+          state.cvMinute.cvMinuteSections[index] = data.cvMinuteSection;
         } else {
-          state.cvMinuteSections.push(data.cvMinuteSection);
+          state.cvMinute.cvMinuteSections.push(data.cvMinuteSection);
         }
       }
 
@@ -134,18 +128,20 @@ const cvMinuteSlice = createSlice({
         cvMinuteSectionId: number;
       } = action.payload;
 
-      state.cvMinuteSections.forEach((c) => {
-        if (c.id === data.cvMinuteSectionId) {
-          c.sectionInfos = c.sectionInfos.map((s) => {
-            if (s.id === data.section.id) {
-              return { ...s, order: data.section.order };
-            } else if (s.id === data.targetSection.id) {
-              return { ...s, order: data.targetSection.order };
-            }
-            return s;
-          });
-        }
-      });
+      if (state.cvMinute?.cvMinuteSections) {
+        state.cvMinute.cvMinuteSections.forEach((c) => {
+          if (c.id === data.cvMinuteSectionId && c.sectionInfos) {
+            c.sectionInfos = c.sectionInfos.map((s) => {
+              if (s.id === data.section.id) {
+                return { ...s, order: data.section.order };
+              } else if (s.id === data.targetSection.id) {
+                return { ...s, order: data.targetSection.order };
+              }
+              return s;
+            });
+          }
+        });
+      }
     },
     updateSectionInfoPropositionReducer: (state, action) => {
       const data: {
@@ -153,16 +149,18 @@ const cvMinuteSlice = createSlice({
         cvMinuteSectionId: number;
       } = action.payload;
 
-      state.cvMinuteSections.forEach((c) => {
-        if (c.id === data.cvMinuteSectionId) {
-          c.sectionInfos = c.sectionInfos.map((s) => {
-            if (s.id === data.sectionInfo.id) {
-              return { ...s, advices: data.sectionInfo.advices };
-            }
-            return s;
-          });
-        }
-      });
+      if (state.cvMinute?.cvMinuteSections) {
+        state.cvMinute.cvMinuteSections.forEach((c) => {
+          if (c.id === data.cvMinuteSectionId && c.sectionInfos) {
+            c.sectionInfos = c.sectionInfos.map((s) => {
+              if (s.id === data.sectionInfo.id) {
+                return { ...s, advices: data.sectionInfo.advices };
+              }
+              return s;
+            });
+          }
+        });
+      }
     },
     updateSectionInfoScoreReducer: (state, action) => {
       const data: {
@@ -171,16 +169,18 @@ const cvMinuteSlice = createSlice({
         cvMinuteSectionId: number;
       } = action.payload;
 
-      state.cvMinuteSections.forEach((c) => {
-        if (c.id === data.cvMinuteSectionId) {
-          c.sectionInfos = c.sectionInfos.map((s) => {
-            if (s.id === data.sectionInfoId) {
-              return { ...s, evaluation: data.evaluation };
-            }
-            return s;
-          });
-        }
-      });
+      if (state.cvMinute?.cvMinuteSections) {
+        state.cvMinute.cvMinuteSections.forEach((c) => {
+          if (c.id === data.cvMinuteSectionId && c.sectionInfos) {
+            c.sectionInfos = c.sectionInfos.map((s) => {
+              if (s.id === data.sectionInfoId) {
+                return { ...s, evaluation: data.evaluation };
+              }
+              return s;
+            });
+          }
+        });
+      }
     },
     updateCvMinuteSectionOrderReducer: (state, action) => {
       const data: {
@@ -188,17 +188,21 @@ const cvMinuteSlice = createSlice({
         targetCvMinuteSection: CvMinuteSectionInterface;
       } = action.payload;
 
-      state.cvMinuteSections = state.cvMinuteSections.map((c) => {
-        if (c.id === data.cvMinuteSection.id) {
-          return { ...c, sectionOrder: data.cvMinuteSection.sectionOrder };
-        } else if (c.id === data.targetCvMinuteSection.id) {
-          return {
-            ...c,
-            sectionOrder: data.targetCvMinuteSection.sectionOrder,
-          };
-        }
-        return c;
-      });
+      if (state.cvMinute?.cvMinuteSections) {
+        state.cvMinute.cvMinuteSections = state.cvMinute.cvMinuteSections.map(
+          (c) => {
+            if (c.id === data.cvMinuteSection.id) {
+              return { ...c, sectionOrder: data.cvMinuteSection.sectionOrder };
+            } else if (c.id === data.targetCvMinuteSection.id) {
+              return {
+                ...c,
+                sectionOrder: data.targetCvMinuteSection.sectionOrder,
+              };
+            }
+            return c;
+          },
+        );
+      }
     },
     deleteSectionInfoReducer: (state, action) => {
       const data: {
@@ -206,22 +210,27 @@ const cvMinuteSlice = createSlice({
         cvMinuteSectionId: number;
       } = action.payload;
 
-      state.cvMinuteSections.forEach((c) => {
-        if (c.id === data.cvMinuteSectionId) {
-          c.sectionInfos = c.sectionInfos.filter(
-            (s) => s.id !== data.section.id,
-          );
-        }
-      });
+      if (state.cvMinute?.cvMinuteSections) {
+        state.cvMinute.cvMinuteSections.forEach((c) => {
+          if (c.id === data.cvMinuteSectionId && c.sectionInfos) {
+            c.sectionInfos = c.sectionInfos.filter(
+              (s) => s.id !== data.section.id,
+            );
+          }
+        });
+      }
     },
     deleteCvMinuteSectionReducer: (state, action) => {
       const data: {
         cvMinuteSection: CvMinuteInterface;
       } = action.payload;
 
-      state.cvMinuteSections = state.cvMinuteSections.filter(
-        (c) => c.id !== data.cvMinuteSection.id,
-      );
+      if (state.cvMinute?.cvMinuteSections) {
+        state.cvMinute.cvMinuteSections =
+          state.cvMinute.cvMinuteSections.filter(
+            (c) => c.id !== data.cvMinuteSection.id,
+          );
+      }
     },
   },
 });
