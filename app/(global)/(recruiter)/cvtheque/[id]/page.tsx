@@ -1,6 +1,16 @@
 import React from 'react';
-import CvThequeDetails from '@/components/role/recruiter/cvtheque/id/CvThequeDetails';
+
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'CVThèque Details',
+  description: 'CVThèque Details Profil First',
+};
 
 export default function CvThequeDetailsPage() {
-  return <CvThequeDetails />;
+  return (
+    <div className="h-full flex items-center justify-center text-gray-400">
+      Sélectionnez un profil pour voir le CV
+    </div>
+  );
 }

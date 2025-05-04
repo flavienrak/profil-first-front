@@ -523,6 +523,9 @@ export default function CvThequeComponent() {
               Sélectionnez un profil
             </h2>
           </div>
+          <button className="px-4 py-2 bg-[#06B6D4] text-white rounded-lg pointer-events-none">
+            Contacter
+          </button>
         </div>
         <div className="relative flex-1 bg-gray-50 rounded-lg overflow-auto">
           <div className="flex items-center justify-center h-full text-gray-400">

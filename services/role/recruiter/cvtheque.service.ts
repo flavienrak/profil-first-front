@@ -1,21 +1,50 @@
 import api from '@/axios/axios.instance';
 import {
-  AddPayload,
-  UpdatePayload,
-} from '@/components/role/recruiter/cvtheque/id/CvThequeDetails';
+  AddCvThequeCritereInterface,
+  UpdateCvThequeCritereInterface,
+} from '@/interfaces/role/recruiter/cvtheque-form';
 
 const cvThequePrefix = '/role/recruiter/cvtheque';
+
+const getCvThequeHistory = async () => {
+  try {
+    const res = await api.get(`${cvThequePrefix}/history`);
+    return res.data;
+  } catch (error) {
+    return { error: `GET CVTHEQUE HISTORY ERROR: ${error}` };
+  }
+};
+
+const addCvThequeHistory = async (id: number) => {
+  try {
+    const res = await api.post(`${cvThequePrefix}/history/${id}`);
+    return res.data;
+  } catch (error) {
+    return { error: `ADD CVTHEQUE HISTORY ERROR: ${error}` };
+  }
+};
+
+const getCvAnonymService = async (id: number, cvAnonymId: number) => {
+  try {
+    const res = await api.get(
+      `${cvThequePrefix}/${id}/cv-anonym/${cvAnonymId}`,
+    );
+    return res.data;
+  } catch (error) {
+    return { error: `GET CV ANONYM ERROR: ${error}` };
+  }
+};
 
 const getCvThequeCritereService = async (id: number) => {
   try {
     const res = await api.get(`${cvThequePrefix}/${id}`);
     return res.data;
   } catch (error) {
-    return { error: `GET CV CRITERE ERROR: ${error}` };
+    return { error: `GET CVTHEQUE CRITERE ERROR: ${error}` };
   }
 };
 
-const addCvThequeCritereService = async (data: AddPayload) => {
+const addCvThequeCritereService = async (data: AddCvThequeCritereInterface) => {
   try {
     const res = await api.post(`${cvThequePrefix}`, {
       position: data.position,
@@ -29,12 +58,12 @@ const addCvThequeCritereService = async (data: AddPayload) => {
     });
     return res.data;
   } catch (error) {
-    return { error: `ADD CV CRITERE ERROR: ${error}` };
+    return { error: `ADD CVTHEQUE CRITERE ERROR: ${error}` };
   }
 };
 
 const updateCvThequeCritereService = async (
-  data: { id: number } & UpdatePayload,
+  data: { id: number } & UpdateCvThequeCritereInterface,
 ) => {
   try {
     const res = await api.put(`${cvThequePrefix}/${data.id}`, {
@@ -49,20 +78,13 @@ const updateCvThequeCritereService = async (
     });
     return res.data;
   } catch (error) {
-    return { error: `UPDATE CV CRITERE ERROR: ${error}` };
-  }
-};
-
-const addCvThequeHistory = async (id: number) => {
-  try {
-    const res = await api.post(`${cvThequePrefix}/${id}/history`);
-    return res.data;
-  } catch (error) {
-    return { error: `ADD CVTHEQUE HISTORY ERROR: ${error}` };
+    return { error: `UPDATE CVTHEQUE CRITERE ERROR: ${error}` };
   }
 };
 
 export {
+  getCvThequeHistory,
+  getCvAnonymService,
   getCvThequeCritereService,
   addCvThequeCritereService,
   updateCvThequeCritereService,

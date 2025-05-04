@@ -270,7 +270,6 @@ export default function CvPreview() {
 
   React.useEffect(() => {
     if (tempData) {
-      console.log('tempData:', tempData);
       handleOpenPopup(tempData);
       setTempData(null);
     }

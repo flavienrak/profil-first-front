@@ -75,10 +75,20 @@ const domains = [
   },
 ];
 
+const cvThequesections = [
+  { name: 'title' },
+  { name: 'presentation' },
+  { name: 'experiences' },
+  { name: 'diplomes', order: 1 },
+  { name: 'formation', order: 2 },
+  { name: 'competence', order: 3 },
+];
+
 export {
   questionNumber,
   userRoutes,
   recruiterRoutes,
   educationLevels,
   domains,
+  cvThequesections,
 };
