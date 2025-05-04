@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import PrimaryButton from '@/components/utils/button/PrimaryButton';
+import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
 
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

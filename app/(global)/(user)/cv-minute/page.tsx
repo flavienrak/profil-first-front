@@ -1,5 +1,5 @@
 import React from 'react';
-import CvMinuteComponent from '@/components/user/cv-minute/CvMinuteComponent';
+import CvMinuteComponent from '@/components/role/user/cv-minute/CvMinuteComponent';
 
 import { Metadata } from 'next';
 

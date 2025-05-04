@@ -4,11 +4,13 @@ const initialState: {
   mode: 'light' | 'dark';
   showMenu: boolean;
   showFooter: boolean;
+  showCritere: boolean;
   fontSize: number;
 } = {
   mode: 'light',
   showMenu: false,
   showFooter: true,
+  showCritere: true,
   fontSize: 16,
 };
 
@@ -17,7 +19,8 @@ const persistSlice = createSlice({
   initialState,
   reducers: {
     updatePersistReducer: (state, action) => {
-      const { mode, showMenu, showFooter, fontSize } = action.payload;
+      const { mode, showMenu, showFooter, showCritere, fontSize } =
+        action.payload;
       if (mode) {
         state.mode = mode;
       }
@@ -26,6 +29,9 @@ const persistSlice = createSlice({
       }
       if (showFooter !== undefined) {
         state.showFooter = showFooter;
+      }
+      if (showCritere !== undefined) {
+        state.showCritere = showCritere;
       }
       if (fontSize) {
         state.fontSize = fontSize;

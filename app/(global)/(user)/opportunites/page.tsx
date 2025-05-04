@@ -1,5 +1,5 @@
 import React from 'react';
-import OpportunitesCompontent from '@/components/user/opportunites/OpportunitesCompontent';
+import OpportunitesCompontent from '@/components/role/user/opportunites/OpportunitesCompontent';
 
 import { Metadata } from 'next';
 

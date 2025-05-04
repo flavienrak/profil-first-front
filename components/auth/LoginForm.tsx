@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import PrimaryButton from '@/components/utils/button/PrimaryButton';
+import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
 
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -185,7 +185,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
                       checked={field.value}
                       onCheckedChange={field.onChange}
                       id="remember-me"
-                      className="border-muted-foreground/40 data-[state=checked]:bg-[var(--primary-color)] data-[state=checked]:border-[var(--primary-color)] cursor-pointer"
+                      className="border-muted-foreground/40 data-[state=checked]:bg-[var(--u-primary-color)] data-[state=checked]:border-[var(--u-primary-color)] cursor-pointer"
                     />
                   </FormControl>
                   <FormLabel
@@ -205,7 +205,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
             isLoading={isLoading}
           />
           {showForgot && (
-            <p className="text-center text-sm text-[var(--primary-color)] hover:underline">
+            <p className="text-center text-sm text-[var(--u-primary-color)] hover:underline">
               Mot de passe oublié ?
             </p>
           )}

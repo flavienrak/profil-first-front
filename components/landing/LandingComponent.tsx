@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Popup from '@/components/utils/Popup';
 import AuthComponent from '@/components/auth/AuthComponent';
-import PrimaryButton from '@/components/utils/button/PrimaryButton';
+import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
 
 import {
   Users,
@@ -85,13 +85,13 @@ export default function LandingComponent() {
             </span>
           </h1>
           <p className="text-xl max-w-2xl mx-auto mb-6 flex justify-center items-center gap-6">
-            <span className="bg-gradient-to-r from-[#6B2CF5] via-[#4461F2] to-[#06B6D4] bg-clip-text text-transparent font-semibold">
+            <span className="bg-gradient-to-r from-[var(--u-primary-color)] via-[#4461F2] to-[#06B6D4] bg-clip-text text-transparent font-semibold">
               3 clics pour un CV
             </span>
-            <span className="bg-gradient-to-r from-[#6B2CF5] via-[#4461F2] to-[#06B6D4] bg-clip-text text-transparent font-semibold">
+            <span className="bg-gradient-to-r from-[var(--u-primary-color)] via-[#4461F2] to-[#06B6D4] bg-clip-text text-transparent font-semibold">
               3 clics pour un talent
             </span>
-            <span className="bg-gradient-to-r from-[#6B2CF5] via-[#4461F2] to-[#06B6D4] bg-clip-text text-transparent font-semibold">
+            <span className="bg-gradient-to-r from-[var(--u-primary-color)] via-[#4461F2] to-[#06B6D4] bg-clip-text text-transparent font-semibold">
               3 clics pour un entretien
             </span>
           </p>
@@ -191,13 +191,13 @@ export default function LandingComponent() {
           <div className="flex flex-col items-center gap-8">
             {/* Candidate Section */}
             <motion.div
-              className="group bg-gradient-to-br from-[#6B2CF5] to-[#8B5CF6] rounded-xl p-6 hover:opacity-95 transition-all duration-300 cursor-pointer shadow-lg"
+              className="group bg-gradient-to-br from-[var(--u-primary-color)] to-[#8B5CF6] rounded-xl p-6 hover:opacity-95 transition-all duration-300 cursor-pointer shadow-lg"
               variants={fadeIn}
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
               <div className="flex flex-col items-center text-center space-y-4">
-                <div className="p-4 bg-[#6B2CF5]/20 rounded-full">
+                <div className="p-4 bg-[var(--u-primary-color)]/20 rounded-full">
                   <Users className="w-12 h-12 text-white" />
                 </div>
                 <h2 className="text-3xl font-bold text-white">
@@ -223,7 +223,7 @@ export default function LandingComponent() {
                 </div>
                 <Link
                   href="/candidat"
-                  className="mt-6 px-8 py-3 bg-white text-[#6B2CF5] rounded-full font-semibold hover:bg-purple-50 transition-colors duration-300 shadow-lg inline-block"
+                  className="mt-6 px-8 py-3 bg-white text-[var(--u-primary-color)] rounded-full font-semibold hover:bg-purple-50 transition-colors duration-300 shadow-lg inline-block"
                 >
                   Démarrer gratuitement
                 </Link>
@@ -231,7 +231,7 @@ export default function LandingComponent() {
             </motion.div>
             <button
               onClick={() => handleShowAuth('user')}
-              className="px-8 py-3 bg-[#6B2CF5] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 cursor-pointer"
+              className="px-8 py-3 bg-[var(--u-primary-color)] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 cursor-pointer"
             >
               Je me connecte
             </button>
@@ -457,7 +457,7 @@ export default function LandingComponent() {
               <span className="text-lg font-medium text-gray-600 mb-3">
                 Candidats
               </span>
-              <button className="px-8 py-4 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 shadow-lg">
+              <button className="px-8 py-4 bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 shadow-lg">
                 Go faire mon CV
               </button>
             </div>

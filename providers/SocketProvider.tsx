@@ -5,26 +5,31 @@ import io, { Socket } from 'socket.io-client';
 
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { QualiCarriereChatInterface } from '@/interfaces/quali-carriere/chatInterface';
+import { QualiCarriereChatInterface } from '@/interfaces/role/user/quali-carriere/chatInterface';
 import {
   newMessageReducer,
   setQuestionReducer,
-} from '@/redux/slices/qualiCarriere.slice';
-import { QualiCarriereQuestionInteface } from '@/interfaces/quali-carriere/questionInterface';
-import { SectionInfoInterface } from '@/interfaces/cv-minute/sectionInfo.interface';
+} from '@/redux/slices/role/user/qualiCarriere.slice';
+import { QualiCarriereQuestionInteface } from '@/interfaces/role/user/quali-carriere/questionInterface';
+import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionInfo.interface';
 
 interface SocketContextType {
   isSocketReady: boolean;
   onlineUsers: string[];
   isLoadingResponse: boolean;
-  setIsLoadingResponse: React.Dispatch<React.SetStateAction<boolean>>;
   isLoadingQuestion: boolean;
+  setIsLoadingResponse: React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoadingQuestion: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SocketContext = React.createContext<SocketContextType | undefined>(
-  undefined,
-);
+export const SocketContext = React.createContext<SocketContextType>({
+  isSocketReady: false,
+  onlineUsers: [],
+  isLoadingResponse: false,
+  isLoadingQuestion: false,
+  setIsLoadingResponse: () => {},
+  setIsLoadingQuestion: () => {},
+});
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 

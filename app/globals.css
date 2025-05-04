@@ -4,10 +4,14 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* --primary-color: #4461f2;
-  --primary-color: #8b5cf6; */
-  --primary-color: #6b2cf5;
-  --secondary-color: #4461f2;
+  /* --u-primary-color: #4461f2;
+  --u-primary-color: #8b5cf6; */
+  --u-primary-color: #6b2cf5;
+  --u-secondary-color: #4461f2;
+
+  --r-primary-color: #06b6d4;
+  --r-secondary-color: #1e3a8a;
+
   --tertiary-color: #22d3ee;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -131,7 +135,7 @@
 }
 
 *::selection {
-  background: var(--secondary-color);
+  background: var(--u-secondary-color);
   color: #fff;
 }
 

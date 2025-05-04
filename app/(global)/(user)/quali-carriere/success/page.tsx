@@ -1,5 +1,5 @@
 import React from 'react';
-import QualiCarriereSuccess from '@/components/user/quali-carriere/QualiCarriereSuccess';
+import QualiCarriereSuccess from '@/components/role/user/quali-carriere/QualiCarriereSuccess';
 
 import { Metadata } from 'next';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import CvOffresComponent from '@/components/user/cv-offres/CvOffresComponent';
+import CvOffresComponent from '@/components/role/user/cv-offres/CvOffresComponent';
 
 import { Metadata } from 'next';
 

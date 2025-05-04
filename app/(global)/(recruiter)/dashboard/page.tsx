@@ -1,5 +1,5 @@
 import React from 'react';
-import DashboardComponent from '@/components/recruiter/dashboard/DashboardComponent';
+import DashboardComponent from '@/components/role/recruiter/dashboard/DashboardComponent';
 
 import { Metadata } from 'next';
 

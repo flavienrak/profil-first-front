@@ -4,8 +4,9 @@ import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import persistSlice from './slices/persist.slice';
 import userSlice from './slices/user.slice';
-import cvMinuteSlice from './slices/cvMinute.slice';
-import qualiCarriereSlice from './slices/qualiCarriere.slice';
+import cvMinuteSlice from './slices/role/user/cvMinute.slice';
+import qualiCarriereSlice from './slices/role/user/qualiCarriere.slice';
+import cvThequeSlice from './slices/role/recruiter/cvtheque.slice';
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   user: userSlice,
   cvMinute: cvMinuteSlice,
   qualiCarriere: qualiCarriereSlice,
+  cvTheque: cvThequeSlice,
   persistInfos: persistSlice,
 });
 

@@ -2,13 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
-import StepLoader from '@/components/user/quali-carriere/step/StepLoader';
+import StepLoader from '@/components/role/user/quali-carriere/step/StepLoader';
 import Popup from '@/components/utils/Popup';
 
 import { useParams, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { getQuestionService } from '@/services/qualiCarriere.service';
-import { setQuestionReducer } from '@/redux/slices/qualiCarriere.slice';
+import { getQuestionService } from '@/services/role/user/qualiCarriere.service';
+import { setQuestionReducer } from '@/redux/slices/role/user/qualiCarriere.slice';
 import { RootState } from '@/redux/store';
 import { SocketContext } from '@/providers/SocketProvider';
 
@@ -73,7 +73,7 @@ export default function StepLayout({
             <Link
               href={'/cv-offres'}
               onClick={() => setIsLoading(true)}
-              className={`w-full flex justify-center items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#6B2CF5] to-[#8B5CF6] text-white rounded-full font-semibold ${
+              className={`w-full flex justify-center items-center gap-2 px-8 py-3 bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white rounded-full font-semibold ${
                 isLoading
                   ? 'opacity-80 pointer-events-none'
                   : 'hover:opacity-80 transition-opacity duration-150 cursor-pointer'
