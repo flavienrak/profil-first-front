@@ -155,7 +155,7 @@ export default function PdfTempldate({
                     }}
                   >
                     <View>
-                      {c.icon && (
+                      {c.icon && c.iconSize && (
                         <LucidePDFIcon name={c.icon} size={c.iconSize} />
                       )}
                     </View>
@@ -204,6 +204,7 @@ export default function PdfTempldate({
                       <Text
                         style={{
                           fontSize: '11px',
+                          lineHeight: '13px',
                           textTransform: 'uppercase',
                           fontWeight: 'semibold',
                         }}
@@ -245,7 +246,7 @@ export default function PdfTempldate({
               minHeight: '100%',
               display: 'flex',
               flexDirection: 'column',
-              gap: '16px',
+              gap: '14px',
               padding: '16px',
               backgroundColor: '#fff',
             }}
@@ -311,6 +312,7 @@ export default function PdfTempldate({
                     width: '100%',
                     display: 'flex',
                     justifyContent: 'space-between',
+                    gap: '12px',
                   }}
                 >
                   {experiences.map((item) => (
@@ -320,7 +322,7 @@ export default function PdfTempldate({
                         flex: '1',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '6px',
+                        gap: '8px',
                       }}
                     >
                       <View
@@ -368,7 +370,7 @@ export default function PdfTempldate({
                         <View key={`experienceText-${i}`}>
                           <HtmlToPdfText
                             html={line}
-                            baseStyle={{ fontSize: '9px', lineHeight: '13px' }}
+                            baseStyle={{ fontSize: '10px', lineHeight: '14px' }}
                           />
                         </View>
                       ))}

@@ -110,10 +110,10 @@ export default function HtmlToPdfText({
         flexDirection: 'column',
         gap:
           filterChildren(document.children).length > 8
-            ? '4px'
-            : filterChildren(document.children).length > 4
             ? '6px'
-            : '8px',
+            : filterChildren(document.children).length > 4
+            ? '8px'
+            : '10px',
       }}
     >
       {filterChildren(document.children).map((node, i) =>

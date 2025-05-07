@@ -42,6 +42,28 @@ const cvThequeSlice = createSlice({
       state.cvAnonym = cvAnonym;
       state.sections = sections;
     },
+    saveCvThequeCritereReducer: (state, action) => {
+      const { cvThequeCritere }: { cvThequeCritere: CvThequeCritereInterface } =
+        action.payload;
+
+      const existCvThequeCritere = state.history.find(
+        (c) => c.id === cvThequeCritere.id,
+      );
+
+      if (existCvThequeCritere) {
+        const newCvThequeCritere = {
+          ...existCvThequeCritere,
+          ...cvThequeCritere,
+        };
+
+        state.history = [
+          newCvThequeCritere,
+          ...state.history.filter((item) => item.id !== cvThequeCritere.id),
+        ];
+      }
+
+      state.cvThequeCritere = { ...state.cvThequeCritere, ...cvThequeCritere };
+    },
     resetCvAnonymReducer: (state) => {
       state.cvAnonym = null;
       state.sections = [];
@@ -56,6 +78,7 @@ export const {
   setCvThequeHistoryReducer,
   setCvThequeCritereReducer,
   setCvAnonymReducer,
+  saveCvThequeCritereReducer,
   resetCvAnonymReducer,
   resetCvThequeReducer,
 } = cvThequeSlice.actions;

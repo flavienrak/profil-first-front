@@ -60,7 +60,15 @@ export const cvCritereSchema = z.object({
     z.literal(''),
   ]),
   localisation: z.string().trim(),
-  distance: z.number().min(0).optional(),
+  distance: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      const trimmed = val.trim();
+      if (trimmed === '') return undefined;
+      const num = Number(trimmed);
+      return isNaN(num) ? undefined : num;
+    }
+    return val;
+  }, z.number().min(0).optional()),
 });
 
 export type CvCritereFormValues = z.infer<typeof cvCritereSchema>;
@@ -110,6 +118,8 @@ export default function CvThequeComponent() {
 
   const onSubmit = async (data: CvCritereFormValues) => {
     const parseRes = cvCritereSchema.safeParse(data);
+
+    console.log(parseRes);
 
     if (parseRes.success) {
       if (!parseRes.data.domain) {
@@ -488,10 +498,8 @@ export default function CvThequeComponent() {
                         <Input
                           {...field}
                           onChange={(event) => {
-                            if (
-                              event.target.value &&
-                              !isNaN(Number(event.target.value))
-                            ) {
+                            const value = event.target.value;
+                            if (!isNaN(Number(value))) {
                               field.onChange(event);
                             }
                           }}
@@ -519,11 +527,11 @@ export default function CvThequeComponent() {
       <div className="flex-1 flex flex-col bg-white rounded-lg shadow-sm p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] bg-clip-text text-transparent">
               Sélectionnez un profil
             </h2>
           </div>
-          <button className="px-4 py-2 bg-[#06B6D4] text-white rounded-lg pointer-events-none">
+          <button className="px-4 py-2 bg-[var(--r-primary-color)] text-white rounded-lg pointer-events-none">
             Contacter
           </button>
         </div>

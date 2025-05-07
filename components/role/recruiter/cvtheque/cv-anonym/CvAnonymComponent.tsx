@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import CvAnonymPreview from './CvAnonymPreview';
+import Image from 'next/image';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -22,8 +22,6 @@ export default function CvAnonymComponent() {
   const router = useRouter();
   const params = useParams();
 
-  const [isLoading, setIsLoading] = React.useState(false);
-
   React.useEffect(() => {
     if (params.id && params.cvAnonymId) {
       if (isNaN(Number(params.id)) || !cvThequeCritere) {
@@ -32,7 +30,6 @@ export default function CvAnonymComponent() {
         router.push(`/cvtheque/${params.id}`);
       } else {
         (async () => {
-          setIsLoading(true);
           const res = await getCvAnonymService(
             cvThequeCritere.id,
             Number(params.cvAnonymId),
@@ -48,7 +45,6 @@ export default function CvAnonymComponent() {
           } else {
             router.push(`/cvtheque/${params.id}`);
           }
-          setIsLoading(false);
         })();
       }
     }
@@ -62,13 +58,169 @@ export default function CvAnonymComponent() {
     }
   }, [showCritere]);
 
+  const getCvMinuteSection = (value: string) => {
+    const section = sections.find((s) => s.name === value);
+    return cvAnonym?.cvMinuteSections?.find((c) => c.sectionId === section?.id);
+  };
+
+  const title = getCvMinuteSection('title');
+  const presentation = getCvMinuteSection('presentation');
+  const experiences = getCvMinuteSection('experiences');
+
+  const editableSections = sections.filter((s) => s.editable);
+
+  const getParagraphCount = (html: string) => {
+    const matches = html.match(/<p\b[^>]*>/g);
+    return matches ? matches.length : 1;
+  };
+
+  const getTextStyle = (weight: number) => {
+    // Clamp le résultat entre 0.65em et 1em
+    const fontSize = Math.max(0.65, Math.min(1, 1 - weight * 0.005));
+    const lineHeight =
+      fontSize < 0.75
+        ? 'leading-[1.75em]'
+        : fontSize < 0.9
+        ? 'leading-[2em]'
+        : 'leading-[2.25em]';
+
+    return `text-[${fontSize.toFixed(3)}em] ${lineHeight}`;
+  };
+
   if (cvAnonym)
     return (
       <div
         className="h-full w-full flex justify-center items-center"
         style={{ fontSize: `${fontSize}px` }}
       >
-        <CvAnonymPreview cvAnonym={cvAnonym} sections={sections} />
+        <div className="flex bg-white w-[50em] min-h-[70em] rounded-[0.75em] shadow-md">
+          <div className="w-1/3 text-white p-[0.75em] rounded-l-[0.75em] bg-gradient-to-r from-[var(--u-secondary-color)] to-[var(--r-primary-color)]">
+            <div className="h-full flex flex-col items-center">
+              <div className="w-full flex flex-col gap-[0.75em]">
+                <div className="flex justify-center">
+                  <label className="step-10 w-[10em] h-[10em] rounded-full flex items-center justify-center select-none">
+                    <Image
+                      src="/profil.png"
+                      alt="Profil"
+                      height={160}
+                      width={160}
+                      className="object-cover h-full w-full rounded-full"
+                    />
+                  </label>
+                </div>
+
+                <h2 className="text-xl text-center font-semibold">
+                  {cvAnonym.name}
+                </h2>
+              </div>
+
+              {editableSections.length > 0 && (
+                <div className="flex-1 w-full flex flex-col">
+                  {editableSections.map((s) => {
+                    const cvMinuteSection = getCvMinuteSection(s.name);
+                    if (cvMinuteSection)
+                      return (
+                        <div
+                          key={`editableSection-${s.id}`}
+                          className="relative flex-1 w-full mt-[1em] p-[0.25em]"
+                        >
+                          <h3 className="uppercase bg-[var(--u-secondary-color)] py-[0.25em] px-[0.5em] font-semibold mb-[0.5em] text-[1.125em] select-none">
+                            {cvMinuteSection?.sectionTitle}
+                          </h3>
+                          <div className="pl-[0.5em] text-[1em]">
+                            {cvMinuteSection?.sectionInfos &&
+                            cvMinuteSection?.sectionInfos.length > 0 ? (
+                              <p className="whitespace-pre-line">
+                                {cvMinuteSection.sectionInfos[0].content}
+                              </p>
+                            ) : (
+                              <p className="text-[0.875em] italic">
+                                Aucune donnée ajoutée
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="w-2/3 flex flex-col gap-[1em] p-[1em]">
+            {title && (
+              <h1 className="text-[1.75em] leading-[1.25em] font-bold text-[#101828]">
+                {title?.sectionInfos?.[0]?.content ?? 'Titre du CV'}
+              </h1>
+            )}
+
+            {presentation && (
+              <p className="text-[1.15em]">
+                {presentation?.sectionInfos?.[0]?.content ??
+                  'Résumé du profil professionnel'}
+              </p>
+            )}
+
+            {experiences && (
+              <div className="flex-1 flex flex-col gap-[0.5em]">
+                <div>
+                  <h2
+                    className="step-9 w-full uppercase text-[1.25em] font-semibold border-b-[0.125em]"
+                    style={{
+                      color: cvAnonym.primaryBg,
+                      borderColor: cvAnonym.primaryBg,
+                    }}
+                  >
+                    Expériences professionnelles
+                  </h2>
+                </div>
+
+                {experiences?.sectionInfos &&
+                experiences.sectionInfos.length > 0 ? (
+                  <div className="flex-1 flex flex-col justify-between gap-[0.375em]">
+                    {experiences.sectionInfos.map((item) => (
+                      <div
+                        key={`experience-${item.id}`}
+                        className="flex-1 flex flex-col gap-[0.5em] p-[0.25em]"
+                      >
+                        <div className="flex flex-col gap-[0.5em]">
+                          <div className="flex items-center gap-[0.5em]">
+                            <h3 className="text-[1.25em] font-semibold">
+                              <span
+                                className="text-nowrap word-spacing"
+                                style={{ color: cvAnonym.primaryBg }}
+                              >
+                                {item.date} :{' '}
+                              </span>
+                              {item.title}
+                            </h3>
+                          </div>
+                          <p
+                            className={`tracking-[0.025em] px-[0.25em] ${getTextStyle(
+                              experiences.sectionInfos
+                                ? (experiences.sectionInfos.length /
+                                    getParagraphCount(item.content)) *
+                                    experiences.sectionInfos.length
+                                : 6,
+                            )}`}
+                            style={{ background: cvAnonym.tertiaryBg }}
+                          >
+                            {item.company}
+                          </p>
+                        </div>
+                        <p className="whitespace-pre-line">{item.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[#6a7282] italic text-[0.875em] p-[0.25em]">
+                    Aucune expérience ajoutée
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     );
 }
