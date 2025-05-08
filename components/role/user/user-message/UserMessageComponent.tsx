@@ -218,7 +218,7 @@ export default function UserMessageComponent() {
                       </p>
                     </div>
                     <div className="flex items-center gap-3 mr-4">
-                      <button className="px-4 py-2 bg-[#06B6D4] text-white rounded-full hover:bg-[#0891b2] transition-colors text-sm font-medium">
+                      <button className="px-4 py-2 bg-[var(--r-primary-color)] text-white rounded-full hover:bg-[#0891b2] transition-colors text-sm font-medium">
                         Mon CV pour ce poste
                       </button>
                       <button className="px-4 py-2 bg-[#8B5CF6] text-white rounded-full hover:bg-[#7c3aed] transition-colors text-sm font-medium">
@@ -259,7 +259,7 @@ export default function UserMessageComponent() {
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 min-h-0">
                   <div className="flex items-start gap-3 max-w-2xl">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] flex items-center justify-center flex-shrink-0">
                       <span className="text-white font-medium">A</span>
                     </div>
                     <div className="flex-1">
@@ -275,7 +275,7 @@ export default function UserMessageComponent() {
 
                   <div className="flex items-start justify-end gap-3 max-w-2xl ml-auto">
                     <div className="flex-1">
-                      <div className="bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] text-white rounded-xl p-3 shadow-md">
+                      <div className="bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] text-white rounded-xl p-3 shadow-md">
                         <p>
                           Merci pour votre retour ! Je suis très intéressé par
                           cette opportunité.
@@ -283,7 +283,7 @@ export default function UserMessageComponent() {
                       </div>
                       <span className="text-sm text-gray-500 ml-2">14:35</span>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] flex items-center justify-center flex-shrink-0">
                       <span className="text-white font-medium">V</span>
                     </div>
                   </div>
@@ -303,12 +303,12 @@ export default function UserMessageComponent() {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Écrivez votre message..."
-                      className="flex-1 px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:border-[#06B6D4] focus:ring-2 focus:ring-[#06B6D4]/20 bg-gray-50"
+                      className="flex-1 px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:border-[var(--r-primary-color)] focus:ring-2 focus:ring-[var(--r-primary-color)]/20 bg-gray-50"
                     />
                     <button
                       type="submit"
                       disabled={!newMessage.trim()}
-                      className="p-3 bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] text-white rounded-full hover:opacity-90 transition-opacity shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-3 bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] text-white rounded-full hover:opacity-90 transition-opacity shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Send className="w-5 h-5" />
                     </button>
