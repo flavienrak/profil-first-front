@@ -12,6 +12,8 @@ import {
 } from '@/redux/slices/role/user/qualiCarriere.slice';
 import { QualiCarriereQuestionInteface } from '@/interfaces/role/user/quali-carriere/questionInterface';
 import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionInfo.interface';
+import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-critere.interface';
+import { setCvThequeCritereReducer } from '@/redux/slices/role/recruiter/cvtheque.slice';
 
 interface SocketContextType {
   isSocketReady: boolean;
@@ -94,12 +96,20 @@ export default function SocketProvider({
         },
       );
 
+      socket.on(
+        'cvThequeCritere',
+        (cvThequeCritere: CvThequeCritereInterface) => {
+          dispatch(setCvThequeCritereReducer({ cvThequeCritere }));
+        },
+      );
+
       return () => {
         socket.off('roomJoined');
 
         socket.off('getOnlineUsers');
         socket.off('qualiCarriereMessage');
         socket.off('qualiCarriereQuestion');
+        socket.off('cvThequeCritere');
 
         socket.disconnect();
       };
