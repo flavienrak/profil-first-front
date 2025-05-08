@@ -3,7 +3,7 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 
 # Installer uniquement les deps nécessaires au build
 RUN npm install --legacy-peer-deps
