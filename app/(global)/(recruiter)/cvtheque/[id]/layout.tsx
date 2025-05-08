@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Popup from '@/components/utils/Popup';
 import ContactModal from '@/components/role/recruiter/cvtheque/cv-anonym/ContactModal';
 
-import { X, MapPin, ZoomIn, ZoomOut } from 'lucide-react';
+import { X, MapPin, ZoomIn, ZoomOut, Inbox } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { domains, educationLevels } from '@/lib/constants';
@@ -79,7 +79,7 @@ export default function CvThequeDetailsLayout({
   const [competence, setCompetence] = React.useState('');
 
   const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = 7;
+  const itemsPerPage = 13;
   const totalPages = Math.ceil(
     (cvThequeCritere?.cvMinutes?.length ?? 1) / itemsPerPage,
   );
@@ -638,69 +638,105 @@ export default function CvThequeDetailsLayout({
         <>
           <div className="w-64 min-w-64 flex flex-col gap-6 bg-white rounded-lg shadow-sm p-4">
             <h2 className="font-medium">Talents disponibles</h2>
-            <div className="flex items-center justify-between">
-              <div className="w-full flex items-center justify-center gap-3">
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(1, prev - 1))
-                  }
-                  className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
-                    currentPage === 1
-                      ? 'opacity-50 pointer-events-none'
-                      : 'hover:text-[#06B6D4] transition-colors cursor-pointer'
-                  }`}
-                  disabled={currentPage === 1}
-                >
-                  ←
-                </button>
-                <div className="flex items-center">
-                  {getDisplayedPages().map((pageNum) => (
-                    <button
-                      key={pageNum}
-                      onClick={() => setCurrentPage(pageNum)}
-                      className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
-                        currentPage === pageNum
-                          ? 'bg-[#06B6D4]/20 text-[#06B6D4] font-medium'
-                          : 'text-gray-600 hover:text-[#06B6D4] cursor-pointer'
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                  }
-                  className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
-                    currentPage === totalPages
-                      ? 'opacity-50 pointer-events-none'
-                      : 'hover:text-[#06B6D4] transition-colors cursor-pointer'
-                  }`}
-                  disabled={currentPage === totalPages}
-                >
-                  →
-                </button>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              {cvThequeCritere &&
-                getCurrentPageItems()?.map((c) => (
-                  <Link
-                    key={`cv-minute-${c.id}`}
-                    href={`/cvtheque/${cvThequeCritere.id}/cv-anonym/${c.id}`}
-                    onClick={() => setRedirectLoading(c.id)}
-                    className={`w-full flex items-center gap-2 p-3 text-left rounded-lg transition-colors ${
-                      cvAnonym?.id === c.id || redirectLoading === c.id
-                        ? 'bg-[#06B6D4]/20 text-[#06B6D4] font-medium'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer'
+            {cvThequeCritere.cvMinutes &&
+              cvThequeCritere.cvMinutes.length > 0 && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div className="w-full flex items-center justify-center gap-3">
+                      <button
+                        onClick={() =>
+                          setCurrentPage((prev) => Math.max(1, prev - 1))
+                        }
+                        className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
+                          currentPage === 1
+                            ? 'opacity-50 pointer-events-none'
+                            : 'hover:text-[#06B6D4] transition-colors cursor-pointer'
+                        }`}
+                        disabled={currentPage === 1}
+                      >
+                        ←
+                      </button>
+                      <div className="flex items-center">
+                        {getDisplayedPages().map((pageNum) => (
+                          <button
+                            key={pageNum}
+                            onClick={() => setCurrentPage(pageNum)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                              currentPage === pageNum
+                                ? 'bg-[#06B6D4]/20 text-[#06B6D4] font-medium'
+                                : 'text-gray-600 hover:text-[#06B6D4] cursor-pointer'
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() =>
+                          setCurrentPage((prev) =>
+                            Math.min(totalPages, prev + 1),
+                          )
+                        }
+                        className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
+                          currentPage === totalPages
+                            ? 'opacity-50 pointer-events-none'
+                            : 'hover:text-[#06B6D4] transition-colors cursor-pointer'
+                        }`}
+                        disabled={currentPage === totalPages}
+                      >
+                        →
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {cvThequeCritere &&
+                      getCurrentPageItems()?.map((c) => (
+                        <Link
+                          key={`cv-minute-${c.id}`}
+                          href={`/cvtheque/${cvThequeCritere.id}/cv-anonym/${c.id}`}
+                          onClick={() => setRedirectLoading(c.id)}
+                          className={`w-full flex items-center gap-2 p-3 text-left rounded-lg transition-colors ${
+                            cvAnonym?.id === c.id || redirectLoading === c.id
+                              ? 'bg-[#06B6D4]/20 text-[#06B6D4] font-medium'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer'
+                          }`}
+                        >
+                          {redirectLoading === c.id && !cvAnonym && (
+                            <svg
+                              aria-hidden="true"
+                              role="status"
+                              className="inline w-4 h-4 animate-spin"
+                              viewBox="0 0 100 101"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="#E5E7EB"
+                              />
+                              <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentColor"
+                              />
+                            </svg>
+                          )}
+                          <span>{c.name}</span>
+                        </Link>
+                      ))}
+                  </div>
+                  <button
+                    onClick={handleResendSearch}
+                    className={`w-full flex items-center justify-center gap-2 p-2 bg-[var(--r-primary-color)] text-white rounded-lg ${
+                      isLoadingSearch
+                        ? 'opacity-80 pointer-events-none'
+                        : 'hover:opacity-80 cursor-pointer'
                     }`}
                   >
-                    {redirectLoading === c.id && !cvAnonym && (
+                    {isLoadingSearch && (
                       <svg
                         aria-hidden="true"
                         role="status"
-                        className="inline w-4 h-4 animate-spin"
+                        className="inline w-5 h-5 text-white animate-spin"
                         viewBox="0 0 100 101"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -715,40 +751,10 @@ export default function CvThequeDetailsLayout({
                         />
                       </svg>
                     )}
-                    <span>{c.name}</span>
-                  </Link>
-                ))}
-            </div>
-
-            <button
-              onClick={handleResendSearch}
-              className={`w-full flex items-center justify-center gap-2 p-2 bg-[var(--r-primary-color)] text-white rounded-lg ${
-                isLoadingSearch
-                  ? 'opacity-80 pointer-events-none'
-                  : 'hover:opacity-80 cursor-pointer'
-              }`}
-            >
-              {isLoadingSearch && (
-                <svg
-                  aria-hidden="true"
-                  role="status"
-                  className="inline w-5 h-5 text-white animate-spin"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="#E5E7EB"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentColor"
-                  />
-                </svg>
+                    <span>Relancer la recherche</span>
+                  </button>
+                </>
               )}
-              <span>Relancer la recherche</span>
-            </button>
           </div>
 
           <div
@@ -811,7 +817,50 @@ export default function CvThequeDetailsLayout({
             </div>
 
             <div className="relative flex-1 bg-gray-50 rounded-lg overflow-auto">
-              {children}
+              {cvThequeCritere.cvMinutes &&
+              cvThequeCritere.cvMinutes.length > 0 ? (
+                children
+              ) : (
+                <div className="h-full w-full flex justify-center items-center">
+                  <div className="flex flex-col gap-8">
+                    <div className="flex flex-col items-center gap-6 text-3xl text-gray-400">
+                      <Inbox size={50} />
+                      <p>Aucun resultat trouvé</p>
+                    </div>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={handleResendSearch}
+                        className={`w-max flex items-center justify-center gap-2 px-8 py-3 bg-[var(--r-primary-color)] text-white text-lg rounded-xl ${
+                          isLoadingSearch
+                            ? 'opacity-80 pointer-events-none'
+                            : 'hover:opacity-80 cursor-pointer'
+                        }`}
+                      >
+                        {isLoadingSearch && (
+                          <svg
+                            aria-hidden="true"
+                            role="status"
+                            className="inline w-5 h-5 text-white animate-spin"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="#E5E7EB"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        )}
+                        <span>Relancer la recherche</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </>
