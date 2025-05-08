@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { IconInterface } from '@/interfaces/icon.interface';
-import { LucideIcon } from '../../../LucideIcon';
+import { LucideIcon } from '@/components/utils/LucideIcon';
 import { cn } from '@/lib/utils';
 
 export default function PrimaryButton({

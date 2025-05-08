@@ -2,11 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Logo from '../../utils/Logo';
+import Logo from '@/components/utils/Logo';
+import LogoutButton from '@/components/utils/LogoutButton';
 
-import { LogOut, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { logoutService } from '@/services/auth.service';
 import { useDispatch } from 'react-redux';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import { recruiterRoutes } from '@/lib/constants';
@@ -15,29 +15,12 @@ export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
   const pathname = usePathname();
   const dispatch = useDispatch();
 
-  const [redirect, setRedirect] = React.useState(false);
-
   const toggleshowMenu = () => {
     if (showMenu) {
       dispatch(updatePersistReducer({ showMenu: false }));
     } else {
       dispatch(updatePersistReducer({ showMenu: true }));
     }
-  };
-
-  React.useEffect(() => {
-    if (redirect) {
-      window.location.reload();
-    }
-  }, [redirect]);
-
-  const handleLogout = async () => {
-    const res = await logoutService();
-
-    console.log('res:', res);
-    // if (res.loggedOut) {
-    //   setRedirect(true);
-    // }
   };
 
   return (
@@ -84,17 +67,7 @@ export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
       </nav>
 
       <div className="px-4 h-20 flex justify-center items-center border-t border-gray-200">
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-gray-600 hover:bg-red-50 transition-colors duration-200 group cursor-pointer select-none"
-        >
-          <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
-          {showMenu && (
-            <span className="font-medium group-hover:text-red-500 transition-all duration-500 overflow-hidden whitespace-nowrap">
-              Déconnexion
-            </span>
-          )}
-        </button>
+        <LogoutButton />
       </div>
 
       <i
