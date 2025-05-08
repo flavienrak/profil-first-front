@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-critere.interface';
 import { SectionInterface } from '@/interfaces/role/user/cv-minute/section.interface';
 import { CvMinuteInterface } from '@/interfaces/role/user/cv-minute/cvMinute.interface';
+import { CvThequeContactInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-contact.interface';
 
 const initialState: {
   cvThequeCritere: CvThequeCritereInterface | null;
@@ -64,6 +65,20 @@ const cvThequeSlice = createSlice({
 
       state.cvThequeCritere = { ...state.cvThequeCritere, ...cvThequeCritere };
     },
+    addCvThequeContactReducer: (state, action) => {
+      const { cvThequeContact }: { cvThequeContact: CvThequeContactInterface } =
+        action.payload;
+
+      if (state.cvAnonym) {
+        state.cvAnonym = {
+          ...state.cvAnonym,
+          cvThequeContacts: [
+            ...(state.cvAnonym.cvThequeContacts || []),
+            cvThequeContact,
+          ],
+        };
+      }
+    },
     resetCvAnonymReducer: (state) => {
       state.cvAnonym = null;
       state.sections = [];
@@ -79,6 +94,7 @@ export const {
   setCvThequeCritereReducer,
   setCvAnonymReducer,
   saveCvThequeCritereReducer,
+  addCvThequeContactReducer,
   resetCvAnonymReducer,
   resetCvThequeReducer,
 } = cvThequeSlice.actions;

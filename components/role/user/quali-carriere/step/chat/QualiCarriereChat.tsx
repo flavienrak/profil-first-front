@@ -217,7 +217,7 @@ export default function QualiCarriereChat() {
                 <PrimaryButton
                   label="Valider"
                   type="submit"
-                  isDisabled={true}
+                  isDisabled
                   isLoading={isLoading}
                   className="w-36 h-10 rounded-md"
                 />

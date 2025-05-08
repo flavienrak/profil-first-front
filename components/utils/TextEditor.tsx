@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 
-const MenuBar = () => {
+const MenuBar = ({ auto }: { auto: boolean }) => {
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
   const { editor } = useCurrentEditor();
 
@@ -31,7 +31,7 @@ const MenuBar = () => {
           editor.isActive('bold') ? 'bg-gray-300' : 'hover:bg-gray-200',
         )}
       >
-        <Bold size={fontSize} />
+        <Bold size={auto ? 16 : fontSize} />
       </button>
       <button
         onClick={(event) => {
@@ -44,7 +44,7 @@ const MenuBar = () => {
           editor.isActive('italic') ? 'bg-gray-300' : 'hover:bg-gray-200',
         )}
       >
-        <Italic size={fontSize} />
+        <Italic size={auto ? 16 : fontSize} />
       </button>
       <button
         onClick={(event) => {
@@ -57,7 +57,7 @@ const MenuBar = () => {
           editor.isActive('underline') ? 'bg-gray-300' : 'hover:bg-gray-200',
         )}
       >
-        <Underline size={fontSize + 2} />
+        <Underline size={auto ? 18 : fontSize + 2} />
       </button>
       <button
         onClick={(event) => {
@@ -72,7 +72,7 @@ const MenuBar = () => {
             : '',
         )}
       >
-        <Undo size={fontSize + 6} />
+        <Undo size={auto ? 22 : fontSize + 6} />
       </button>
       <button
         onClick={(event) => {
@@ -87,7 +87,7 @@ const MenuBar = () => {
             : '',
         )}
       >
-        <Redo size={fontSize + 6} />
+        <Redo size={auto ? 22 : fontSize + 6} />
       </button>
     </div>
   );
@@ -109,19 +109,28 @@ function MyEditorContent({ content }: { content: string }) {
 
 export default function TextEditor({
   content,
+  auto = false,
+  readOnly = false,
   onChange,
 }: {
   content: string;
-  onChange: (content: string) => void;
+  auto?: boolean;
+  readOnly?: boolean;
+  onChange?: (content: string) => void;
 }) {
   return (
     <div className="w-full flex flex-col text-[0.875em] border rounded-sm cursor-text">
       <EditorProvider
-        slotBefore={<MenuBar />}
+        editable={!readOnly}
+        slotBefore={!readOnly && <MenuBar auto={auto} />}
         extensions={[StarterKit, TextUnderline]}
         onUpdate={({ editor }) => {
-          const htmlContent = editor.getHTML();
-          onChange(htmlContent);
+          if (!readOnly) {
+            const htmlContent = editor.getHTML();
+            if (onChange) {
+              onChange(htmlContent);
+            }
+          }
         }}
         content={content}
       >

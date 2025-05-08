@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Popup from '@/components/utils/Popup';
+import ContactModal from '@/components/role/recruiter/cvtheque/cv-anonym/ContactModal';
 
 import { X, MapPin, ZoomIn, ZoomOut } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -50,6 +52,7 @@ import {
 import { UpdateCvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque-form';
 import { useParams, useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
+import TextEditor from '@/components/utils/TextEditor';
 
 export default function CvThequeDetailsLayout({
   children,
@@ -65,6 +68,8 @@ export default function CvThequeDetailsLayout({
   const router = useRouter();
   const params = useParams();
 
+  const [showMessage, setShowMessage] = React.useState(false);
+  const [showContact, setShowContact] = React.useState(false);
   const [showAddCompetence, setShowAddCompetence] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLoadingSearch, setIsLoadingSearch] = React.useState(false);
@@ -500,15 +505,13 @@ export default function CvThequeDetailsLayout({
                       <FormControl>
                         <Input
                           {...field}
-                          value={field.value || ''}
+                          type="number"
                           onChange={(event) => {
-                            if (
-                              event.target.value &&
-                              !isNaN(Number(event.target.value))
-                            ) {
-                              field.onChange(event);
-                            } else if (event.target.value === '') {
-                              field.onChange(event);
+                            const value = event.target.value;
+                            if (value && !isNaN(Number(value))) {
+                              field.onChange(Number(value));
+                            } else if (value === '') {
+                              field.onChange(value);
                             }
                           }}
                           id="experience"
@@ -542,17 +545,17 @@ export default function CvThequeDetailsLayout({
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            {educationLevels.map((e) => (
+                            {educationLevels.map((item) => (
                               <SelectItem
-                                key={`education-level-${e}`}
-                                value={e}
+                                key={`education-level-${item}`}
+                                value={item}
                                 className={`h-8 ${
-                                  form.getValues('diplome') === e
+                                  form.getValues('diplome') === item
                                     ? '!text-[var(--r-primary-color)] [&_svg]:!text-[var(--r-primary-color)] !bg-accent'
                                     : 'hover:!text-[var(--r-primary-color)] !bg-transparent hover:!bg-accent'
                                 }`}
                               >
-                                {e}
+                                {item}
                               </SelectItem>
                             ))}
                           </SelectGroup>
@@ -604,11 +607,9 @@ export default function CvThequeDetailsLayout({
                         <Input
                           {...field}
                           onChange={(event) => {
-                            if (
-                              event.target.value &&
-                              !isNaN(Number(event.target.value))
-                            ) {
-                              field.onChange(event);
+                            const value = event.target.value;
+                            if (!isNaN(Number(value))) {
+                              field.onChange(Number(value));
                             }
                           }}
                           id="distance"
@@ -777,15 +778,36 @@ export default function CvThequeDetailsLayout({
                   </div>
                 )}
               </div>
-              <button
-                className={`px-4 py-2 bg-[#06B6D4] text-white rounded-lg select-none ${
-                  cvAnonym
-                    ? 'hover:bg-[#0891b2] transition-colors'
-                    : 'pointer-events-none'
-                }`}
-              >
-                Contacter
-              </button>
+              {cvAnonym?.cvThequeContacts &&
+              cvAnonym.cvThequeContacts
+                .map((c) => c.userId)
+                .includes(cvAnonym.userId) ? (
+                <button
+                  onClick={() => setShowMessage(true)}
+                  className={`px-4 py-2 bg-[var(--r-primary-color)] text-white rounded-lg select-none ${
+                    cvAnonym
+                      ? 'hover:opacity-80 cursor-pointer'
+                      : 'pointer-events-none'
+                  }`}
+                >
+                  Message envoyé
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    if (cvAnonym) {
+                      setShowContact(true);
+                    }
+                  }}
+                  className={`px-4 py-2 bg-[var(--r-primary-color)] text-white rounded-lg select-none ${
+                    cvAnonym
+                      ? 'hover:opacity-80 cursor-pointer'
+                      : 'pointer-events-none'
+                  }`}
+                >
+                  Contacter
+                </button>
+              )}
             </div>
 
             <div className="relative flex-1 bg-gray-50 rounded-lg overflow-auto">
@@ -793,6 +815,43 @@ export default function CvThequeDetailsLayout({
             </div>
           </div>
         </>
+      )}
+
+      {showContact && (
+        <Popup large onClose={() => setShowContact(false)}>
+          <ContactModal onClose={() => setShowContact(false)} />
+        </Popup>
+      )}
+
+      {showMessage && cvAnonym && cvAnonym.cvThequeContacts && (
+        <Popup large onClose={() => setShowMessage(false)}>
+          <div className="w-[40rem] rounded-xl ps-6 pe-2 pt-2 pb-6">
+            <div className="relative h-full w-full">
+              <div className="absolute top-0 left-0 z-10 w-full h-14 bg-white">
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <span className="text-gray-900">Message envoyé à </span>
+                  <span className="bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] bg-clip-text text-transparent">
+                    {cvAnonym.name}
+                  </span>
+                </h2>
+              </div>
+
+              <div className="max-h-[80vh] h-full pt-14 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                <div className="flex flex-col gap-6">
+                  <TextEditor
+                    auto
+                    readOnly
+                    content={
+                      cvAnonym.cvThequeContacts.find(
+                        (c) => c.userId === cvAnonym.userId,
+                      )?.message ?? ''
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Popup>
       )}
     </div>
   );

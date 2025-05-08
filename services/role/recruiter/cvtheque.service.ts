@@ -91,6 +91,32 @@ const resendCvThequeCritereService = async (id: number) => {
   }
 };
 
+const contactAnonymService = async (data: {
+  id: number;
+  cvAnonymId: number;
+  type: string;
+  date: Date;
+  hour: number;
+  minute: number;
+  message: string;
+}) => {
+  try {
+    const res = await api.post(
+      `${cvThequePrefix}/${data.id}/contact/${data.cvAnonymId}`,
+      {
+        type: data.type,
+        date: data.date,
+        hour: data.hour,
+        minute: data.minute,
+        message: data.message,
+      },
+    );
+    return res.data;
+  } catch (error) {
+    return { error: `CONTACT CV ANONYM ERROR: ${error}` };
+  }
+};
+
 export {
   getCvThequeHistory,
   getCvAnonymService,
@@ -99,4 +125,5 @@ export {
   updateCvThequeCritereService,
   saveCvThequeCritereService,
   resendCvThequeCritereService,
+  contactAnonymService,
 };
