@@ -10,21 +10,9 @@ import { RootState } from '@/redux/store';
 export default function LogoutButton() {
   const { showMenu } = useSelector((state: RootState) => state.persistInfos);
 
-  const [redirect, setRedirect] = React.useState(false);
-
-  React.useEffect(() => {
-    if (redirect) {
-      window.location.reload();
-    }
-  }, [redirect]);
-
   const handleLogout = async () => {
-    const res = await logoutService();
-
-    console.log('res:', res);
-    // if (res.loggedOut) {
-    //   setRedirect(true);
-    // }
+    await logoutService();
+    window.location.href = '/';
   };
 
   return (
