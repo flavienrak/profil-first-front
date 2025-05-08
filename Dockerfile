@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Installer uniquement les deps nécessaires au build
-RUN npm install 
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
