@@ -36,7 +36,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { addCvThequeCritereService } from '@/services/role/recruiter/cvtheque.service';
 import { useRouter } from 'next/navigation';
 
-export const cvCritereSchema = z.object({
+export const cvThequeCritereSchema = z.object({
   position: z.string().trim().min(5, "Offre d'emploi requis"),
   description: z.string().trim().optional(),
   domain: z.string().trim().min(1, 'Domaine requis'),
@@ -47,7 +47,7 @@ export const cvCritereSchema = z.object({
   distance: z.union([z.number().min(0), z.literal('')]),
 });
 
-export type CvCritereFormValues = z.infer<typeof cvCritereSchema>;
+export type CvThequeCritereFormValues = z.infer<typeof cvThequeCritereSchema>;
 
 export default function CvThequeComponent() {
   const { showCritere } = useSelector((state: RootState) => state.persistInfos);
@@ -57,14 +57,14 @@ export default function CvThequeComponent() {
   const [showAddCompetence, setShowAddCompetence] = React.useState(false);
   const [competence, setCompetence] = React.useState('');
 
-  const form = useForm<CvCritereFormValues>({
-    resolver: zodResolver(cvCritereSchema),
+  const form = useForm<CvThequeCritereFormValues>({
+    resolver: zodResolver(cvThequeCritereSchema),
     defaultValues: {
       position: '',
       description: '',
       domain: '',
       competences: [],
-      experience: 0,
+      experience: '',
       diplome: '',
       localisation: '',
       distance: 0,
@@ -92,8 +92,8 @@ export default function CvThequeComponent() {
     );
   };
 
-  const onSubmit = async (data: CvCritereFormValues) => {
-    const parseRes = cvCritereSchema.safeParse(data);
+  const onSubmit = async (data: CvThequeCritereFormValues) => {
+    const parseRes = cvThequeCritereSchema.safeParse(data);
 
     if (parseRes.success) {
       setIsLoading(true);

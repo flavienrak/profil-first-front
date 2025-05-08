@@ -46,8 +46,8 @@ import {
 import { isArraysEqual } from '@/lib/function';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import {
-  CvCritereFormValues,
-  cvCritereSchema,
+  CvThequeCritereFormValues,
+  cvThequeCritereSchema,
 } from '@/components/role/recruiter/cvtheque/CvThequeComponent';
 import { UpdateCvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque-form';
 import { useParams, useRouter } from 'next/navigation';
@@ -68,10 +68,12 @@ export default function CvThequeDetailsLayout({
   const router = useRouter();
   const params = useParams();
 
+  const [actualId, setActualId] = React.useState<number | null>(null);
   const [showMessage, setShowMessage] = React.useState(false);
   const [showContact, setShowContact] = React.useState(false);
   const [showAddCompetence, setShowAddCompetence] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [submitLoading, setSubmitLoading] = React.useState(false);
   const [isLoadingSearch, setIsLoadingSearch] = React.useState(false);
   const [redirectLoading, setRedirectLoading] = React.useState<number | null>(
     null,
@@ -84,8 +86,8 @@ export default function CvThequeDetailsLayout({
     (cvThequeCritere?.cvMinutes?.length ?? 1) / itemsPerPage,
   );
 
-  const form = useForm<CvCritereFormValues>({
-    resolver: zodResolver(cvCritereSchema),
+  const form = useForm<CvThequeCritereFormValues>({
+    resolver: zodResolver(cvThequeCritereSchema),
     defaultValues: {
       position: cvThequeCritere?.position || '',
       description: cvThequeCritere?.description || '',
@@ -104,14 +106,14 @@ export default function CvThequeDetailsLayout({
     if (cvThequeCritere) {
       form.reset({
         position: cvThequeCritere.position,
-        description: cvThequeCritere.description,
+        description: cvThequeCritere.description || '',
         domain: cvThequeCritere.domain,
         competences: cvThequeCritere.cvThequeCompetences?.map((c) => c.content),
         ...(cvThequeCritere.experience != null && {
           experience: cvThequeCritere.experience,
         }),
-        diplome: cvThequeCritere.diplome,
-        localisation: cvThequeCritere.localisation,
+        diplome: cvThequeCritere.diplome || '',
+        localisation: cvThequeCritere.localisation || '',
         distance: cvThequeCritere.distance,
       });
     }
@@ -121,23 +123,31 @@ export default function CvThequeDetailsLayout({
     if (params.id) {
       if (isNaN(Number(params.id))) {
         router.push('/cvtheque');
-      } else {
-        (async () => {
-          const res = await getCvThequeCritereService(Number(params.id));
-
-          if (res.cvThequeCritere) {
-            dispatch(
-              setCvThequeCritereReducer({
-                cvThequeCritere: res.cvThequeCritere,
-              }),
-            );
-          } else {
-            router.push('/cvtheque');
-          }
-        })();
+      } else if (Number(params.id) !== actualId) {
+        setActualId(Number(params.id));
       }
     }
   }, [params.id]);
+
+  React.useEffect(() => {
+    if (actualId) {
+      (async () => {
+        setIsLoading(true);
+        const res = await getCvThequeCritereService(actualId);
+
+        if (res.cvThequeCritere) {
+          dispatch(
+            setCvThequeCritereReducer({
+              cvThequeCritere: res.cvThequeCritere,
+            }),
+          );
+        } else {
+          router.push('/cvtheque');
+        }
+        setIsLoading(false);
+      })();
+    }
+  }, [actualId]);
 
   React.useEffect(() => {
     if (cvAnonym) {
@@ -201,8 +211,8 @@ export default function CvThequeDetailsLayout({
     );
   };
 
-  const onSubmit = async (data: CvCritereFormValues) => {
-    const parseRes = cvCritereSchema.safeParse(data);
+  const onSubmit = async (data: CvThequeCritereFormValues) => {
+    const parseRes = cvThequeCritereSchema.safeParse(data);
 
     if (parseRes.success && cvThequeCritere) {
       // Les champs string | number à comparer automatiquement
@@ -238,7 +248,7 @@ export default function CvThequeDetailsLayout({
       }
 
       if (Object.keys(dataToUpdate).length > 0) {
-        setIsLoading(true);
+        setSubmitLoading(true);
         const res = await updateCvThequeCritereService({
           id: cvThequeCritere.id,
           ...dataToUpdate,
@@ -248,8 +258,9 @@ export default function CvThequeDetailsLayout({
           dispatch(
             setCvThequeCritereReducer({ cvThequeCritere: res.cvThequeCritere }),
           );
+          router.refresh();
         }
-        setIsLoading(false);
+        setSubmitLoading(false);
       }
     }
   };
@@ -265,7 +276,6 @@ export default function CvThequeDetailsLayout({
             cvThequeCritere: res.cvThequeCritere,
           }),
         );
-        router.push(`/cvtheque/${res.cvThequeCritere.id}`);
       }
       setIsLoadingSearch(false);
     }
@@ -284,12 +294,12 @@ export default function CvThequeDetailsLayout({
                 <button
                   type="submit"
                   className={`w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--r-primary-color)] text-white rounded-md ${
-                    isLoading
+                    submitLoading
                       ? 'opacity-80 pointer-events-none'
                       : 'hover:opacity-80 cursor-pointer'
                   }`}
                 >
-                  {isLoading && (
+                  {submitLoading && (
                     <svg
                       aria-hidden="true"
                       role="status"
@@ -629,7 +639,7 @@ export default function CvThequeDetailsLayout({
         </Form>
       )}
 
-      {!cvThequeCritere ? (
+      {!cvThequeCritere || isLoading ? (
         <>
           <Skeleton className="min-h-full w-64 bg-white rounded-xl" />
           <Skeleton className="min-h-full flex-1 bg-white rounded-xl" />

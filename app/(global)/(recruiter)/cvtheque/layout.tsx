@@ -12,7 +12,6 @@ import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
   saveCvThequeCritereService,
   getCvThequeHistory,
-  updateCvThequeCritereService,
   resendCvThequeCritereService,
 } from '@/services/role/recruiter/cvtheque.service';
 import {
@@ -69,7 +68,7 @@ export default function CvThequeLayout({
     }
   }, [cvThequeCritere]);
 
-  const handleSaveCvCritere = async () => {
+  const handleSaveCvThequeCritere = async () => {
     if (cvThequeCritere) {
       setSaveLoading(true);
       const res = await saveCvThequeCritereService(cvThequeCritere.id);
@@ -119,7 +118,7 @@ export default function CvThequeLayout({
           <div className="flex items-center gap-4">
             {cvThequeCritere && !cvThequeCritere.saved && (
               <button
-                onClick={handleSaveCvCritere}
+                onClick={handleSaveCvThequeCritere}
                 className={`flex items-center gap-2 text-[var(--r-primary-color)] px-4 py-2 rounded-lg bg-[var(--r-primary-color)]/5 ${
                   saveLoading
                     ? 'opacity-80 pointer-events-none'
