@@ -13,8 +13,6 @@ COPY . .
 # Construire l'app
 RUN npm run build
 
-# Supprimer les dépendances de dev après le build
-RUN npm prune --production
 
 # Étape 2 : Image finale minimaliste
 FROM node:20-slim AS runner
