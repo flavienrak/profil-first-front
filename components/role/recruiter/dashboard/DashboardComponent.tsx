@@ -108,14 +108,14 @@ export default function DashboardComponent() {
 
   return (
     <div className="flex flex-col gap-8 py-8">
-      <h1 className="text-3xl font-bold bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] bg-clip-text text-transparent">
+      <h1 className="text-3xl font-bold bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] bg-clip-text text-transparent">
         Tableau de bord recruteur
       </h1>
 
       <div className="grid grid-cols-4 gap-6">
         <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
           <h3 className="text-sm text-gray-600 mb-3">Candidatures totales</h3>
-          <p className="text-4xl font-bold bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] bg-clip-text text-transparent">
+          <p className="text-4xl font-bold bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] bg-clip-text text-transparent">
             248
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function DashboardComponent() {
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h2 className="text-xl font-semibold bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] bg-clip-text text-transparent">
+              <h2 className="text-xl font-semibold bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] bg-clip-text text-transparent">
                 Candidatures
               </h2>
               <p className="text-sm text-gray-500">
@@ -158,7 +158,7 @@ export default function DashboardComponent() {
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="p-2 text-gray-400 hover:text-[#06B6D4] disabled:opacity-50 transition-colors"
+                  className="p-2 text-gray-400 hover:text-[var(--r-primary-color)] disabled:opacity-50 transition-colors"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -169,7 +169,7 @@ export default function DashboardComponent() {
                       onClick={() => setCurrentPage(page)}
                       className={`w-8 h-8 flex items-center justify-center rounded-lg ${
                         currentPage === page
-                          ? 'bg-[#06B6D4] text-white'
+                          ? 'bg-[var(--r-primary-color)] text-white'
                           : 'text-gray-500 hover:bg-gray-100'
                       }`}
                     >
@@ -182,7 +182,7 @@ export default function DashboardComponent() {
                     setCurrentPage(Math.min(totalPages, currentPage + 1))
                   }
                   disabled={currentPage === totalPages}
-                  className="p-2 text-gray-400 hover:text-[#06B6D4] disabled:opacity-50 transition-colors"
+                  className="p-2 text-gray-400 hover:text-[var(--r-primary-color)] disabled:opacity-50 transition-colors"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -190,14 +190,14 @@ export default function DashboardComponent() {
               <button
                 className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-all duration-300 shadow-sm ${
                   filteredApplications.length > 0
-                    ? 'bg-[#06B6D4] text-white hover:bg-[#22D3EE]'
-                    : 'bg-white border-gray-200 hover:border-[#06B6D4] hover:text-[#06B6D4]'
+                    ? 'bg-[var(--r-primary-color)] text-white hover:bg-[#22D3EE]'
+                    : 'bg-white border-gray-200 hover:border-[var(--r-primary-color)] hover:text-[var(--r-primary-color)]'
                 }`}
               >
                 <Filter className="w-4 h-4" />
                 {filteredApplications.length > 0 ? 'Filtres actifs' : 'Filtrer'}
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:border-[#06B6D4] hover:text-[#06B6D4] transition-all duration-300 shadow-sm">
+              <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:border-[var(--r-primary-color)] hover:text-[var(--r-primary-color)] transition-all duration-300 shadow-sm">
                 <Download className="w-4 h-4" />
                 Exporter
               </button>
@@ -277,12 +277,12 @@ export default function DashboardComponent() {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-[#06B6D4] hover:text-[#22D3EE] cursor-pointer transition-colors border-r border-gray-100">
+                  <td className="px-6 py-4 text-sm font-medium text-[var(--r-primary-color)] hover:text-[#22D3EE] cursor-pointer transition-colors border-r border-gray-100">
                     {app.rdvDate}
                   </td>
                   <td className="px-6 py-4">
                     {app.hasCV && (
-                      <FileText className="w-5 h-5 text-gray-400 hover:text-[#06B6D4] cursor-pointer transition-colors" />
+                      <FileText className="w-5 h-5 text-gray-400 hover:text-[var(--r-primary-color)] cursor-pointer transition-colors" />
                     )}
                   </td>
                 </tr>

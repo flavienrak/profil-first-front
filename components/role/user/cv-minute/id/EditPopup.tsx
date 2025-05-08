@@ -295,7 +295,7 @@ export default function EditPopup({
 
   return (
     <div
-      className={`z-50 fixed bg-white rounded-[0.5em] shadow-xl border-[0.0625em] border-gray-200 ${
+      className={`z-50 fixed bg-white rounded-[0.75em] shadow-xl border-[0.0625em] border-gray-200 ${
         popup.large && suggestions.length > 0 ? 'w-[35em]' : 'w-[20em]'
       }`}
       style={{
@@ -432,6 +432,7 @@ export default function EditPopup({
                     setLoadingButton(false);
                   }
                 }}
+                className="rounded-[0.5em]"
                 isLoading={loadingButton}
               />
             )}
@@ -564,6 +565,7 @@ export default function EditPopup({
                             setLoadingSuggestion(false);
                           }
                         }}
+                        className="rounded-[0.5em]"
                       />
                       <p className="text-[0.75em] text-center text-gray-700">
                         Cliquer sur 'Génerer des suggestions pour obtenir des
@@ -578,6 +580,7 @@ export default function EditPopup({
                       popup.fields.length > 1 ? 'les' : 'la'
                     } modification${popup.fields.length > 1 ? 's' : ''}`}
                     isLoading={isLoading}
+                    className="rounded-[0.5em]"
                   />
                 </form>
               </Form>

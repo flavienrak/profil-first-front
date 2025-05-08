@@ -660,7 +660,7 @@ export default function CvThequeDetailsLayout({
                         className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
                           currentPage === 1
                             ? 'opacity-50 pointer-events-none'
-                            : 'hover:text-[#06B6D4] transition-colors cursor-pointer'
+                            : 'hover:text-[var(--r-primary-color)] transition-colors cursor-pointer'
                         }`}
                         disabled={currentPage === 1}
                       >
@@ -673,8 +673,8 @@ export default function CvThequeDetailsLayout({
                             onClick={() => setCurrentPage(pageNum)}
                             className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
                               currentPage === pageNum
-                                ? 'bg-[#06B6D4]/20 text-[#06B6D4] font-medium'
-                                : 'text-gray-600 hover:text-[#06B6D4] cursor-pointer'
+                                ? 'bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] font-medium'
+                                : 'text-gray-600 hover:text-[var(--r-primary-color)] cursor-pointer'
                             }`}
                           >
                             {pageNum}
@@ -690,7 +690,7 @@ export default function CvThequeDetailsLayout({
                         className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
                           currentPage === totalPages
                             ? 'opacity-50 pointer-events-none'
-                            : 'hover:text-[#06B6D4] transition-colors cursor-pointer'
+                            : 'hover:text-[var(--r-primary-color)] transition-colors cursor-pointer'
                         }`}
                         disabled={currentPage === totalPages}
                       >
@@ -707,7 +707,7 @@ export default function CvThequeDetailsLayout({
                           onClick={() => setRedirectLoading(c.id)}
                           className={`w-full flex items-center gap-2 p-3 text-left rounded-lg transition-colors ${
                             cvAnonym?.id === c.id || redirectLoading === c.id
-                              ? 'bg-[#06B6D4]/20 text-[#06B6D4] font-medium'
+                              ? 'bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] font-medium'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer'
                           }`}
                         >
@@ -774,7 +774,7 @@ export default function CvThequeDetailsLayout({
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-6">
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] bg-clip-text text-transparent">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] bg-clip-text text-transparent">
                   {cvAnonym?.name || 'Sélectionnez un profil'}
                 </h2>
                 {cvAnonym && (
@@ -800,7 +800,7 @@ export default function CvThequeDetailsLayout({
                 .includes(cvAnonym.userId) ? (
                 <button
                   onClick={() => setShowMessage(true)}
-                  className={`px-4 py-2 bg-[var(--r-primary-color)] text-white rounded-lg select-none ${
+                  className={`px-4 py-2 bg-[var(--r-primary-color)]/10 hover:bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] rounded-lg select-none ${
                     cvAnonym
                       ? 'hover:opacity-80 cursor-pointer'
                       : 'pointer-events-none'

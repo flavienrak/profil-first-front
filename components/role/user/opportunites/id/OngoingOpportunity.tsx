@@ -37,7 +37,7 @@ export default function OngoingOpportunity() {
                 ACME Corp - Développeur Full-Stack
               </h2>
             </div>
-            <button className="px-6 py-3 bg-[#06B6D4] text-white rounded-lg hover:bg-[#0891b2] transition-colors flex items-center gap-2">
+            <button className="px-6 py-3 bg-[var(--r-primary-color)] text-white rounded-lg hover:bg-[#0891b2] transition-colors flex items-center gap-2">
               <Briefcase className="w-5 h-5" />
               Consulter l'offre
             </button>

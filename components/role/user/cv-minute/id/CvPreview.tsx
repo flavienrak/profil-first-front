@@ -1778,7 +1778,10 @@ export default function CvPreview() {
 
             {review && (
               <Popup large onClose={() => setReview(false)}>
-                <div className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                <div
+                  className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
+                  style={{ fontSize: '1rem' }}
+                >
                   <p className="whitespace-pre-line">{cvMinute.position}</p>
                 </div>
               </Popup>
@@ -1786,7 +1789,10 @@ export default function CvPreview() {
 
             {showOptimize && (
               <Popup large onClose={() => setShowOptimize(false)}>
-                <div className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                <div
+                  className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
+                  style={{ fontSize: '1rem' }}
+                >
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-[0.5em]">
                       <i className="text-red-400">
@@ -1798,8 +1804,8 @@ export default function CvPreview() {
                       </h6>
                     </div>
                     <div className="flex flex-col gap-1 py-2">
-                      {optimizeOptions.map((o) => (
-                        <div key={o.bold} className="flex gap-[0.5em]">
+                      {optimizeOptions.map((item) => (
+                        <div key={item.bold} className="flex gap-[0.5em]">
                           <i className="text-green-500">
                             <SquareCheck
                               fill={'currentColor'}
@@ -1808,8 +1814,8 @@ export default function CvPreview() {
                           </i>
 
                           <p className="text-sm">
-                            <span className="font-semibold">{o.bold}</span>{' '}
-                            {o.label}
+                            <span className="font-semibold">{item.bold}</span>{' '}
+                            {item.label}
                           </p>
                         </div>
                       ))}
@@ -1850,7 +1856,7 @@ export default function CvPreview() {
                     <div className="flex gap-6">
                       <button
                         onClick={() => setShowOptimize(false)}
-                        className="w-full p-3 rounded-sm border border-gray-500 select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
+                        className="w-full p-3 rounded-md border border-gray-500 select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
                       >
                         Revenir sur mon CV
                       </button>
@@ -1858,6 +1864,7 @@ export default function CvPreview() {
                         label="Appliquer"
                         isLoading={loadingOptimize}
                         onClick={handleOptimizeCvMinute}
+                        className="rounded-md"
                       />
                     </div>
                   </div>
@@ -1987,7 +1994,7 @@ export default function CvPreview() {
                     <div className="flex gap-4">
                       <button
                         onClick={() => setShowMatching(false)}
-                        className="w-full p-2 rounded-sm border border-gray-500 select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
+                        className="w-full p-3 rounded-md border border-gray-500 select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
                       >
                         Fermer
                       </button>
@@ -1995,6 +2002,7 @@ export default function CvPreview() {
                         label={'Recalculer'}
                         onClick={handleRecalculateGlobalMatching}
                         isLoading={loadingGlobal}
+                        className="rounded-md"
                       />
                     </div>
                   </div>

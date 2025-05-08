@@ -42,6 +42,15 @@ const cvThequeSlice = createSlice({
 
       state.cvAnonym = cvAnonym;
       state.sections = sections;
+
+      if (state.cvThequeCritere) {
+        state.cvThequeCritere = {
+          ...state.cvThequeCritere,
+          cvMinutes: state.cvThequeCritere.cvMinutes?.map((c) =>
+            c.id === cvAnonym.id ? cvAnonym : c,
+          ),
+        };
+      }
     },
     saveCvThequeCritereReducer: (state, action) => {
       const { cvThequeCritere }: { cvThequeCritere: CvThequeCritereInterface } =
