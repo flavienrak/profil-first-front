@@ -10,7 +10,7 @@ export interface CvThequeCritereInterface {
   description: string;
   diplome: string;
   localisation: string;
-  experience?: number;
+  experience: number | null;
   distance: number;
   evaluation: number;
   saved: boolean;

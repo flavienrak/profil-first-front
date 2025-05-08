@@ -74,8 +74,8 @@ export interface FieldInterface {
   description?: string;
   example?: string;
   value: string | number;
-  icon?: IconInterface;
-  iconSize?: number;
+  icon?: IconInterface | null;
+  iconSize?: number | null;
   type: 'input' | 'textarea' | 'text' | 'color';
   initialValue: string | number;
   requiredError: string;
@@ -1079,7 +1079,7 @@ export default function CvPreview() {
                                 }
                               }}
                               className="flex-1 flex items-center gap-[0.375em] p-[0.25em] group relative hover:bg-[#f3f4f6]/25"
-                              style={{ order: c.order }}
+                              style={{ order: c.order ?? 1 }}
                             >
                               {c.icon && c.iconSize && (
                                 <LucideIcon
@@ -1176,7 +1176,9 @@ export default function CvPreview() {
                                     handleOpenPopup(data);
                                   }
                                 }}
-                                style={{ order: cvMinuteSection.sectionOrder }}
+                                style={{
+                                  order: cvMinuteSection.sectionOrder ?? 1,
+                                }}
                                 className="relative flex-1 w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em] transition-[order] duration-500"
                               >
                                 <h3
@@ -1578,7 +1580,7 @@ export default function CvPreview() {
                                 }
                               }}
                               className="flex-1 flex flex-col gap-[0.5em] p-[0.25em] hover:bg-[#f3f4f6]"
-                              style={{ order: item.order }}
+                              style={{ order: item.order ?? 1 }}
                             >
                               <div
                                 onClick={(
@@ -1665,13 +1667,15 @@ export default function CvPreview() {
                                 className="flex flex-col gap-[0.25em] hover:bg-[#f3f4f6]"
                               >
                                 <div className="flex items-end gap-[0.5em] font-semibold">
-                                  <p
-                                    className="text-nowrap text-[0.875em] word-spacing"
-                                    style={{ color: cvMinute.primaryBg }}
-                                  >
-                                    {item.date} :
-                                  </p>
-                                  <h3>{item.title}</h3>
+                                  <h3>
+                                    <span
+                                      className="text-nowrap text-[0.875em] word-spacing"
+                                      style={{ color: cvMinute.primaryBg }}
+                                    >
+                                      {item.date} :
+                                    </span>{' '}
+                                    {item.title}
+                                  </h3>
                                 </div>
                                 <p
                                   className="text-[0.75em] tracking-[0.025em] p-[0.25em]"

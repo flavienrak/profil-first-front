@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-critere.interface';
 import { SectionInterface } from '@/interfaces/role/user/cv-minute/section.interface';
 import { CvMinuteInterface } from '@/interfaces/role/user/cv-minute/cvMinute.interface';
+import { CvThequeContactInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-contact.interface';
 
 const initialState: {
   cvThequeCritere: CvThequeCritereInterface | null;
@@ -42,6 +43,42 @@ const cvThequeSlice = createSlice({
       state.cvAnonym = cvAnonym;
       state.sections = sections;
     },
+    saveCvThequeCritereReducer: (state, action) => {
+      const { cvThequeCritere }: { cvThequeCritere: CvThequeCritereInterface } =
+        action.payload;
+
+      const existCvThequeCritere = state.history.find(
+        (c) => c.id === cvThequeCritere.id,
+      );
+
+      if (existCvThequeCritere) {
+        const newCvThequeCritere = {
+          ...existCvThequeCritere,
+          ...cvThequeCritere,
+        };
+
+        state.history = [
+          newCvThequeCritere,
+          ...state.history.filter((item) => item.id !== cvThequeCritere.id),
+        ];
+      }
+
+      state.cvThequeCritere = { ...state.cvThequeCritere, ...cvThequeCritere };
+    },
+    addCvThequeContactReducer: (state, action) => {
+      const { cvThequeContact }: { cvThequeContact: CvThequeContactInterface } =
+        action.payload;
+
+      if (state.cvAnonym) {
+        state.cvAnonym = {
+          ...state.cvAnonym,
+          cvThequeContacts: [
+            ...(state.cvAnonym.cvThequeContacts || []),
+            cvThequeContact,
+          ],
+        };
+      }
+    },
     resetCvAnonymReducer: (state) => {
       state.cvAnonym = null;
       state.sections = [];
@@ -56,6 +93,8 @@ export const {
   setCvThequeHistoryReducer,
   setCvThequeCritereReducer,
   setCvAnonymReducer,
+  saveCvThequeCritereReducer,
+  addCvThequeContactReducer,
   resetCvAnonymReducer,
   resetCvThequeReducer,
 } = cvThequeSlice.actions;

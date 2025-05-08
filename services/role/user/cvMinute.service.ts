@@ -123,8 +123,8 @@ const updateCvMinuteSectionService = async (data: {
   company?: string;
   date?: string;
   contrat?: string;
-  icon?: IconInterface;
-  iconSize?: number;
+  icon?: IconInterface | null;
+  iconSize?: number | null;
   primaryBg?: string;
   secondaryBg?: string;
   tertiaryBg?: string;

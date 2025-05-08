@@ -15,12 +15,12 @@ const getCvThequeHistory = async () => {
   }
 };
 
-const addCvThequeHistory = async (id: number) => {
+const saveCvThequeCritereService = async (id: number) => {
   try {
-    const res = await api.post(`${cvThequePrefix}/history/${id}`);
+    const res = await api.post(`${cvThequePrefix}/${id}/save`);
     return res.data;
   } catch (error) {
-    return { error: `ADD CVTHEQUE HISTORY ERROR: ${error}` };
+    return { error: `SAVE CVTHEQUE CRITERE ERROR: ${error}` };
   }
 };
 
@@ -82,11 +82,48 @@ const updateCvThequeCritereService = async (
   }
 };
 
+const resendCvThequeCritereService = async (id: number) => {
+  try {
+    const res = await api.get(`${cvThequePrefix}/${id}/resend`);
+    return res.data;
+  } catch (error) {
+    return { error: `GET RESEND CVTHEQUE CRITERE ERROR: ${error}` };
+  }
+};
+
+const contactAnonymService = async (data: {
+  id: number;
+  cvAnonymId: number;
+  type: string;
+  date: Date;
+  hour: number;
+  minute: number;
+  message: string;
+}) => {
+  try {
+    const res = await api.post(
+      `${cvThequePrefix}/${data.id}/contact/${data.cvAnonymId}`,
+      {
+        type: data.type,
+        date: data.date,
+        hour: data.hour,
+        minute: data.minute,
+        message: data.message,
+      },
+    );
+    return res.data;
+  } catch (error) {
+    return { error: `CONTACT CV ANONYM ERROR: ${error}` };
+  }
+};
+
 export {
   getCvThequeHistory,
   getCvAnonymService,
   getCvThequeCritereService,
   addCvThequeCritereService,
   updateCvThequeCritereService,
-  addCvThequeHistory,
+  saveCvThequeCritereService,
+  resendCvThequeCritereService,
+  contactAnonymService,
 };

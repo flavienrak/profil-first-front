@@ -67,7 +67,7 @@ export default function UidProvider({
             setIsLoading(false);
           }
         }
-      } else if (res.notAuthenticated) {
+      } else {
         if (!notProtectedPaths.includes(pathname)) {
           window.location.href = '/';
         } else {

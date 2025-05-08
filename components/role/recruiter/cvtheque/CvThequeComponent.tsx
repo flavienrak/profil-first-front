@@ -38,29 +38,13 @@ import { useRouter } from 'next/navigation';
 
 export const cvCritereSchema = z.object({
   position: z.string().trim().min(5, "Offre d'emploi requis"),
-  description: z.string().trim(),
-  domain: z
-    .union([
-      z.enum(domains.map((d) => d.label) as [string, ...string[]]),
-      z.literal(''),
-    ])
-    .optional(),
+  description: z.string().trim().optional(),
+  domain: z.string().trim().min(1, 'Domaine requis'),
   competences: z.array(z.string()),
-  experience: z.preprocess((val) => {
-    if (typeof val === 'string') {
-      const trimmed = val.trim();
-      if (trimmed === '') return undefined;
-      const num = Number(trimmed);
-      return isNaN(num) ? undefined : num;
-    }
-    return val;
-  }, z.number().min(0).optional()),
-  diplome: z.union([
-    z.enum(educationLevels as [string, ...string[]]),
-    z.literal(''),
-  ]),
-  localisation: z.string().trim(),
-  distance: z.number().min(0).optional(),
+  experience: z.union([z.number().min(0), z.literal('')]),
+  diplome: z.string().trim().optional(),
+  localisation: z.string().trim().optional(),
+  distance: z.union([z.number().min(0), z.literal('')]),
 });
 
 export type CvCritereFormValues = z.infer<typeof cvCritereSchema>;
@@ -112,24 +96,22 @@ export default function CvThequeComponent() {
     const parseRes = cvCritereSchema.safeParse(data);
 
     if (parseRes.success) {
-      if (!parseRes.data.domain) {
-        form.setError('domain', {
-          type: 'manual',
-          message: 'Le domaine est requis',
-        });
-        return;
-      }
-
       setIsLoading(true);
       const res = await addCvThequeCritereService({
         position: parseRes.data.position,
         description: parseRes.data.description,
         domain: parseRes.data.domain,
         competences: parseRes.data.competences,
-        experience: parseRes.data.experience,
+        experience:
+          typeof parseRes.data.experience === 'number'
+            ? parseRes.data.experience
+            : undefined,
         diplome: parseRes.data.diplome,
         localisation: parseRes.data.localisation,
-        distance: parseRes.data.distance,
+        distance:
+          typeof parseRes.data.distance === 'number'
+            ? parseRes.data.distance
+            : undefined,
       });
 
       if (res.cvThequeCritere) {
@@ -323,7 +305,6 @@ export default function CvThequeComponent() {
                               >
                                 <div className="w-full flex flex-col gap-4">
                                   <Input
-                                    type="text"
                                     value={competence}
                                     onChange={(event) =>
                                       setCompetence(event.target.value)
@@ -382,15 +363,13 @@ export default function CvThequeComponent() {
                       <FormControl>
                         <Input
                           {...field}
-                          value={field.value || ''}
+                          type="number"
                           onChange={(event) => {
-                            if (
-                              event.target.value &&
-                              !isNaN(Number(event.target.value))
-                            ) {
-                              field.onChange(event);
-                            } else if (event.target.value === '') {
-                              field.onChange(event);
+                            const value = event.target.value;
+                            if (value && !isNaN(Number(value))) {
+                              field.onChange(Number(value));
+                            } else if (value === '') {
+                              field.onChange(value);
                             }
                           }}
                           id="experience"
@@ -488,11 +467,9 @@ export default function CvThequeComponent() {
                         <Input
                           {...field}
                           onChange={(event) => {
-                            if (
-                              event.target.value &&
-                              !isNaN(Number(event.target.value))
-                            ) {
-                              field.onChange(event);
+                            const value = event.target.value;
+                            if (!isNaN(Number(value))) {
+                              field.onChange(Number(value));
                             }
                           }}
                           id="distance"
@@ -519,11 +496,11 @@ export default function CvThequeComponent() {
       <div className="flex-1 flex flex-col bg-white rounded-lg shadow-sm p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#06B6D4] to-[#22D3EE] bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] bg-clip-text text-transparent">
               Sélectionnez un profil
             </h2>
           </div>
-          <button className="px-4 py-2 bg-[#06B6D4] text-white rounded-lg pointer-events-none">
+          <button className="px-4 py-2 bg-[var(--r-primary-color)] text-white rounded-lg pointer-events-none">
             Contacter
           </button>
         </div>
