@@ -15,8 +15,6 @@ export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
   const pathname = usePathname();
   const dispatch = useDispatch();
 
-  const [redirect, setRedirect] = React.useState(false);
-
   const toggleshowMenu = () => {
     if (showMenu) {
       dispatch(updatePersistReducer({ showMenu: false }));
@@ -25,15 +23,9 @@ export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
     }
   };
 
-  React.useEffect(() => {
-    if (redirect) {
-      window.location.href = '/';
-    }
-  }, [redirect]);
-
   const handleLogout = async () => {
     await logoutService();
-    setRedirect(true);
+    window.location.reload();
   };
 
   return (
