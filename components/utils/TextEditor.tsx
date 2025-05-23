@@ -7,11 +7,8 @@ import TextUnderline from '@tiptap/extension-underline';
 import { EditorContent, EditorProvider, useCurrentEditor } from '@tiptap/react';
 import { Bold, Italic, Redo, Underline, Undo } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 
-const MenuBar = ({ auto }: { auto: boolean }) => {
-  const { fontSize } = useSelector((state: RootState) => state.persistInfos);
+const MenuBar = () => {
   const { editor } = useCurrentEditor();
 
   if (!editor) {
@@ -19,7 +16,7 @@ const MenuBar = ({ auto }: { auto: boolean }) => {
   }
 
   return (
-    <div className="flex items-center gap-[0.25em] justify-between bg-gray-100 p-[0.5em] rounded-t-[0.25em]">
+    <div className="flex items-center gap-1 justify-between bg-gray-100 p-2 rounded-t-sm">
       <button
         onClick={(event) => {
           event.preventDefault();
@@ -27,11 +24,11 @@ const MenuBar = ({ auto }: { auto: boolean }) => {
         }}
         disabled={!editor.can().chain().focus().toggleBold().run()}
         className={cn(
-          'h-[2em] w-[2em] flex justify-center items-center cursor-pointer rounded-[0.125em]',
+          'h-8 w-8 flex justify-center items-center cursor-pointer rounded-sm',
           editor.isActive('bold') ? 'bg-gray-300' : 'hover:bg-gray-200',
         )}
       >
-        <Bold size={auto ? 16 : fontSize} />
+        <Bold size={16} />
       </button>
       <button
         onClick={(event) => {
@@ -40,11 +37,11 @@ const MenuBar = ({ auto }: { auto: boolean }) => {
         }}
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         className={cn(
-          'h-[2em] w-[2em] flex justify-center items-center cursor-pointer rounded-[0.125em]',
+          'h-8 w-8 flex justify-center items-center cursor-pointer rounded-sm',
           editor.isActive('italic') ? 'bg-gray-300' : 'hover:bg-gray-200',
         )}
       >
-        <Italic size={auto ? 16 : fontSize} />
+        <Italic size={16} />
       </button>
       <button
         onClick={(event) => {
@@ -53,11 +50,11 @@ const MenuBar = ({ auto }: { auto: boolean }) => {
         }}
         disabled={!editor.can().chain().focus().toggleUnderline().run()}
         className={cn(
-          'h-[2em] w-[2em] flex justify-center items-center cursor-pointer rounded-[0.125em]',
+          'h-8 w-8 flex justify-center items-center cursor-pointer rounded-sm',
           editor.isActive('underline') ? 'bg-gray-300' : 'hover:bg-gray-200',
         )}
       >
-        <Underline size={auto ? 18 : fontSize + 2} />
+        <Underline size={18} />
       </button>
       <button
         onClick={(event) => {
@@ -66,13 +63,13 @@ const MenuBar = ({ auto }: { auto: boolean }) => {
         }}
         disabled={!editor.can().chain().focus().undo().run()}
         className={cn(
-          'h-[2em] w-[2em] p-[0.25em] flex justify-center items-center rounded-[0.125em]',
+          'h-8 w-8 p-1 flex justify-center items-center rounded-sm',
           editor.can().chain().focus().undo().run()
             ? 'bg-gray-300 cursor-pointer'
             : '',
         )}
       >
-        <Undo size={auto ? 22 : fontSize + 6} />
+        <Undo size={20} />
       </button>
       <button
         onClick={(event) => {
@@ -81,13 +78,13 @@ const MenuBar = ({ auto }: { auto: boolean }) => {
         }}
         disabled={!editor.can().chain().focus().redo().run()}
         className={cn(
-          'h-[2em] w-[2em] p-[0.25em] flex justify-center items-center rounded-[0.125em]',
+          'h-8 w-8 p-1 flex justify-center items-center rounded-sm',
           editor.can().chain().focus().redo().run()
             ? 'bg-gray-300 cursor-pointer'
             : '',
         )}
       >
-        <Redo size={auto ? 22 : fontSize + 6} />
+        <Redo size={20} />
       </button>
     </div>
   );
@@ -109,12 +106,10 @@ function MyEditorContent({ content }: { content: string }) {
 
 export default function TextEditor({
   content,
-  auto = false,
   readOnly = false,
   onChange,
 }: {
   content: string;
-  auto?: boolean;
   readOnly?: boolean;
   onChange?: (content: string) => void;
 }) {
@@ -122,7 +117,7 @@ export default function TextEditor({
     <div className="w-full flex flex-col text-[0.875em] border rounded-sm cursor-text">
       <EditorProvider
         editable={!readOnly}
-        slotBefore={!readOnly && <MenuBar auto={auto} />}
+        slotBefore={!readOnly && <MenuBar />}
         extensions={[StarterKit, TextUnderline]}
         onUpdate={({ editor }) => {
           if (!readOnly) {

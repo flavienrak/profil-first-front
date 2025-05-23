@@ -14,6 +14,7 @@ import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Brush,
+  CaptionsOff,
   Download,
   Goal,
   Plus,
@@ -238,23 +239,30 @@ export default function CvPreview() {
     position?: { x?: number; y?: number },
   ) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    let x;
+    let x = 0;
+    let y = 0;
+    const elementWidth = 400;
 
     if (align === 'right') {
       x = rect.right + 20; // Position à droite
-      if (x + 350 > window.innerWidth) {
-        x = rect.left - 325 * (fontSize / 16); // Si dépassement, repositionner à gauche
+      if (x + elementWidth + 25 > window.innerWidth) {
+        x = rect.left - elementWidth; // Si dépassement, repositionner à gauche
       }
+      y = rect.top;
+    } else if (align === 'center') {
+      x = window.innerWidth / 2 - elementWidth / 2;
+      y = 80;
     } else {
-      x = rect.left - 325 * (fontSize / 16); // Position à gauche
+      x = rect.left - elementWidth; // Position à gauche
       if (x < 0) {
         x = rect.right + 10; // Si dépassement, repositionner à droite
       }
+      y = rect.top;
     }
 
     setCurrentPosition({
       x: position?.x ?? x,
-      y: position?.y ?? rect.top * (fontSize / 16),
+      y: position?.y ?? y,
     });
   };
 
@@ -666,13 +674,13 @@ export default function CvPreview() {
           </div>
         </div>
 
-        <div className="relative h-[calc(100vh-5rem)] overflow-y-auto">
-          <div
-            className="flex justify-center p-[2.5em]"
-            style={{ fontSize: `${fontSize}px` }}
-          >
-            <div className="flex flex-col gap-[1em]">
-              <div className="flex justify-between bg-white shadow p-[0.25em] rounded-[0.5em]">
+        <div className="relative h-[calc(100vh-5rem)] w-full overflow-y-auto">
+          <div className="flex justify-center p-10">
+            <div
+              className="flex flex-col gap-4"
+              style={{ fontSize: `${fontSize}px` }}
+            >
+              <div className="flex justify-between bg-white shadow p-1 rounded-md">
                 <button
                   onClick={(event) => {
                     const data: PopupInterface = {
@@ -692,30 +700,30 @@ export default function CvPreview() {
                       handleOpenPopup(data);
                     }
                   }}
-                  className="h-full px-[1em] text-[0.875em] bg-[#e5e7eb] rounded-[0.25em] cursor-pointer transition-opacity duration-150 hover:opacity-80"
+                  className="h-full px-4 text-sm bg-[#e5e7eb] rounded-sm cursor-pointer transition-opacity duration-150 hover:opacity-80"
                 >
                   Comment ça marche ?
                 </button>
 
-                <div className="flex items-center gap-[1em]">
+                <div className="flex items-center gap-3">
                   <i
                     onClick={increaseFontSize}
-                    className="h-[2em] w-[2em] flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.25em]"
+                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
                   >
-                    <ZoomIn className="h-[1.5em]" />
+                    <ZoomIn size={22} />
                   </i>
                   <i
                     onClick={decreaseFontSize}
-                    className="h-[2em] w-[2em] flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.25em]"
+                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
                   >
-                    <ZoomOut className="h-[1.5em]" />
+                    <ZoomOut size={22} />
                   </i>
-                  <p
+                  <i
                     onClick={resetFontSize}
-                    className="h-full px-[1em] flex justify-center items-center bg-[#e5e7eb] text-[0.875em] rounded-[0.35em] select-none hover:opacity-80 cursor-pointer"
+                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
                   >
-                    Réinitialiser
-                  </p>
+                    <CaptionsOff size={22} />
+                  </i>
                 </div>
               </div>
 
@@ -723,7 +731,7 @@ export default function CvPreview() {
                 ref={cvRef}
                 className="relative flex bg-white w-[50em] min-h-[70em] rounded-[0.75em] shadow-md"
               >
-                <div className="absolute -left-[3.5em] top-0 flex flex-col gap-[0.5em]">
+                <div className="absolute -left-14 top-0 flex flex-col gap-2">
                   <TooltipProvider>
                     <Tooltip delayDuration={700}>
                       <TooltipTrigger asChild>
@@ -774,14 +782,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="step-11 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white hover:opacity-80 cursor-pointer"
+                          className="step-11 h-10 w-10 flex justify-center items-center shadow rounded-full bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white hover:opacity-80 cursor-pointer"
                         >
-                          <Plus className="h-[1.5em]" />
+                          <Plus size={24} />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
                       >
                         <p>Ajouter rubrique</p>
                       </TooltipContent>
@@ -821,14 +829,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="step-12 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
+                          className="step-12 h-10 w-10 flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
                         >
-                          <UserPlus className="h-[1.5em]" />
+                          <UserPlus size={24} />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
                       >
                         <p>Adresse & Contacts</p>
                       </TooltipContent>
@@ -883,14 +891,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="step-13 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
+                          className="step-13 h-10 w-10 flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
                         >
-                          <Brush className="h-[1.5em]" />
+                          <Brush size={24} />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
                       >
                         <p>Couleurs de fond</p>
                       </TooltipContent>
@@ -950,7 +958,7 @@ export default function CvPreview() {
                                 updateCvMinuteSection: true,
                                 fields: [
                                   {
-                                    label: 'Votre prénom',
+                                    label: 'Prénom(s)',
                                     type: 'input',
                                     key: 'content',
                                     requiredError: 'Prénom requis',
@@ -989,7 +997,7 @@ export default function CvPreview() {
                                 updateCvMinuteSection: true,
                                 fields: [
                                   {
-                                    label: 'Votre nom',
+                                    label: 'NOM',
                                     type: 'input',
                                     key: 'content',
                                     requiredError: 'Nom requis',
@@ -1200,21 +1208,17 @@ export default function CvPreview() {
                                   )}
                                 </div>
 
-                                <div className="absolute -left-[4em] top-0 flex flex-col gap-[0.5em]">
+                                <div className="absolute -left-15 top-0 flex flex-col gap-2">
                                   <TooltipProvider>
                                     <Tooltip delayDuration={700}>
                                       <TooltipTrigger asChild>
                                         <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
-                                          <Zap
-                                            size={
-                                              (fontSize + 16) * (fontSize / 16)
-                                            }
-                                          />
+                                          <Zap size={28} />
                                         </i>
                                       </TooltipTrigger>
                                       <TooltipContent
                                         side="left"
-                                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
                                       >
                                         <p>Modifier</p>
                                       </TooltipContent>
@@ -1418,7 +1422,7 @@ export default function CvPreview() {
                             ],
                           };
 
-                          handleGetPosition(event, 'right', { y: 80 });
+                          handleGetPosition(event, 'center');
                           if (isOpen) {
                             handleClosePopup();
                             setTempData(data);
@@ -1438,20 +1442,17 @@ export default function CvPreview() {
                           Expériences professionnelles
                         </h2>
 
-                        <div className="absolute -right-[4em] top-[0.125em]">
+                        <div className="absolute -right-14 top-[0.125em]">
                           <TooltipProvider>
                             <Tooltip delayDuration={700}>
                               <TooltipTrigger asChild>
                                 <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
-                                  <Triangle
-                                    size={(fontSize + 16) * (fontSize / 16)}
-                                    fill={'currentColor'}
-                                  />
+                                  <Triangle size={28} fill={'currentColor'} />
                                 </i>
                               </TooltipTrigger>
                               <TooltipContent
                                 side="right"
-                                className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
+                                className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 ms-1 rounded-sm"
                               >
                                 <p>Ajouter expérience</p>
                               </TooltipContent>
@@ -1568,10 +1569,7 @@ export default function CvPreview() {
                                   ],
                                 };
 
-                                handleGetPosition(event, 'right', {
-                                  y: 80,
-                                  x: 255,
-                                });
+                                handleGetPosition(event, 'center');
                                 if (isOpen) {
                                   handleClosePopup();
                                   setTempData(data);
@@ -1698,19 +1696,19 @@ export default function CvPreview() {
                               />
 
                               {item.evaluation && (
-                                <div className="absolute -right-[13em] w-[12em] flex flex-col gap-[0.5em]">
+                                <div className="absolute -right-52 w-48 flex flex-col gap-2">
                                   <div className="flex items-center justify-between">
-                                    <span className="text-[0.875em] font-medium text-[#4a5565] truncate">
+                                    <span className="text-sm font-medium text-[#4a5565] truncate">
                                       {item.title}
                                     </span>
-                                    <span className="text-[0.875em] font-semibold text-primary">
+                                    <span className="text-sm font-semibold text-primary">
                                       {item.evaluation.actualScore
                                         ? item.evaluation.actualScore
                                         : item.evaluation.initialScore}
                                       %
                                     </span>
                                   </div>
-                                  <div className="relative h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
+                                  <div className="relative h-2 bg-[#e5e7eb] rounded-full overflow-hidden">
                                     <div
                                       className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
                                       style={{
@@ -1722,7 +1720,7 @@ export default function CvPreview() {
                                       }}
                                     />
                                   </div>
-                                  <button className="w-full text-[0.75em] font-semibold hover:text-[var(--u-primary-color)] cursor-pointer">
+                                  <button className="w-full text-xs font-semibold hover:text-[var(--u-primary-color)] cursor-pointer">
                                     Optimiser cette expérience
                                   </button>
                                 </div>
@@ -1750,13 +1748,15 @@ export default function CvPreview() {
                 popup.updateBg ||
                 popup.static ||
                 popup.newSection) && (
-                <EditPopup
-                  popup={popup}
-                  cvMinuteId={cvMinute.id}
-                  currentPosition={currentPosition}
-                  setCurrentPosition={setCurrentPosition}
-                  handleClosePopup={handleClosePopup}
-                />
+                <div className="fixed top-0 left-0 z-50 w-full h-full bg-black/20">
+                  <EditPopup
+                    popup={popup}
+                    cvMinuteId={cvMinute.id}
+                    currentPosition={currentPosition}
+                    setCurrentPosition={setCurrentPosition}
+                    handleClosePopup={handleClosePopup}
+                  />
+                </div>
               )}
 
             {showVideo && (

@@ -221,7 +221,7 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
           <div className="max-h-[80vh] h-full pt-14 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
             {isConfirm ? (
               <div className="flex flex-col gap-6">
-                <TextEditor auto readOnly content={isConfirm.message} />
+                <TextEditor readOnly content={isConfirm.message} />
 
                 <div className="flex justify-end gap-4">
                   <button
@@ -485,7 +485,6 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
                         <FormItem>
                           <FormControl>
                             <TextEditor
-                              auto
                               content={field.value}
                               onChange={(value) => {
                                 if (!textareaUpdated) {

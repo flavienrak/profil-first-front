@@ -43,16 +43,6 @@ import { LucideIcon } from '@/components/utils/LucideIcon';
 import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionInfo.interface';
 import { AdviceInterface } from '@/interfaces/role/user/cv-minute/advice.interface';
 
-interface EditPopupInterface {
-  popup: PopupInterface;
-  cvMinuteId: number;
-  currentPosition: { x: number; y: number };
-  handleClosePopup: () => void;
-  setCurrentPosition: React.Dispatch<
-    React.SetStateAction<{ x: number; y: number }>
-  >;
-}
-
 const guides = [
   {
     label: `Sélectionnez des compétences qui correspondent directement aux exigences de l'offre d'emploi. Privilégiez les compétences techniques spécifiques et les savoir-faire concrets plutôt que des qualités génériques.
@@ -78,7 +68,15 @@ export default function EditPopup({
   currentPosition,
   handleClosePopup,
   setCurrentPosition,
-}: EditPopupInterface) {
+}: {
+  popup: PopupInterface;
+  cvMinuteId: number;
+  currentPosition: { x: number; y: number };
+  handleClosePopup: () => void;
+  setCurrentPosition: React.Dispatch<
+    React.SetStateAction<{ x: number; y: number }>
+  >;
+}) {
   const dispatch = useDispatch();
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
   const { cvMinute, sections } = useSelector(
@@ -295,8 +293,8 @@ export default function EditPopup({
 
   return (
     <div
-      className={`z-50 fixed bg-white rounded-[0.75em] shadow-xl border-[0.0625em] border-gray-200 ${
-        popup.large && suggestions.length > 0 ? 'w-[35em]' : 'w-[20em]'
+      className={`z-50 fixed bg-white rounded-md shadow-xl border-1 border-gray-200 ${
+        popup.large && suggestions.length > 0 ? 'w-[40rem]' : 'w-[20rem]'
       }`}
       style={{
         left: `${currentPosition.x}px`,
@@ -305,53 +303,51 @@ export default function EditPopup({
     >
       <div
         onMouseDown={handleMouseDown}
-        className="p-[0.625em] border-b-[0.0625em] border-gray-200 flex items-center justify-end bg-[#F3EAFD] rounded-t-[0.5em] cursor-move"
+        className="p-2.5 border-b-1 border-gray-200 flex items-center justify-end bg-[#F3EAFD] rounded-t-md cursor-move"
       >
         <button
           onClick={handleClosePopup}
           className="text-gray-500 hover:text-gray-700 cursor-pointer"
         >
-          <X className="w-[1em] h-[1em]" />
+          <X size={22} />
         </button>
       </div>
 
       <div
-        className={`max-h-[calc(100vh-8rem)] overflow-y-auto ${
+        className={`max-h-[calc(100vh-9rem)] overflow-y-auto ${
           popup.hidden === false
             ? 'overflow-y-visible'
-            : 'overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300'
+            : 'overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300'
         }`}
       >
-        <div className="flex gap-[0.5em] p-[0.75em]">
-          <div className="flex-1 flex flex-col gap-[1em]">
+        <div className="flex gap-4 p-4">
+          <div className="flex-1 flex flex-col gap-4">
             {popup.title && (
-              <h3 className="text-center text-[1.125em] font-semibold tracking-wide px-[1em] select-none">
+              <h3 className="text-center text-lg font-semibold tracking-wide px-4 select-none">
                 {popup.title}
               </h3>
             )}
             {popup.conseil && (
-              <div className="flex flex-col gap-[0.25em]">
-                <p className="text-[0.875em] font-semibold">Nos conseils :</p>
-                <p className="text-[0.725em] whitespace-pre-line">
-                  {popup.conseil}
-                </p>
+              <div className="flex flex-col gap-1">
+                <p className="font-semibold">Nos conseils :</p>
+                <p className="text-sm whitespace-pre-line">{popup.conseil}</p>
               </div>
             )}
 
             {popup.withScore && experienceInfo && (
-              <div className="flex flex-col gap-[0.25em]">
-                <div className="flex items-center gap-[0.75em]">
-                  <div className="flex items-center gap-[0.25em] w-1/2">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 w-1/2">
                     <i className="text-[var(--u-primary-color)]">
                       <Lightbulb size={fontSize + 8} />
                     </i>
-                    <p className="text-[0.75em] font-semibold">
+                    <p className="text-xs font-semibold">
                       {experienceInfo.title}
                     </p>
                   </div>
                   {experienceInfo.evaluation && (
-                    <div className="w-1/2 flex items-center gap-[0.5em]">
-                      <div className="relative flex-1 h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
+                    <div className="w-1/2 flex items-center gap-2">
+                      <div className="relative flex-1 h-2 bg-[#e5e7eb] rounded-full overflow-hidden">
                         <div
                           className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
                           style={{
@@ -363,7 +359,7 @@ export default function EditPopup({
                           }}
                         />
                       </div>
-                      <p className="text-[0.875em] font-semibold text-primary">
+                      <p className="text-sm font-semibold text-primary">
                         {experienceInfo?.evaluation.actualScore
                           ? experienceInfo.evaluation.actualScore
                           : experienceInfo?.evaluation.initialScore}
@@ -373,12 +369,12 @@ export default function EditPopup({
                   )}
                 </div>
                 {experienceInfo.evaluation && (
-                  <div className="flex flex-col gap-[0.5em] p-[0.25em] rounded-[0.25em] bg-gray-100">
+                  <div className="flex flex-col gap-2 p-2 rounded-sm bg-gray-100">
                     <div
                       onClick={() => setOpenDetails((prev) => !prev)}
-                      className="flex items-center justify-end gap-[0.25em] text-gray-600 cursor-pointer"
+                      className="flex items-center justify-end gap-1 text-gray-600 cursor-pointer"
                     >
-                      <p className="font-semibold text-[0.625em] select-none">
+                      <p className="font-semibold text-xs select-none">
                         Pourquoi ce score ?
                       </p>
                       <Triangle
@@ -388,11 +384,11 @@ export default function EditPopup({
                       />
                     </div>
                     {openDetails && (
-                      <div className="flex flex-col gap-[0.5em] text-[0.625em]">
+                      <div className="flex flex-col gap-2 text-xs">
                         {experienceInfo.evaluation.content && (
-                          <div className="flex flex-col gap-[0.5em]">
+                          <div className="flex flex-col gap-2">
                             <p className="font-semibold">🟢 Points forts :</p>
-                            <ul className="list-none list-inside flex flex-col gap-[0.25em]">
+                            <ul className="list-none list-inside flex flex-col gap-1">
                               {experienceInfo.evaluation.content
                                 ?.split('\n')
                                 .map((text, index) => (
@@ -402,11 +398,11 @@ export default function EditPopup({
                           </div>
                         )}
                         {experienceInfo.evaluation.weakContent && (
-                          <div className="flex flex-col gap-[0.5em]">
+                          <div className="flex flex-col gap-2">
                             <p className="font-semibold">
                               🔴 Points à améliorer :
                             </p>
-                            <ul className="list-disc list-inside flex flex-col gap-[0.25em]">
+                            <ul className="list-disc list-inside flex flex-col gap-1">
                               {experienceInfo.evaluation.weakContent
                                 ?.split('\n')
                                 .map((text, index) => (
@@ -432,7 +428,7 @@ export default function EditPopup({
                     setLoadingButton(false);
                   }
                 }}
-                className="rounded-[0.5em]"
+                className="rounded-sm py-2"
                 isLoading={loadingButton}
               />
             )}
@@ -441,9 +437,9 @@ export default function EditPopup({
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex flex-col gap-[0.5em]"
+                  className="flex flex-col gap-2"
                 >
-                  <div className="flex flex-col gap-[0.25em]">
+                  <div className="flex flex-col gap-1">
                     {popup.fields.map(
                       (field) =>
                         field.show !== false && (
@@ -452,20 +448,20 @@ export default function EditPopup({
                             name={field.key}
                             control={form.control}
                             render={({ field: formField }) => (
-                              <FormItem>
-                                <FormLabel asChild className="!text-[0.875em]">
+                              <FormItem className="flex flex-col gap-2">
+                                <FormLabel asChild>
                                   <div className="w-full flex flex-col items-start font-normal">
-                                    <p>{field.label}</p>
+                                    <p className="text-base">{field.label}</p>
                                     {field.example && (
-                                      <p className="text-[0.6em] font-bold">
+                                      <p className="text-[0.6rem] font-bold">
                                         {field.example}
                                       </p>
                                     )}
                                   </div>
                                 </FormLabel>
                                 <FormControl>
-                                  <div className="flex flex-col gap-[0.5em]">
-                                    <div className="flex gap-[0.5em]">
+                                  <div className="flex flex-col gap-2">
+                                    <div className="flex gap-2">
                                       {icon && iconSize && (
                                         <div className="relative">
                                           {showIcons && (
@@ -487,7 +483,7 @@ export default function EditPopup({
                                             onClick={() =>
                                               setShowIcons((prev) => !prev)
                                             }
-                                            className={`h-[2.5em] w-[2.5em] flex justify-center items-center text-[0.875em] text-gray-700 border rounded-[0.25em] cursor-pointer ${
+                                            className={`h-10 w-10 flex justify-center items-center text-sm text-gray-700 border rounded-sm cursor-pointer ${
                                               showIcons
                                                 ? 'bg-[var(--u-primary-color)] text-white'
                                                 : 'hover:bg-gray-200'
@@ -504,7 +500,7 @@ export default function EditPopup({
                                         <Textarea
                                           {...formField}
                                           autoComplete="off"
-                                          className="flex-1 min-h-[5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em] resize-none"
+                                          className="flex-1 min-h-20 px-3 py-2 rounded-sm !text-sm !placeholder:text-sm resize-none"
                                           placeholder={field.placeholder}
                                           required
                                         />
@@ -517,13 +513,13 @@ export default function EditPopup({
                                         <Input
                                           {...formField}
                                           type="color"
-                                          className="flex-1 h-[2.5em] px-[0.25em] py-[0.125em] rounded-[0.325em]"
+                                          className="flex-1 h-10 px-1 py-1 rounded-sm"
                                         />
                                       ) : (
                                         <Input
                                           {...formField}
                                           autoComplete="off"
-                                          className="flex-1 h-[2.5em] px-[0.75em] py-[0.25em] rounded-[0.325em] !text-[0.875em] !placeholder:text-[1em]"
+                                          className="flex-1 h-10 px-3 py-1 rounded-sm !text-sm !placeholder:text-sm"
                                           placeholder={field.placeholder}
                                           required
                                         />
@@ -538,7 +534,7 @@ export default function EditPopup({
                                         )?.message
                                       }
                                     </FormMessage>
-                                    <FormDescription className="text-[0.75em]">
+                                    <FormDescription className="text-xs">
                                       {field.description}
                                     </FormDescription>
                                   </div>
@@ -551,7 +547,7 @@ export default function EditPopup({
                   </div>
 
                   {popup.openly && suggestions.length === 0 && (
-                    <div className="flex flex-col gap-[0.5em]">
+                    <div className="flex flex-col gap-2">
                       <PrimaryButton
                         label={'Génerer des suggestions'}
                         icon={'unplug'}
@@ -565,9 +561,9 @@ export default function EditPopup({
                             setLoadingSuggestion(false);
                           }
                         }}
-                        className="rounded-[0.5em]"
+                        className="rounded-sm py-2"
                       />
-                      <p className="text-[0.75em] text-center text-gray-700">
+                      <p className="text-xs text-center text-gray-700">
                         Cliquer sur 'Génerer des suggestions pour obtenir des
                         propositions personnalisées'
                       </p>
@@ -580,7 +576,7 @@ export default function EditPopup({
                       popup.fields.length > 1 ? 'les' : 'la'
                     } modification${popup.fields.length > 1 ? 's' : ''}`}
                     isLoading={isLoading}
-                    className="rounded-[0.5em]"
+                    className="rounded-sm py-2"
                   />
                 </form>
               </Form>
@@ -589,10 +585,10 @@ export default function EditPopup({
             {popup.static && (
               <div>
                 {popup.type === 'desc' ? (
-                  <div className="flex flex-col gap-[1em]">
-                    <div className="flex flex-col gap-[0.25em]">
-                      <p className="text-[0.875em]">Explications :</p>
-                      <p className="text-[0.6875em] whitespace-pre-line">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1">
+                      <p className="font-semibold">Explications :</p>
+                      <p className="text-sm whitespace-pre-line">
                         Lorem, ipsum dolor sit amet consectetur adipisicing
                         elit. Cupiditate autem ab provident tempore nulla quae
                         ipsa expedita facilis nobis, omnis, dolores nostrum
@@ -600,9 +596,9 @@ export default function EditPopup({
                         Molestias!
                       </p>
                     </div>
-                    <div className="flex flex-col gap-[0.25em]">
-                      <p className="text-[0.875em]">Disponibilité :</p>
-                      <p className="text-[0.6875em] whitespace-pre-line">
+                    <div className="flex flex-col gap-1">
+                      <p className="font-semibold">Disponibilité :</p>
+                      <p className="text-sm whitespace-pre-line">
                         Lorem, ipsum dolor sit amet consectetur adipisicing
                         elit. Cupiditate autem ab provident tempore nulla quae
                         ipsa expedita facilis nobis, omnis, dolores nostrum
@@ -611,70 +607,70 @@ export default function EditPopup({
                       </p>
                     </div>
 
-                    <div className="flex flex-col gap-[0.75em]">
+                    <div className="flex flex-col gap-3">
                       <PrimaryButton
                         onClick={popup.onShowGuide}
                         label="Je veux un guide de 30 secondes"
+                        className="py-2"
                       />
                       <PrimaryButton
                         onClick={popup.onShowVideo}
                         label="Visionner la vidéo explicative"
+                        className="py-2"
                       />
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-[0.75em]">
-                    <div className="flex flex-col gap-[0.25em]">
-                      <div className="flex items-center gap-[0.5em]">
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
                         <i className="text-red-400">
                           <Goal />
                         </i>
-                        <p className="text-[0.875em] font-semibold">
+                        <p className="text-sm font-semibold">
                           Choisir les bonnes compétences :
                         </p>
                       </div>
-                      <p className="text-[0.75em] whitespace-pre-line">
+                      <p className="text-xs whitespace-pre-line">
                         {guides[0].label}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-[0.25em]">
-                      <div className="flex items-center gap-[0.5em]">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
                         <i className="text-yellow-400">
                           <Scale />
                         </i>
-                        <p className="text-[0.875em] font-semibold">
+                        <p className="text-sm font-semibold">
                           Equilibrer vos compétences :
                         </p>
                       </div>
 
-                      <p className="text-[0.75em] whitespace-pre-line">
+                      <p className="text-xs whitespace-pre-line">
                         {guides[1].label}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-[0.25em]">
-                      <div className="flex items-center gap-[0.5em]">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
                         <i className="text-blue-400">
                           <Globe />
                         </i>
-                        <p className="text-[0.875em] font-semibold">
-                          Langues :
-                        </p>
+                        <p className="text-sm font-semibold">Langues :</p>
                       </div>
 
-                      <p className="text-[0.75em] whitespace-pre-line">
+                      <p className="text-xs whitespace-pre-line">
                         {guides[2].label}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-[0.25em]">
-                      <div className="flex items-center gap-[0.5em]">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
                         <i className="text-red-500">
                           <Heart fill={'currentColor'} />
                         </i>
-                        <p className="text-[0.875em] font-semibold">
+                        <p className="text-sm font-semibold">
                           Centres d'intérêt :
                         </p>
                       </div>
-                      <p className="text-[0.75em] whitespace-pre-line">
+                      <p className="text-xs whitespace-pre-line">
                         {guides[3].label}
                       </p>
                     </div>
@@ -685,16 +681,16 @@ export default function EditPopup({
           </div>
 
           {suggestions.length > 0 && (
-            <div className="w-1/2 flex flex-col gap-[0.5em] pb-[0.5em]">
-              <h3 className="text-[0.875em] text-center font-medium">
+            <div className="w-1/2 flex flex-col gap-2 pb-2">
+              <h3 className="text-center font-medium">
                 {popup.suggestionTitle}
               </h3>
-              <ul className="list-disc list-inside flex flex-col gap-[0.5em]">
+              <ul className="list-disc list-inside flex flex-col gap-2">
                 {suggestions.map((s) => (
                   <li
                     key={`suggestion-${s.id}`}
                     onClick={() => handleAddSuggestion(s.content)}
-                    className="text-[0.75em] border p-[0.5em] rounded-[0.25em] hover:bg-gray-100 cursor-pointer"
+                    className="text-sm border p-2 rounded-sm hover:bg-gray-100 cursor-pointer"
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(s.content),
                     }}
