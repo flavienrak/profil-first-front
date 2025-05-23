@@ -32,8 +32,8 @@ import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionIn
 import { QualiCarriereCompetenceInteface } from '@/interfaces/role/user/quali-carriere/competence.interface';
 import { updateUserReducer } from '@/redux/slices/user.slice';
 import { useRouter } from 'next/navigation';
-import { SocketContext } from '@/providers/SocketProvider';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useSocket } from '@/providers/Socket.provider';
 
 const profilerChatSchema = z.object({
   message: z.string().trim().min(1, 'Message requis'),
@@ -48,7 +48,7 @@ export default function QualiCarriereSynthese() {
   const { experiences, messages } = useSelector(
     (state: RootState) => state.qualiCarriere,
   );
-  const socketContext = React.useContext(SocketContext);
+  const { isLoadingResponse, setIsLoadingResponse } = useSocket();
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -133,10 +133,10 @@ export default function QualiCarriereSynthese() {
   }, [actualExperience, actualSubIndex]);
 
   React.useEffect(() => {
-    if (socketContext?.isLoadingResponse) {
+    if (isLoadingResponse) {
       form.setValue('message', '');
     }
-  }, [socketContext]);
+  }, [isLoadingResponse]);
 
   const incrementPagination = () => {
     if (actualSubIndex < totalSubIndex - 1) {
@@ -244,7 +244,7 @@ export default function QualiCarriereSynthese() {
   const onSubmit = async (data: ProfilerChatFormValues) => {
     const parseRes = profilerChatSchema.safeParse(data);
 
-    if (parseRes.success && socketContext) {
+    if (parseRes.success) {
       setIsLoading(true);
       const res = await sendQualiCarriereMessageService(parseRes.data.message);
 
@@ -252,11 +252,11 @@ export default function QualiCarriereSynthese() {
         dispatch(newMessageReducer({ message: res.response }));
       }
       setIsLoading(false);
-      socketContext.setIsLoadingResponse(false);
+      setIsLoadingResponse(false);
     }
   };
 
-  if (experiences.length === 0 || !socketContext) return <StepLoader />;
+  if (experiences.length === 0) return <StepLoader />;
 
   return (
     <div className="h-full flex flex-col p-8 gap-8">
@@ -417,7 +417,7 @@ export default function QualiCarriereSynthese() {
                   message={m.content}
                 />
               ))}
-              {socketContext.isLoadingResponse && (
+              {isLoadingResponse && (
                 <div className="flex gap-2 max-w-4/5">
                   <div className="w-8 min-w-8 h-8 min-h-8 bg-purple-100 p-1.5 rounded-full">
                     <Image

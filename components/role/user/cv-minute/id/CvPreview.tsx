@@ -60,7 +60,7 @@ import {
   updateSectionInfoPropositionReducer,
   setCvMinuteReducer,
 } from '@/redux/slices/role/user/cvMinute.slice';
-import { videoUri } from '@/providers/UidProvider';
+import { videoUri } from '@/providers/User.provider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
 import { LucideIcon } from '@/components/utils/LucideIcon';

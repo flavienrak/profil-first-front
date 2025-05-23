@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getQuestionService } from '@/services/role/user/qualiCarriere.service';
 import { setQuestionReducer } from '@/redux/slices/role/user/qualiCarriere.slice';
 import { RootState } from '@/redux/store';
-import { SocketContext } from '@/providers/SocketProvider';
+import { useSocket } from '@/providers/Socket.provider';
 
 export default function StepLayout({
   children,
@@ -18,7 +18,7 @@ export default function StepLayout({
   children: React.ReactNode;
 }) {
   const { user } = useSelector((state: RootState) => state.user);
-  const socketContext = React.useContext(SocketContext);
+  const { isSocketReady } = useSocket();
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ export default function StepLayout({
   React.useEffect(() => {
     if (user?.qualiCarriere === 'active') {
       router.push('/quali-carriere/success');
-    } else if (params.step && socketContext?.isSocketReady) {
+    } else if (params.step && isSocketReady) {
       if (isNaN(Number(params.step))) {
         router.push('/quali-carriere');
       } else {
@@ -60,7 +60,7 @@ export default function StepLayout({
         })();
       }
     }
-  }, [params.step, user?.qualiCarriere, socketContext?.isSocketReady]);
+  }, [params.step, user?.qualiCarriere, isSocketReady]);
 
   return (
     <div className="relative h-full w-full max-h-full flex justify-center overflow-y-auto">

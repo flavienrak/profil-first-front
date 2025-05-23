@@ -13,7 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { RootState } from '@/redux/store';
 import { acceptConditionsService } from '@/services/role/user/user-role.service';
 import { updateUserReducer } from '@/redux/slices/user.slice';
-import { videoUri } from '@/providers/UidProvider';
+import { videoUri } from '@/providers/User.provider';
 import { handleVideo } from '@/lib/function';
 
 export default function CvMinuteLayout({

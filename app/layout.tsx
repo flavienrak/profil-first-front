@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
-import UidProvider from '@/providers/UidProvider';
-import ToastProvider from '@/providers/ToastProvider';
-import ReduxProvider from '@/providers/ReduxProvider';
-import SocketProvider from '@/providers/SocketProvider';
+import UserProvider from '@/providers/User.provider';
+import ToastProvider from '@/providers/Toast.provider';
+import ReduxProvider from '@/providers/Redux.provider';
+import SocketProvider from '@/providers/Socket.provider';
 
 export const metadata: Metadata = {
   title: 'Profil First',
@@ -22,7 +22,7 @@ export default function RootLayout({
         <ReduxProvider>
           <SocketProvider>
             <ToastProvider>
-              <UidProvider>{children}</UidProvider>
+              <UserProvider>{children}</UserProvider>
             </ToastProvider>
           </SocketProvider>
         </ReduxProvider>

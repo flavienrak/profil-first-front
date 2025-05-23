@@ -24,16 +24,19 @@ interface SocketContextType {
   setIsLoadingQuestion: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SocketContext = React.createContext<SocketContextType>({
-  isSocketReady: false,
-  onlineUsers: [],
-  isLoadingResponse: false,
-  isLoadingQuestion: false,
-  setIsLoadingResponse: () => {},
-  setIsLoadingQuestion: () => {},
-});
-
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+const SocketContext = React.createContext<SocketContextType | undefined>(
+  undefined,
+);
+
+export const useSocket = (): SocketContextType => {
+  const context = React.useContext(SocketContext);
+  if (context === undefined) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+  return context;
+};
 
 export default function SocketProvider({
   children,

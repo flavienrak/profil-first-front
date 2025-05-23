@@ -1,10 +1,12 @@
 import React from 'react';
 import HtmlToPdfText from '@/components/utils/HtmlToPDFText';
 
-import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, Image, Font } from '@react-pdf/renderer';
 import { LucidePDFIcon } from '@/components/utils/LucidePDFIcon';
 import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionInfo.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
+
+Font.registerHyphenationCallback((word) => [word]);
 
 export default function PdfTempldate({
   image,
@@ -138,7 +140,6 @@ export default function PdfTempldate({
                   flex: '1',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-between',
                   gap: '6px',
                 }}
               >
@@ -161,10 +162,7 @@ export default function PdfTempldate({
                     </View>
                     <View style={{ overflow: 'hidden' }}>
                       <Text
-                        style={{
-                          fontSize: '10px',
-                          textOverflow: 'ellipsis',
-                        }}
+                        style={{ fontSize: '10px', textOverflow: 'ellipsis' }}
                       >
                         {c.content}
                       </Text>
@@ -336,14 +334,14 @@ export default function PdfTempldate({
                         <Text
                           style={{
                             fontSize: '10px',
-                            fontWeight: 'medium',
+                            fontWeight: 'semibold',
                             color: primaryBg,
                           }}
                         >
                           {item.date} :
                         </Text>
                         <Text
-                          style={{ fontSize: '12px', fontWeight: 'medium' }}
+                          style={{ fontSize: '12px', fontWeight: 'semibold' }}
                         >
                           {item.title}
                         </Text>

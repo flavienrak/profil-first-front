@@ -16,21 +16,27 @@ interface CurrentQueryInterface {
   cvMinute?: string | number;
   [key: string]: string | number | boolean | null | undefined;
 }
-interface UidContextType {
+interface UserProviderContextType {
   isLoading: boolean;
   currentQuery: CurrentQueryInterface | null;
   handleRemoveQuery: (value: string) => void;
 }
 
-export const UidContext = React.createContext<UidContextType>({
-  isLoading: true,
-  currentQuery: null,
-  handleRemoveQuery: (_value: string) => {},
-});
-
 export const videoUri = process.env.NEXT_PUBLIC_VIDEO_URI;
 
-export default function UidProvider({
+const UserContext = React.createContext<UserProviderContextType | undefined>(
+  undefined,
+);
+
+export const useUser = (): UserProviderContextType => {
+  const context = React.useContext(UserContext);
+  if (context === undefined) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+  return context;
+};
+
+export default function UserProvider({
   children,
 }: {
   children: React.ReactNode;
@@ -113,7 +119,7 @@ export default function UidProvider({
   };
 
   return (
-    <UidContext.Provider
+    <UserContext.Provider
       value={{
         isLoading,
         currentQuery,
@@ -121,6 +127,6 @@ export default function UidProvider({
       }}
     >
       {isLoading ? <Loading /> : children}
-    </UidContext.Provider>
+    </UserContext.Provider>
   );
 }

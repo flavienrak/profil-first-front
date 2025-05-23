@@ -26,7 +26,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SocketContext } from '@/providers/SocketProvider';
+import { useSocket } from '@/providers/Socket.provider';
 
 const questionSchema = z.object({
   content: z.string().trim(),
@@ -38,7 +38,7 @@ export default function QualiCarriereChat() {
   const { experience, qualiCarriereQuestion, totalQuestions } = useSelector(
     (state: RootState) => state.qualiCarriere,
   );
-  const socketContext = React.useContext(SocketContext);
+  const { isLoadingQuestion, setIsLoadingQuestion } = useSocket();
 
   const router = useRouter();
 
@@ -54,16 +54,16 @@ export default function QualiCarriereChat() {
   });
 
   React.useEffect(() => {
-    if (socketContext?.isLoadingQuestion) {
+    if (isLoadingQuestion) {
       form.setValue('content', '');
-      socketContext.setIsLoadingQuestion(false);
+      setIsLoadingQuestion(false);
     }
-  }, [socketContext]);
+  }, [isLoadingQuestion]);
 
   const onSubmit = async (data: QuestionFormValues) => {
     const parseRes = questionSchema.safeParse(data);
 
-    if (qualiCarriereQuestion && (parseRes.success || audio) && socketContext) {
+    if (qualiCarriereQuestion && (parseRes.success || audio)) {
       const formData = new FormData();
 
       if (
@@ -99,11 +99,11 @@ export default function QualiCarriereChat() {
         setIsLoading(false);
       }
       setResetForm(true);
-      socketContext.setIsLoadingQuestion(false);
+      setIsLoadingQuestion(false);
     }
   };
 
-  if (!experience || !socketContext) return <StepLoader />;
+  if (!experience) return <StepLoader />;
 
   return (
     <div className="min-h-full w-full flex flex-col gap-8 p-8">
@@ -151,7 +151,7 @@ export default function QualiCarriereChat() {
             </h2>
           </div>
 
-          {socketContext.isLoadingQuestion ? (
+          {isLoadingQuestion ? (
             <div className="flex flex-col gap-4">
               <Skeleton className="w-full h-4 rounded bg-gray-200" />
               <div className="flex flex-col gap-1">

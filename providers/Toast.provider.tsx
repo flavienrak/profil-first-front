@@ -12,12 +12,20 @@ type Position =
   | 'bottom-center';
 
 interface ToastContextType {
-  setToastPosition: (value: Position) => void;
+  setToastPosition: React.Dispatch<React.SetStateAction<Position>>;
 }
 
-export const ToastContext = React.createContext<ToastContextType | undefined>(
+const ToastContext = React.createContext<ToastContextType | undefined>(
   undefined,
 );
+
+export const useToast = (): ToastContextType => {
+  const context = React.useContext(ToastContext);
+  if (context === undefined) {
+    throw new Error('useToast must be used within a useToast');
+  }
+  return context;
+};
 
 export default function ToastProvider({
   children,

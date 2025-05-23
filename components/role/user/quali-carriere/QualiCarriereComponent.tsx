@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Popup from '@/components/utils/Popup';
 import Title from '@/components/utils/role/user/Title';
 
-import { videoUri } from '@/providers/UidProvider';
+import { videoUri } from '@/providers/User.provider';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
