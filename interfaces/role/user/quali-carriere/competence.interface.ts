@@ -1,7 +1,7 @@
 export interface QualiCarriereCompetenceInteface {
   id: number;
   content: string;
-  sectionInfoId: number;
+  cvMinuteSectionId: number;
   userId: number;
 
   createdAt: Date;

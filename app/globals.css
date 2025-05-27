@@ -183,3 +183,6 @@ u {
   padding: 0.7em;
   font-size: 1em;
 }
+.readOnlyEditor .tiptap.ProseMirror {
+  padding: 0;
+}

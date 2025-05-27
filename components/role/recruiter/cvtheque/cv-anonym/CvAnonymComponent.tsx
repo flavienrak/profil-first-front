@@ -10,12 +10,13 @@ import { getCvAnonymService } from '@/services/role/recruiter/cvtheque.service';
 import { setCvAnonymReducer } from '@/redux/slices/role/recruiter/cvtheque.slice';
 import { useParams, useRouter } from 'next/navigation';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
+import TextEditor from '@/components/utils/TextEditor';
 
 export default function CvAnonymComponent() {
   const { fontSize, showCritere } = useSelector(
     (state: RootState) => state.persistInfos,
   );
-  const { cvThequeCritere, cvAnonym, sections } = useSelector(
+  const { cvThequeCritere, cvAnonym } = useSelector(
     (state: RootState) => state.cvTheque,
   );
   const dispatch = useDispatch();
@@ -59,15 +60,16 @@ export default function CvAnonymComponent() {
   }, [showCritere]);
 
   const getCvMinuteSection = (value: string) => {
-    const section = sections.find((s) => s.name === value);
-    return cvAnonym?.cvMinuteSections?.find((c) => c.sectionId === section?.id);
+    return cvAnonym?.cvMinuteSections.find((c) => c.name === value);
   };
 
   const title = getCvMinuteSection('title');
   const presentation = getCvMinuteSection('presentation');
-  const experiences = getCvMinuteSection('experiences');
 
-  const editableSections = sections.filter((s) => s.editable);
+  const experiences = cvAnonym?.cvMinuteSections.filter(
+    (c) => c.name === 'experiences',
+  );
+  const editableSections = cvAnonym?.cvMinuteSections.filter((s) => s.editable);
 
   const getParagraphCount = (html: string) => {
     const matches = html.match(/<p\b[^>]*>/g);
@@ -77,14 +79,8 @@ export default function CvAnonymComponent() {
   const getTextStyle = (weight: number) => {
     // Clamp le résultat entre 0.65em et 1em
     const fontSize = Math.max(0.65, Math.min(1, 1 - weight * 0.005));
-    const lineHeight =
-      fontSize < 0.75
-        ? 'leading-[1.75em]'
-        : fontSize < 0.9
-        ? 'leading-[2em]'
-        : 'leading-[2.25em]';
 
-    return `text-[${fontSize.toFixed(3)}em] ${lineHeight}`;
+    return `text-[${fontSize.toFixed(3)}em]`;
   };
 
   if (cvAnonym)
@@ -114,34 +110,27 @@ export default function CvAnonymComponent() {
                 </h2>
               </div>
 
-              {editableSections.length > 0 && (
+              {editableSections && editableSections.length > 0 && (
                 <div className="flex-1 w-full flex flex-col">
-                  {editableSections.map((s) => {
-                    const cvMinuteSection = getCvMinuteSection(s.name);
-                    if (cvMinuteSection)
-                      return (
-                        <div
-                          key={`editableSection-${s.id}`}
-                          className="relative flex-1 w-full mt-[1em] p-[0.25em]"
-                        >
-                          <h3 className="uppercase bg-[var(--u-secondary-color)] py-[0.25em] px-[0.5em] font-semibold mb-[0.5em] text-[1.125em] select-none">
-                            {cvMinuteSection?.sectionTitle}
-                          </h3>
-                          <div className="pl-[0.5em] text-[1em]">
-                            {cvMinuteSection?.sectionInfos &&
-                            cvMinuteSection?.sectionInfos.length > 0 ? (
-                              <p className="whitespace-pre-line">
-                                {cvMinuteSection.sectionInfos[0].content}
-                              </p>
-                            ) : (
-                              <p className="text-[0.875em] italic">
-                                Aucune donnée ajoutée
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      );
-                  })}
+                  {editableSections.map((s) => (
+                    <div
+                      key={`editableSection-${s.id}`}
+                      className="relative flex-1 w-full mt-[1em] p-[0.25em]"
+                    >
+                      <h3 className="uppercase bg-[var(--u-secondary-color)] py-[0.25em] px-[0.5em] font-semibold mb-[0.5em] text-[1.125em] select-none">
+                        {s.name}
+                      </h3>
+                      <div className="pl-[0.5em] text-[1em]">
+                        {s.content.trim().length > 0 ? (
+                          <p className="whitespace-pre-line">{s.content}</p>
+                        ) : (
+                          <p className="text-[0.875em] italic">
+                            Aucune donnée ajoutée
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -150,14 +139,13 @@ export default function CvAnonymComponent() {
           <div className="w-2/3 flex flex-col gap-[1em] p-[1em]">
             {title && (
               <h1 className="text-[1.75em] leading-[1.25em] font-bold text-[#101828]">
-                {title?.sectionInfos?.[0]?.content ?? 'Titre du CV'}
+                {title.content ?? 'Titre du CV'}
               </h1>
             )}
 
             {presentation && (
               <p className="text-[1.15em]">
-                {presentation?.sectionInfos?.[0]?.content ??
-                  'Résumé du profil professionnel'}
+                {presentation.content ?? 'Résumé du profil professionnel'}
               </p>
             )}
 
@@ -175,17 +163,16 @@ export default function CvAnonymComponent() {
                   </h2>
                 </div>
 
-                {experiences?.sectionInfos &&
-                experiences.sectionInfos.length > 0 ? (
+                {experiences && experiences.length > 0 ? (
                   <div className="flex-1 flex flex-col justify-between gap-[0.375em]">
-                    {experiences.sectionInfos.map((item) => (
+                    {experiences.map((item) => (
                       <div
                         key={`experience-${item.id}`}
-                        className="flex-1 flex flex-col gap-[0.5em] p-[0.25em]"
+                        className="flex-1 flex flex-col p-[0.25em]"
                       >
                         <div className="flex flex-col gap-[0.5em]">
                           <div className="flex items-center gap-[0.5em]">
-                            <h3 className="text-[1.25em] font-semibold">
+                            <h3 className="text-[1.15em] leading-[1.3em] font-semibold">
                               <span
                                 className="text-nowrap word-spacing"
                                 style={{ color: cvAnonym.primaryBg }}
@@ -196,11 +183,11 @@ export default function CvAnonymComponent() {
                             </h3>
                           </div>
                           <p
-                            className={`tracking-[0.025em] px-[0.25em] ${getTextStyle(
-                              experiences.sectionInfos
-                                ? (experiences.sectionInfos.length /
+                            className={`tracking-[0.025em] leading-[1.5em] px-[0.25em] ${getTextStyle(
+                              experiences
+                                ? (experiences.length /
                                     getParagraphCount(item.content)) *
-                                    experiences.sectionInfos.length
+                                    experiences.length
                                 : 6,
                             )}`}
                             style={{ background: cvAnonym.tertiaryBg }}
@@ -208,7 +195,7 @@ export default function CvAnonymComponent() {
                             {item.company}
                           </p>
                         </div>
-                        <p className="whitespace-pre-line">{item.content}</p>
+                        <TextEditor readOnly content={item.content} />
                       </div>
                     ))}
                   </div>

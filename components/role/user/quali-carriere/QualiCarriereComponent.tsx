@@ -102,7 +102,7 @@ export default function QualiCarriereComponent() {
               </p>
               <button
                 onClick={handleContinue}
-                className={`w-full flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white rounded-full select-none ${
+                className={`w-full flex items-center justify-center gap-3 px-6 py-3 text-base tracking-wide font-semibold bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white rounded-full select-none ${
                   redirectLoading
                     ? 'opacity-80 pointer-events-none'
                     : 'hover:opacity-80 transition-opacity duration-150 cursor-pointer'

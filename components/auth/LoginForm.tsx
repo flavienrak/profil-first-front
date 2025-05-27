@@ -64,7 +64,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
         if (res.user.role === 'user') {
           window.location.href = '/cv-minute';
         } else {
-          window.location.href = '/dashboard';
+          window.location.href = '/cross-sourcing';
         }
       } else if (res.userNotFound) {
         form.setError('email', {

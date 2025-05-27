@@ -62,13 +62,15 @@ export default function UserProvider({
 
         if (res.user.role === 'user') {
           if (!userRoutes.some((r) => pathname.startsWith(r.href))) {
-            window.location.href = '/cv-minute';
+            window.location.href =
+              userRoutes.find((item) => item.ref)?.href ?? '/';
           } else {
             setIsLoading(false);
           }
         } else {
           if (!recruiterRoutes.some((r) => pathname.startsWith(r.href))) {
-            window.location.href = '/dashboard';
+            window.location.href =
+              recruiterRoutes.find((item) => item.ref)?.href ?? '/';
           } else {
             setIsLoading(false);
           }

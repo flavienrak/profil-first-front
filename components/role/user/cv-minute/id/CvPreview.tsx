@@ -3,17 +3,18 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import DOMPurify from 'dompurify';
 import Popup from '@/components/utils/Popup';
 import Guide from '@/components/utils/role/user/Guide';
 import EditPopup from './EditPopup';
 import PdfTempldate from './PdfTempldate';
 import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
+import TextEditor from '@/components/utils/TextEditor';
 
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Brush,
+  CaptionsOff,
   Download,
   Goal,
   Plus,
@@ -38,33 +39,28 @@ import { TooltipContent } from '@radix-ui/react-tooltip';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import {
   deleteCvMinuteSectionService,
-  deleteSectionInfoService,
   updateCvMinuteProfileService,
-  generateCvMinuteSectionPropositionService,
+  generateCvMinuteSectionAdvicesService,
   updateCvMinuteScoreService,
   updateCvMinuteSectionOrderService,
-  updateSectionInfoOrderService,
-  updateSectionInfoScoreService,
-  generateSectionInfoPropositionService,
+  updateCvMinuteSectionScoreService,
   optimizeCvMinuteService,
+  generateNewCvMinuteSectionsService,
 } from '@/services/role/user/cvMinute.service';
 import {
-  updateSectionInfoOrderReducer,
-  updateCvMinuteReducer,
+  updateCvMinuteSectionReducer,
   updateCvMinuteSectionOrderReducer,
-  deleteSectionInfoReducer,
   deleteCvMinuteSectionReducer,
-  updateSectionInfoScoreReducer,
   updateCvMinuteScoreReducer,
-  updateCvMinuteSectionPropositionReducer,
-  updateSectionInfoPropositionReducer,
+  updateCvMinuteAdvicesReducer,
+  updateCvMinuteSectionAdvicesReducer,
   setCvMinuteReducer,
+  updateCvMinuteProfileReducer,
 } from '@/redux/slices/role/user/cvMinute.slice';
 import { videoUri } from '@/providers/User.provider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
 import { LucideIcon } from '@/components/utils/LucideIcon';
-import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
 import { handleVideo } from '@/lib/function';
 
 export interface FieldInterface {
@@ -98,7 +94,6 @@ export interface PopupInterface {
   compare?: boolean;
   type?: string;
   fields: FieldInterface[];
-  sectionInfoId?: number;
   cvMinuteSectionId?: number;
   deleteLoading?: boolean;
   withScore?: boolean;
@@ -108,13 +103,18 @@ export interface PopupInterface {
   onShowVideo?: () => void;
 
   updateBg?: boolean;
-  newSection?: boolean;
+  updateName?: boolean;
+  updateFirstname?: boolean;
+  updateContact?: boolean;
+  updateEditableSection?: boolean;
+  updateTitle?: boolean;
+  updatePresentation?: boolean;
   updateExperience?: boolean;
-  updateContactSection?: boolean;
-  updateCvMinuteSection?: boolean;
-}
 
-type SectionType = 'contact' | 'cvMinuteSection' | 'experience';
+  newContact?: boolean;
+  newEditableSection?: boolean;
+  newExperience?: boolean;
+}
 
 const backendUri = process.env.NEXT_PUBLIC_API_URL;
 
@@ -176,19 +176,18 @@ const optimizeOptions = [
   },
 ];
 
+type CvMinuteSectionType = 'contact' | 'editableSection' | 'experience';
+
 export default function CvPreview() {
   const cvRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
 
   const { user } = useSelector((state: RootState) => state.user);
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
-  const { cvMinute, files, sections } = useSelector(
-    (state: RootState) => state.cvMinute,
-  );
+  const { cvMinute } = useSelector((state: RootState) => state.cvMinute);
 
   const getCvMinuteSection = (value: string) => {
-    const section = sections.find((s) => s.name === value);
-    return cvMinute?.cvMinuteSections?.find((c) => c.sectionId === section?.id);
+    return cvMinute?.cvMinuteSections.find((c) => c.name === value);
   };
 
   const profile = getCvMinuteSection('profile');
@@ -196,16 +195,24 @@ export default function CvPreview() {
   const firstname = getCvMinuteSection('firstname');
   const title = getCvMinuteSection('title');
   const presentation = getCvMinuteSection('presentation');
-  const contacts = getCvMinuteSection('contacts');
-  const experiences = getCvMinuteSection('experiences');
 
-  const profileImg = files.filter((f) => f.usage === 'cv-profile');
-  const editableSections = sections.filter((s) => s.editable);
+  const contacts = cvMinute?.cvMinuteSections
+    .filter((c) => c.name === 'contacts')
+    .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
 
-  const [sectionType, setSectionType] = React.useState<SectionType | null>(
-    null,
-  );
-  const [draggingItem, setDraggingItem] = React.useState<number | null>(null);
+  const experiences = cvMinute?.cvMinuteSections
+    .filter((c) => c.name === 'experiences')
+    .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
+
+  const editableSections = cvMinute?.cvMinuteSections
+    .filter((s) => s.editable)
+    .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
+
+  const [draggingItem, setDraggingItem] = React.useState<{
+    id: number;
+    type: CvMinuteSectionType;
+    dragIndex: number;
+  } | null>(null);
 
   const [popup, setPopup] = React.useState<PopupInterface | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -238,23 +245,29 @@ export default function CvPreview() {
     position?: { x?: number; y?: number },
   ) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    let x;
+    let x = 0;
+    let y = 0;
+    const elementWidth = 400;
 
     if (align === 'right') {
       x = rect.right + 20; // Position à droite
-      if (x + 350 > window.innerWidth) {
-        x = rect.left - 325 * (fontSize / 16); // Si dépassement, repositionner à gauche
+      if (x + elementWidth + 25 > window.innerWidth) {
+        x = rect.left - elementWidth; // Si dépassement, repositionner à gauche
       }
+      y = rect.top;
+    } else if (align === 'center') {
+      x = window.innerWidth / 2 - elementWidth / 2;
     } else {
-      x = rect.left - 325 * (fontSize / 16); // Position à gauche
+      x = rect.left - elementWidth; // Position à gauche
       if (x < 0) {
         x = rect.right + 10; // Si dépassement, repositionner à droite
       }
+      y = rect.top;
     }
 
     setCurrentPosition({
       x: position?.x ?? x,
-      y: position?.y ?? rect.top * (fontSize / 16),
+      y: position?.y ?? y,
     });
   };
 
@@ -275,65 +288,38 @@ export default function CvPreview() {
     }
   }, [tempData]);
 
-  const handleDragStart = ({
-    dragId,
-    type,
-  }: {
+  const handleDragStart = (data: {
     dragId: number;
-    type: SectionType;
+    dragIndex: number;
+    type: CvMinuteSectionType;
   }) => {
-    setSectionType(type);
-    setDraggingItem(dragId);
+    setDraggingItem({
+      id: data.dragId,
+      type: data.type,
+      dragIndex: data.dragIndex,
+    });
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
-  const handleDropSectionInfo = async (data: {
-    event: React.DragEvent<HTMLDivElement>;
-    dropId: number;
-    type: SectionType;
-    cvMinuteSectionId: number;
-  }) => {
-    data.event.preventDefault();
-
-    if (
-      cvMinute &&
-      draggingItem &&
-      (sectionType === 'contact' || sectionType === 'experience') &&
-      sectionType === data.type
-    ) {
-      const res = await updateSectionInfoOrderService({
-        id: cvMinute.id,
-        sectionInfoId: draggingItem,
-        targetSectionInfoId: data.dropId,
-      });
-
-      if (res.section) {
-        dispatch(
-          updateSectionInfoOrderReducer({
-            section: res.section,
-            targetSection: res.targetSection,
-            cvMinuteSectionId: data.cvMinuteSectionId,
-          }),
-        );
-      }
-      setDraggingItem(null);
-    }
-  };
-
+  // CVMINUTE SECTION ORDER
   const handleDropCvMinuteSection = async (data: {
     event: React.DragEvent<HTMLDivElement>;
+    type: CvMinuteSectionType;
     dropId: number;
+    dropIndex: number;
   }) => {
     data.event.preventDefault();
 
-    if (cvMinute && draggingItem) {
+    if (cvMinute && draggingItem && draggingItem.type === data.type) {
       const res = await updateCvMinuteSectionOrderService({
         id: cvMinute.id,
-        cvMinuteSectionId: draggingItem,
+        cvMinuteSectionId: draggingItem.id,
+        dragIndex: draggingItem.dragIndex,
         targetCvMinuteSectionId: data.dropId,
+        dropIndex: data.dropIndex,
       });
 
       if (res.cvMinuteSection) {
@@ -348,9 +334,9 @@ export default function CvPreview() {
     }
   };
 
+  // UPDATE CVMINUTE PROFILE
   const handleChangeProfile = async (data: {
     event: React.ChangeEvent<HTMLInputElement>;
-    sectionInfoId?: number;
     cvMinuteSectionId: number;
   }) => {
     if (
@@ -359,55 +345,24 @@ export default function CvPreview() {
       data.event.target.files.length > 0
     ) {
       const formData = new FormData();
-      if (data.sectionInfoId) {
-        formData.append('sectionInfoId', data.sectionInfoId.toString());
-      }
+
       formData.append('cvMinuteSectionId', data.cvMinuteSectionId.toString());
       formData.append('file', data.event.target.files[0]);
 
       const res = await updateCvMinuteProfileService(cvMinute.id, formData);
 
-      if (res.cvMinuteSection) {
-        dispatch(
-          updateCvMinuteReducer({
-            cvMinuteSection: res.cvMinuteSection,
-            file: res.file,
-          }),
-        );
+      if (res.file) {
+        dispatch(updateCvMinuteProfileReducer({ file: res.file }));
       }
     }
-  };
-
-  const handleDeleteSectionInfo = async (data: {
-    sectionInfoId: number;
-    cvMinuteSectionId: number;
-  }) => {
-    if (cvMinute) {
-      const res = await deleteSectionInfoService({
-        id: cvMinute.id,
-        sectionInfoId: data.sectionInfoId,
-      });
-
-      if (res.section) {
-        dispatch(
-          deleteSectionInfoReducer({
-            section: res.section,
-            cvMinuteSectionId: data.cvMinuteSectionId,
-          }),
-        );
-        handleClosePopup();
-      }
-    }
-
-    return;
   };
 
   const handleDeleteCvMinuteSection = async (cvMinuteSectionId: number) => {
     if (cvMinute) {
-      const res = await deleteCvMinuteSectionService(
-        cvMinute.id,
+      const res = await deleteCvMinuteSectionService({
+        id: cvMinute.id,
         cvMinuteSectionId,
-      );
+      });
 
       if (res.cvMinuteSection) {
         dispatch(
@@ -442,49 +397,38 @@ export default function CvPreview() {
       const res = await optimizeCvMinuteService(cvMinute.id);
 
       if (res.cvMinute) {
-        dispatch(
-          setCvMinuteReducer({
-            cvMinute: res.cvMinute,
-            sections: res.sections,
-          }),
-        );
+        dispatch(setCvMinuteReducer({ cvMinute: res.cvMinute }));
       }
       setLoadingOptimize(false);
       setShowOptimize(false);
     }
   };
 
-  const handleGenerateCvMinuteProposition = async () => {
+  const handleGenerateNewCvMinuteSections = async () => {
     if (cvMinute) {
-      const res = await generateCvMinuteSectionPropositionService(cvMinute.id);
+      const res = await generateNewCvMinuteSectionsService(cvMinute.id);
 
       if (res.cvMinute) {
-        dispatch(
-          updateCvMinuteSectionPropositionReducer({ cvMinute: res.cvMinute }),
-        );
+        dispatch(updateCvMinuteAdvicesReducer({ cvMinute: res.cvMinute }));
       }
     }
 
     return;
   };
 
-  const handleGenerateSectionInfoProposition = async (data: {
-    sectionInfoId: number;
-    cvMinuteSectionId: number;
-    section: string;
-  }) => {
+  const handleGenerateCvMinuteSectionAdvices = async (
+    cvMinuteSectionId: number,
+  ) => {
     if (cvMinute) {
-      const res = await generateSectionInfoPropositionService({
+      const res = await generateCvMinuteSectionAdvicesService({
         id: cvMinute.id,
-        sectionInfoId: data.sectionInfoId,
-        section: data.section,
+        cvMinuteSectionId: cvMinuteSectionId,
       });
 
-      if (res.sectionInfo) {
+      if (res.cvMinuteSection) {
         dispatch(
-          updateSectionInfoPropositionReducer({
-            sectionInfo: res.sectionInfo,
-            cvMinuteSectionId: data.cvMinuteSectionId,
+          updateCvMinuteSectionAdvicesReducer({
+            cvMinuteSection: res.cvMinuteSection,
           }),
         );
       }
@@ -497,13 +441,9 @@ export default function CvPreview() {
     if (cvMinute) {
       setLoadingGlobal(true);
       const res = await updateCvMinuteScoreService(cvMinute.id);
+
       if (res.evaluation) {
-        dispatch(
-          updateCvMinuteScoreReducer({
-            evaluation: res.evaluation,
-            cvMinuteId: cvMinute.id,
-          }),
-        );
+        dispatch(updateCvMinuteScoreReducer({ evaluation: res.evaluation }));
       }
       setLoadingGlobal(false);
     }
@@ -511,22 +451,17 @@ export default function CvPreview() {
     return;
   };
 
-  const handleRecalculateExperienceMatching = async (
-    value: number,
-    cvMinuteSectionId: number,
-  ) => {
+  const handleRecalculateExperienceMatching = async (value: number) => {
     if (cvMinute) {
-      const res = await updateSectionInfoScoreService({
+      const res = await updateCvMinuteSectionScoreService({
         id: cvMinute.id,
-        sectionInfoId: value,
+        cvMinuteSectionId: value,
       });
 
-      if (res.evaluation) {
+      if (res.cvMinuteSection) {
         dispatch(
-          updateSectionInfoScoreReducer({
-            evaluation: res.evaluation,
-            sectionInfoId: value,
-            cvMinuteSectionId,
+          updateCvMinuteSectionReducer({
+            cvMinuteSection: res.cvMinuteSection,
           }),
         );
       }
@@ -540,46 +475,27 @@ export default function CvPreview() {
       const blob = await pdf(
         <PdfTempldate
           image={
-            profileImg[0]?.name &&
-            `${backendUri}/uploads/files/user-${user?.id}/${profileImg[0].name}`
+            profile && profile.files.length > 0
+              ? `${backendUri}/uploads/files/user-${user?.id}/${
+                  profile.files[profile.files.length - 1].name
+                }`
+              : undefined
           }
-          name={name?.sectionInfos?.[0]?.content}
-          firstname={firstname?.sectionInfos?.[0]?.content}
-          contacts={contacts?.sectionInfos
-            ?.slice()
-            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))}
-          editableSections={editableSections
-            .map((s) => getCvMinuteSection(s.name))
-            .filter(
-              (section): section is CvMinuteSectionInterface =>
-                section !== undefined,
-            )
-            .sort(
-              (a, b) =>
-                (a.sectionOrder ?? Infinity) - (b.sectionOrder ?? Infinity),
-            )}
-          title={title?.sectionInfos?.[0]?.content}
-          presentation={presentation?.sectionInfos?.[0]?.content}
-          experiences={experiences?.sectionInfos}
+          name={name?.content}
+          firstname={firstname?.content}
+          contacts={contacts}
+          editableSections={editableSections}
+          title={title?.content}
+          presentation={presentation?.content}
+          experiences={experiences}
           primaryBg={cvMinute.primaryBg}
           secondaryBg={cvMinute.secondaryBg}
           tertiaryBg={cvMinute.tertiaryBg}
         />,
       ).toBlob();
 
-      saveAs(blob, 'cv.pdf');
+      saveAs(blob, `${name?.content ?? user?.name ?? 'cv'}.pdf`);
     }
-  };
-
-  const getParagraphCount = (html: string) => {
-    const matches = html.match(/<p\b[^>]*>/g);
-    return matches ? matches.length : 0;
-  };
-
-  const getSpacing = (length: number) => {
-    if (length > 5) return 'leading-[2em]';
-    if (length > 3) return 'leading-[2.5em]';
-    return 'leading-[3em]';
   };
 
   if (cvMinute)
@@ -666,13 +582,13 @@ export default function CvPreview() {
           </div>
         </div>
 
-        <div className="relative h-[calc(100vh-5rem)] overflow-y-auto">
+        <div className="relative h-[calc(100vh-5rem)] w-full overflow-y-auto">
           <div
-            className="flex justify-center p-[2.5em]"
+            className="w-full flex justify-center p-10"
             style={{ fontSize: `${fontSize}px` }}
           >
-            <div className="flex flex-col gap-[1em]">
-              <div className="flex justify-between bg-white shadow p-[0.25em] rounded-[0.5em]">
+            <div className="w-full flex flex-col items-center gap-6">
+              <div className="w-full max-w-[50rem] flex justify-between bg-white shadow p-1 rounded-md">
                 <button
                   onClick={(event) => {
                     const data: PopupInterface = {
@@ -692,30 +608,30 @@ export default function CvPreview() {
                       handleOpenPopup(data);
                     }
                   }}
-                  className="h-full px-[1em] text-[0.875em] bg-[#e5e7eb] rounded-[0.25em] cursor-pointer transition-opacity duration-150 hover:opacity-80"
+                  className="h-full px-4 text-sm bg-[#e5e7eb] rounded-sm cursor-pointer transition-opacity duration-150 hover:opacity-80"
                 >
                   Comment ça marche ?
                 </button>
 
-                <div className="flex items-center gap-[1em]">
+                <div className="flex items-center gap-3">
                   <i
                     onClick={increaseFontSize}
-                    className="h-[2em] w-[2em] flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.25em]"
+                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
                   >
-                    <ZoomIn className="h-[1.5em]" />
+                    <ZoomIn size={22} />
                   </i>
                   <i
                     onClick={decreaseFontSize}
-                    className="h-[2em] w-[2em] flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.25em]"
+                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
                   >
-                    <ZoomOut className="h-[1.5em]" />
+                    <ZoomOut size={22} />
                   </i>
-                  <p
+                  <i
                     onClick={resetFontSize}
-                    className="h-full px-[1em] flex justify-center items-center bg-[#e5e7eb] text-[0.875em] rounded-[0.35em] select-none hover:opacity-80 cursor-pointer"
+                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
                   >
-                    Réinitialiser
-                  </p>
+                    <CaptionsOff size={22} />
+                  </i>
                 </div>
               </div>
 
@@ -733,16 +649,14 @@ export default function CvPreview() {
                               title: 'Ajouter une rubrique',
                               large: true,
                               openly: true,
-                              conseil: cvMinute.advices?.find(
-                                (a) =>
-                                  a.cvMinuteId === cvMinute.id &&
-                                  a.type === 'advice',
+                              conseil: cvMinute.advices.find(
+                                (a) => a.type === 'cvMinuteAdvice',
                               )?.content,
                               suggestionTitle: 'Idées de rubrique',
                               suggestionKey: 'title',
                               onGenerate: async () =>
-                                await handleGenerateCvMinuteProposition(),
-                              newSection: true,
+                                await handleGenerateNewCvMinuteSections(),
+                              newEditableSection: true,
                               fields: [
                                 {
                                   label: 'Nom de la rubrique',
@@ -787,7 +701,6 @@ export default function CvPreview() {
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-
                   <TooltipProvider>
                     <Tooltip delayDuration={700}>
                       <TooltipTrigger asChild>
@@ -796,8 +709,7 @@ export default function CvPreview() {
                             const data: PopupInterface = {
                               title: 'Ajouter vos contacts, liens, adresse...',
                               hidden: false,
-                              cvMinuteSectionId: contacts?.id,
-                              updateContactSection: true,
+                              newContact: true,
                               fields: [
                                 {
                                   label: 'Contacts / Liens / Adresse',
@@ -834,7 +746,6 @@ export default function CvPreview() {
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-
                   <TooltipProvider>
                     <Tooltip delayDuration={700}>
                       <TooltipTrigger asChild>
@@ -907,12 +818,16 @@ export default function CvPreview() {
                       {profile && (
                         <div className="flex justify-center">
                           <label
-                            htmlFor="cv-profile"
+                            htmlFor="cvMinute-profile"
                             className="step-10 w-[10em] h-[10em] rounded-full bg-white flex items-center justify-center select-none"
                           >
-                            {user && profileImg.length > 0 ? (
+                            {user && profile && profile.files.length > 0 ? (
                               <Image
-                                src={`${backendUri}/uploads/files/user-${user.id}/${profileImg[0].name}`}
+                                src={`${backendUri}/uploads/files/user-${
+                                  user.id
+                                }/${
+                                  profile.files[profile.files.length - 1].name
+                                }`}
                                 alt="Profil"
                                 height={160}
                                 width={160}
@@ -927,11 +842,10 @@ export default function CvPreview() {
                               onChange={(event) =>
                                 handleChangeProfile({
                                   event,
-                                  sectionInfoId: profile.sectionInfos?.[0]?.id,
                                   cvMinuteSectionId: profile.id,
                                 })
                               }
-                              id="cv-profile"
+                              id="cvMinute-profile"
                               type="file"
                               accept=".png,.jpg,.jpeg,.webp,.svg,.heif,.heic"
                               className="hidden"
@@ -945,24 +859,18 @@ export default function CvPreview() {
                           <h2
                             onClick={(event) => {
                               const data: PopupInterface = {
-                                sectionInfoId: firstname.sectionInfos?.[0]?.id,
                                 cvMinuteSectionId: firstname.id,
-                                updateCvMinuteSection: true,
+                                updateFirstname: true,
                                 fields: [
                                   {
-                                    label: 'Votre prénom',
+                                    label: 'Prénom(s)',
                                     type: 'input',
                                     key: 'content',
                                     requiredError: 'Prénom requis',
                                     placeholder:
-                                      firstname?.sectionInfos?.[0]?.content ??
-                                      'Prénom',
-                                    value:
-                                      firstname?.sectionInfos?.[0]?.content ??
-                                      '',
-                                    initialValue:
-                                      firstname?.sectionInfos?.[0]?.content ??
-                                      '',
+                                      firstname.content ?? 'Votre prénom',
+                                    value: firstname.content ?? '',
+                                    initialValue: firstname.content ?? '',
                                   },
                                 ],
                               };
@@ -977,28 +885,25 @@ export default function CvPreview() {
                             }}
                             className="w-full text-[1em] text-center font-medium hover:bg-[#f3f4f6]/25"
                           >
-                            {firstname?.sectionInfos?.[0]?.content ?? 'Prénom'}
+                            {firstname.content ?? 'Prénom(s)'}
                           </h2>
                         )}
+
                         {name && (
                           <h1
                             onClick={(event) => {
                               const data: PopupInterface = {
-                                sectionInfoId: name.sectionInfos?.[0]?.id,
                                 cvMinuteSectionId: name.id,
-                                updateCvMinuteSection: true,
+                                updateName: true,
                                 fields: [
                                   {
-                                    label: 'Votre nom',
+                                    label: 'NOM',
                                     type: 'input',
                                     key: 'content',
                                     requiredError: 'Nom requis',
-                                    placeholder:
-                                      name?.sectionInfos?.[0]?.content ?? 'Nom',
-                                    value:
-                                      name?.sectionInfos?.[0]?.content ?? '',
-                                    initialValue:
-                                      name?.sectionInfos?.[0]?.content ?? '',
+                                    placeholder: name.content ?? 'Votre nom',
+                                    value: name.content ?? '',
+                                    initialValue: name.content ?? '',
                                   },
                                 ],
                               };
@@ -1013,91 +918,89 @@ export default function CvPreview() {
                             }}
                             className="w-full text-[1.125em] text-center font-bold mb-3 hover:bg-[#f3f4f6]/25"
                           >
-                            {name?.sectionInfos?.[0]?.content ?? 'NOM'}
+                            {name.content ?? 'NOM'}
                           </h1>
                         )}
                       </div>
                     </div>
 
-                    {contacts?.sectionInfos &&
-                      contacts.sectionInfos.length > 0 && (
-                        <div className="relative w-full flex flex-col justify-between text-[0.875em] px-[0.25em]">
-                          {contacts.sectionInfos.map((c) => (
-                            <div
-                              key={`contact-${c.id}`}
-                              draggable
-                              onDragStart={() =>
-                                handleDragStart({
-                                  dragId: c.id,
-                                  type: 'contact',
-                                })
-                              }
-                              onDragOver={handleDragOver}
-                              onDrop={(event) =>
-                                handleDropSectionInfo({
-                                  event,
-                                  dropId: c.id,
-                                  type: 'contact',
-                                  cvMinuteSectionId: contacts.id,
-                                })
-                              }
-                              onClick={(event) => {
-                                const data: PopupInterface = {
-                                  title:
-                                    'Modifier ou supprimer contact, lien, adresse...',
-                                  hidden: false,
-                                  actionLabel: 'Supprimer',
-                                  onClick: async () =>
-                                    await handleDeleteSectionInfo({
-                                      sectionInfoId: c.id,
-                                      cvMinuteSectionId: contacts.id,
-                                    }),
-                                  sectionInfoId: c.id,
-                                  cvMinuteSectionId: contacts?.id,
-                                  updateContactSection: true,
-                                  fields: [
-                                    {
-                                      label: 'Contact / Lien / Adresse',
-                                      type: 'input',
-                                      icon: c.icon,
-                                      iconSize: c.iconSize,
-                                      key: 'content',
-                                      requiredError: '',
-                                      placeholder: 'https://...',
-                                      value: c.content,
-                                      initialValue: c.content,
-                                    },
-                                  ],
-                                };
+                    {contacts && contacts.length > 0 && (
+                      <div className="relative w-full flex flex-col justify-between text-[0.875em] px-[0.25em]">
+                        {contacts.map((c, index) => (
+                          <div
+                            key={`contact-${c.id}`}
+                            draggable
+                            onDragStart={() =>
+                              handleDragStart({
+                                type: 'contact',
+                                dragId: c.id,
+                                dragIndex: index + 1,
+                              })
+                            }
+                            onDragOver={handleDragOver}
+                            onDrop={(event) =>
+                              handleDropCvMinuteSection({
+                                event,
+                                type: 'contact',
+                                dropId: c.id,
+                                dropIndex: index + 1,
+                              })
+                            }
+                            onClick={(event) => {
+                              const data: PopupInterface = {
+                                title:
+                                  'Modifier ou supprimer contact, lien, adresse...',
+                                hidden: false,
+                                actionLabel: 'Supprimer',
+                                onClick: async () =>
+                                  await handleDeleteCvMinuteSection(c.id),
+                                cvMinuteSectionId: c.id,
+                                updateContact: true,
+                                fields: [
+                                  {
+                                    label: 'Contact / Lien / Adresse',
+                                    type: 'input',
+                                    icon: c.icon,
+                                    iconSize: c.iconSize,
+                                    key: 'content',
+                                    requiredError: '',
+                                    placeholder: 'https://...',
+                                    value: c.content,
+                                    initialValue: c.content,
+                                  },
+                                ],
+                              };
 
-                                handleGetPosition(event, 'left');
-                                if (isOpen) {
-                                  handleClosePopup();
-                                  setTempData(data);
-                                } else {
-                                  handleOpenPopup(data);
-                                }
-                              }}
-                              className="flex-1 flex items-center gap-[0.375em] p-[0.25em] group relative hover:bg-[#f3f4f6]/25"
-                              style={{ order: c.order ?? 1 }}
-                            >
-                              {c.icon && c.iconSize && (
-                                <LucideIcon
-                                  name={c.icon}
-                                  size={c.iconSize * (fontSize / 16)}
-                                />
-                              )}
-                              <p className="flex-1 max-w-[calc(100%-2em)] break-words">
-                                {c.content}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                              handleGetPosition(event, 'left', {
+                                y: 80,
+                                x: 80,
+                              });
+                              if (isOpen) {
+                                handleClosePopup();
+                                setTempData(data);
+                              } else {
+                                handleOpenPopup(data);
+                              }
+                            }}
+                            className="flex-1 flex items-center gap-[0.375em] p-[0.25em] group relative hover:bg-[#f3f4f6]/25"
+                          >
+                            {c.icon && c.iconSize && (
+                              <LucideIcon
+                                name={c.icon}
+                                size={c.iconSize * (fontSize / 16)}
+                              />
+                            )}
+                            <p className="flex-1 max-w-[calc(100%-2em)] break-words">
+                              {c.content}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-                    {editableSections.length > 0 && (
+                    {editableSections && editableSections.length > 0 && (
                       <div className="flex-1 w-full flex flex-col">
-                        {editableSections.map((s) => {
+                        {editableSections.map((s, index) => {
                           const cvMinuteSection = getCvMinuteSection(s.name);
                           if (cvMinuteSection)
                             return (
@@ -1106,48 +1009,44 @@ export default function CvPreview() {
                                 draggable
                                 onDragStart={() =>
                                   handleDragStart({
+                                    type: 'editableSection',
                                     dragId: cvMinuteSection.id,
-                                    type: 'cvMinuteSection',
+                                    dragIndex: index + 1,
                                   })
                                 }
                                 onDragOver={handleDragOver}
                                 onDrop={(event) =>
                                   handleDropCvMinuteSection({
                                     event,
+                                    type: 'editableSection',
                                     dropId: cvMinuteSection.id,
+                                    dropIndex: index + 1,
                                   })
                                 }
                                 onClick={(event) => {
                                   const data: PopupInterface = {
                                     title: 'Modifier ou supprimer la rubrique',
-                                    conseil: cvMinuteSection.advices?.find(
-                                      (a) =>
-                                        a.cvMinuteSectionId ===
-                                          cvMinuteSection.id &&
-                                        a.type === 'advice',
+                                    conseil: cvMinuteSection.advices.find(
+                                      (a) => a.type === 'cvMinuteSectionAdvice',
                                     )?.content,
                                     suggestionTitle: 'Idées de rubrique',
                                     actionLabel: 'Supprimer la rubrique',
                                     onClick: async () =>
                                       await handleDeleteCvMinuteSection(s.id),
-                                    updateCvMinuteSection: true,
                                     cvMinuteSectionId: cvMinuteSection.id,
-                                    sectionInfoId:
-                                      cvMinuteSection?.sectionInfos?.[0]?.id,
+                                    updateEditableSection: true,
                                     fields: [
                                       {
                                         label: 'Nom de la rubrique',
                                         type: 'input',
-                                        key: 'sectionTitle',
+                                        key: 'name',
                                         requiredError:
                                           'Nom de la rubrique requis',
                                         placeholder:
-                                          cvMinuteSection.sectionTitle ??
-                                          'Nom...',
-                                        value:
-                                          cvMinuteSection.sectionTitle ?? '',
+                                          cvMinuteSection.name ?? 'Nom...',
+                                        value: cvMinuteSection.name ?? '',
                                         initialValue:
-                                          cvMinuteSection.sectionTitle ?? '',
+                                          cvMinuteSection.name ?? '',
                                       },
                                       {
                                         label: 'Description',
@@ -1156,19 +1055,19 @@ export default function CvPreview() {
                                         requiredError:
                                           'Description de la rubrique requise',
                                         placeholder:
-                                          cvMinuteSection?.sectionInfos?.[0]
-                                            ?.content ?? 'Description...',
-                                        value:
-                                          cvMinuteSection?.sectionInfos?.[0]
-                                            ?.content ?? '',
+                                          cvMinuteSection?.content ??
+                                          'Description...',
+                                        value: cvMinuteSection?.content ?? '',
                                         initialValue:
-                                          cvMinuteSection?.sectionInfos?.[0]
-                                            ?.content ?? '',
+                                          cvMinuteSection?.content ?? '',
                                       },
                                     ],
                                   };
 
-                                  handleGetPosition(event, 'left', { y: 80 });
+                                  handleGetPosition(event, 'left', {
+                                    y: 80,
+                                    x: 80,
+                                  });
                                   if (isOpen) {
                                     handleClosePopup();
                                     setTempData(data);
@@ -1176,22 +1075,18 @@ export default function CvPreview() {
                                     handleOpenPopup(data);
                                   }
                                 }}
-                                style={{
-                                  order: cvMinuteSection.sectionOrder ?? 1,
-                                }}
-                                className="relative flex-1 w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em] transition-[order] duration-500"
+                                className="relative flex-1 w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em]"
                               >
                                 <h3
                                   className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.5em] font-semibold mb-[0.5em] text-[0.875em] select-none"
                                   style={{ background: cvMinute.secondaryBg }}
                                 >
-                                  {cvMinuteSection?.sectionTitle}
+                                  {cvMinuteSection.name}
                                 </h3>
                                 <div className="pl-[0.5em] text-[0.875em]">
-                                  {cvMinuteSection?.sectionInfos &&
-                                  cvMinuteSection?.sectionInfos.length > 0 ? (
+                                  {cvMinuteSection.content.trim().length > 0 ? (
                                     <p className="whitespace-pre-line">
-                                      {cvMinuteSection.sectionInfos[0].content}
+                                      {cvMinuteSection.content}
                                     </p>
                                   ) : (
                                     <p className="text-[0.875em] italic">
@@ -1239,26 +1134,18 @@ export default function CvPreview() {
                           title: 'Titre du CV',
                           large: true,
                           openly: true,
-                          conseil: title.sectionInfos?.[0]?.advices?.find(
-                            (a) =>
-                              a.sectionInfoId === title.sectionInfos?.[0]?.id &&
-                              a.type === 'advice',
+                          conseil: title.advices.find(
+                            (a) => a.type === 'cvMinuteSectionAdvice',
                           )?.content,
                           onGenerate: async () => {
-                            if (title.sectionInfos) {
-                              await handleGenerateSectionInfoProposition({
-                                sectionInfoId: title.sectionInfos?.[0]?.id,
-                                cvMinuteSectionId: title.id,
-                                section: 'title',
-                              });
-                            }
+                            await handleGenerateCvMinuteSectionAdvices(
+                              title.id,
+                            );
                           },
                           suggestionTitle: 'Idées de titre du CV',
                           suggestionKey: 'content',
-                          actionLabel: 'Supprimer le titre',
-                          sectionInfoId: title.sectionInfos?.[0]?.id,
                           cvMinuteSectionId: title.id,
-                          updateCvMinuteSection: true,
+                          updateTitle: true,
                           compare: false,
                           fields: [
                             {
@@ -1269,11 +1156,9 @@ export default function CvPreview() {
                               trim: false,
                               description:
                                 'Si vous souhaitez un CV sans titre, mettez un espace',
-                              placeholder:
-                                title?.sectionInfos?.[0]?.content ?? 'Titre...',
-                              value: title?.sectionInfos?.[0]?.content ?? '',
-                              initialValue:
-                                title?.sectionInfos?.[0]?.content ?? '',
+                              placeholder: title.content ?? 'Titre...',
+                              value: title.content ?? '',
+                              initialValue: title.content ?? '',
                             },
                           ],
                         };
@@ -1289,7 +1174,7 @@ export default function CvPreview() {
                       className="step-7 flex justify-between items-center hover:bg-[#f3f4f6] px-[0.25em] py-[0.25em]"
                     >
                       <h1 className="text-[1.75em] leading-[1.125em] font-bold text-[#101828]">
-                        {title?.sectionInfos?.[0]?.content ?? 'Titre du CV'}
+                        {title.content ?? 'Titre du CV'}
                       </h1>
                     </div>
                   )}
@@ -1301,29 +1186,20 @@ export default function CvPreview() {
                           align: 'right',
                           section: 'presentation',
                           title: 'Ajouter une presentation',
-                          conseil:
-                            presentation.sectionInfos?.[0]?.advices?.find(
-                              (a) =>
-                                a.sectionInfoId ===
-                                  presentation.sectionInfos?.[0]?.id &&
-                                a.type === 'advice',
-                            )?.content,
+                          conseil: presentation.advices.find(
+                            (a) => a.type === 'cvMinuteSectionAdvice',
+                          )?.content,
                           onGenerate: async () => {
-                            if (presentation.sectionInfos) {
-                              await handleGenerateSectionInfoProposition({
-                                sectionInfoId: presentation.sectionInfos[0]?.id,
-                                cvMinuteSectionId: presentation.id,
-                                section: 'presentation',
-                              });
-                            }
+                            await handleGenerateCvMinuteSectionAdvices(
+                              presentation.id,
+                            );
                           },
                           large: true,
                           openly: true,
                           suggestionTitle: 'Idées de présentation',
                           suggestionKey: 'content',
-                          sectionInfoId: presentation.sectionInfos?.[0]?.id,
                           cvMinuteSectionId: presentation.id,
-                          updateCvMinuteSection: true,
+                          updatePresentation: true,
                           fields: [
                             {
                               label: 'Présentation',
@@ -1331,12 +1207,9 @@ export default function CvPreview() {
                               key: 'content',
                               requiredError: 'Présentation requise',
                               placeholder:
-                                presentation?.sectionInfos?.[0]?.content ??
-                                'Présentation...',
-                              value:
-                                presentation?.sectionInfos?.[0]?.content ?? '',
-                              initialValue:
-                                presentation?.sectionInfos?.[0]?.content ?? '',
+                                presentation.content ?? 'Présentation...',
+                              value: presentation.content ?? '',
+                              initialValue: presentation.content ?? '',
                             },
                           ],
                         };
@@ -1352,163 +1225,236 @@ export default function CvPreview() {
                       className="step-8 flex justify-between text-[#364153] hover:bg-[#f3f4f6] p-[0.5em] text-[0.875em] whitespace-pre-line"
                     >
                       <p>
-                        {presentation?.sectionInfos?.[0]?.content ??
+                        {presentation.content ??
                           'Résumé du profil professionnel'}
                       </p>
                     </div>
                   )}
 
-                  {experiences && (
-                    <div className="flex-1 flex flex-col gap-[0.5em]">
-                      <div
-                        onClick={(event) => {
-                          const data: PopupInterface = {
-                            align: 'right',
-                            title: 'Ajouter une expérience',
-                            cvMinuteSectionId: experiences.id,
-                            updateExperience: true,
-                            fields: [
-                              {
-                                label: 'Titre du poste',
-                                type: 'input',
-                                key: 'title',
-                                requiredError: 'Titre du poste requis',
-                                placeholder: 'Titre...',
-                                value: '',
-                                initialValue: '',
-                              },
-                              {
-                                label: "Nom de l'entreprise",
-                                type: 'input',
-                                key: 'company',
-                                requiredError: "Nom de l'entreprise requis",
-                                placeholder: 'Entreprise...',
-                                value: '',
-                                initialValue: '',
-                              },
-                              {
-                                label: 'Mois début - Mois fin',
-                                example: 'Ex : 03-2023 05-2025',
-                                type: 'input',
-                                key: 'date',
-                                requiredError: 'Mois requis',
-                                placeholder: 'Mois...',
-                                value: '',
-                                initialValue: '',
-                              },
-                              {
-                                label: 'Type de contrat',
-                                example: 'Ex : CDI, CDD, Intérim...',
-                                type: 'input',
-                                key: 'contrat',
-                                requiredError: 'Type de contrat requis',
-                                placeholder: 'Contrat...',
-                                value: '',
-                                initialValue: '',
-                              },
-                              {
-                                label: 'Description',
-                                type: 'text',
-                                key: 'content',
-                                requiredError: 'Description requise',
-                                placeholder: 'Description...',
-                                value: '',
-                                initialValue: '',
-                              },
-                            ],
-                          };
+                  <div className="flex-1 flex flex-col gap-[0.5em]">
+                    <div
+                      onClick={(event) => {
+                        const data: PopupInterface = {
+                          align: 'right',
+                          title: 'Ajouter une expérience',
+                          newExperience: true,
+                          fields: [
+                            {
+                              label: 'Titre du poste',
+                              type: 'input',
+                              key: 'title',
+                              requiredError: 'Titre du poste requis',
+                              placeholder: 'Titre...',
+                              value: '',
+                              initialValue: '',
+                            },
+                            {
+                              label: "Nom de l'entreprise",
+                              type: 'input',
+                              key: 'company',
+                              requiredError: "Nom de l'entreprise requis",
+                              placeholder: 'Entreprise...',
+                              value: '',
+                              initialValue: '',
+                            },
+                            {
+                              label: 'Mois début - Mois fin',
+                              example: 'Ex : 03-2023 05-2025',
+                              type: 'input',
+                              key: 'date',
+                              requiredError: 'Mois requis',
+                              placeholder: 'Mois...',
+                              value: '',
+                              initialValue: '',
+                            },
+                            {
+                              label: 'Type de contrat',
+                              example: 'Ex : CDI, CDD, Intérim...',
+                              type: 'input',
+                              key: 'contrat',
+                              requiredError: 'Type de contrat requis',
+                              placeholder: 'Contrat...',
+                              value: '',
+                              initialValue: '',
+                            },
+                            {
+                              label: 'Description',
+                              type: 'text',
+                              key: 'content',
+                              requiredError: 'Description requise',
+                              placeholder: 'Description...',
+                              value: '',
+                              initialValue: '',
+                            },
+                          ],
+                        };
 
-                          handleGetPosition(event, 'right', { y: 80 });
-                          if (isOpen) {
-                            handleClosePopup();
-                            setTempData(data);
-                          } else {
-                            handleOpenPopup(data);
-                          }
+                        handleGetPosition(event, 'right', { y: 80 });
+                        if (isOpen) {
+                          handleClosePopup();
+                          setTempData(data);
+                        } else {
+                          handleOpenPopup(data);
+                        }
+                      }}
+                      className="relative p-[0.25em]"
+                    >
+                      <h2
+                        className="step-9 w-full uppercase text-[1.125em] font-semibold border-b-[0.125em]"
+                        style={{
+                          color: cvMinute.primaryBg,
+                          borderColor: cvMinute.primaryBg,
                         }}
-                        className="relative p-[0.25em]"
                       >
-                        <h2
-                          className="step-9 w-full uppercase text-[1.125em] font-semibold border-b-[0.125em]"
-                          style={{
-                            color: cvMinute.primaryBg,
-                            borderColor: cvMinute.primaryBg,
-                          }}
-                        >
-                          Expériences professionnelles
-                        </h2>
+                        Expériences professionnelles
+                      </h2>
 
-                        <div className="absolute -right-[4em] top-[0.125em]">
-                          <TooltipProvider>
-                            <Tooltip delayDuration={700}>
-                              <TooltipTrigger asChild>
-                                <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
-                                  <Triangle
-                                    size={(fontSize + 16) * (fontSize / 16)}
-                                    fill={'currentColor'}
-                                  />
-                                </i>
-                              </TooltipTrigger>
-                              <TooltipContent
-                                side="right"
-                                className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
-                              >
-                                <p>Ajouter expérience</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
+                      <div className="absolute -right-[4em] top-[0.125em]">
+                        <TooltipProvider>
+                          <Tooltip delayDuration={700}>
+                            <TooltipTrigger asChild>
+                              <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
+                                <Triangle
+                                  size={(fontSize + 16) * (fontSize / 16)}
+                                  fill={'currentColor'}
+                                />
+                              </i>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="right"
+                              className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
+                            >
+                              <p>Ajouter expérience</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
+                    </div>
 
-                      {experiences?.sectionInfos &&
-                      experiences.sectionInfos.length > 0 ? (
-                        <div className="flex-1 flex flex-col justify-between gap-[0.375em]">
-                          {experiences.sectionInfos.map((item) => (
+                    {experiences && experiences.length > 0 ? (
+                      <div className="flex-1 flex flex-col justify-between gap-[0.375em]">
+                        {experiences.map((item, index) => (
+                          <div
+                            key={`experience-${item.id}`}
+                            draggable
+                            onDragStart={() =>
+                              handleDragStart({
+                                dragId: item.id,
+                                type: 'experience',
+                                dragIndex: index + 1,
+                              })
+                            }
+                            onDragOver={handleDragOver}
+                            onDrop={(event) =>
+                              handleDropCvMinuteSection({
+                                event,
+                                dropId: item.id,
+                                type: 'experience',
+                                dropIndex: index + 1,
+                              })
+                            }
+                            onClick={(event) => {
+                              const data: PopupInterface = {
+                                align: 'right',
+                                section: 'experiences',
+                                title: "Optimiser l'expérience",
+                                actionLabel: 'Recalculer le score de  matching',
+                                large: true,
+                                openly: true,
+                                withScore: true,
+                                suggestionTitle: 'Idées de redactions',
+                                suggestionKey: 'content',
+                                onClick: async () =>
+                                  await handleRecalculateExperienceMatching(
+                                    item.id,
+                                  ),
+                                onGenerate: async () =>
+                                  await handleGenerateCvMinuteSectionAdvices(
+                                    item.id,
+                                  ),
+                                cvMinuteSectionId: item.id,
+                                updateExperience: true,
+                                fields: [
+                                  {
+                                    label: 'Titre du poste',
+                                    type: 'input',
+                                    key: 'title',
+                                    requiredError: 'Titre du poste requis',
+                                    placeholder: item.title ?? 'Titre...',
+                                    value: item.title ?? '',
+                                    initialValue: item.title ?? '',
+                                    show: false,
+                                  },
+                                  {
+                                    label: "Nom de l'entreprise",
+                                    type: 'input',
+                                    key: 'company',
+                                    requiredError: "Nom de l'entreprise requis",
+                                    placeholder:
+                                      item.company ?? 'Entreprise...',
+                                    value: item.company ?? '',
+                                    initialValue: item.company ?? '',
+                                    show: false,
+                                  },
+                                  {
+                                    label: 'Mois début - Mois fin',
+                                    example: 'Ex : 03-2023 05-2025',
+                                    type: 'input',
+                                    key: 'date',
+                                    requiredError: 'Mois requis',
+                                    placeholder: item.date ?? 'Mois...',
+                                    value: item.date ?? '',
+                                    initialValue: item.date ?? '',
+                                    show: false,
+                                  },
+                                  {
+                                    label: 'Type de contrat',
+                                    example: 'Ex : CDI, CDD, Intérim...',
+                                    type: 'input',
+                                    key: 'contrat',
+                                    requiredError: 'Type de contrat requis',
+                                    placeholder: item.contrat ?? 'Contrat...',
+                                    value: item.contrat ?? '',
+                                    initialValue: item.contrat ?? '',
+                                    show: false,
+                                  },
+                                  {
+                                    label: 'Description',
+                                    type: 'text',
+                                    key: 'content',
+                                    requiredError: 'Description requise',
+                                    placeholder:
+                                      item.content ?? 'Description...',
+                                    value: item.content ?? '',
+                                    initialValue: item.content ?? '',
+                                  },
+                                ],
+                              };
+
+                              handleGetPosition(event, 'right', {
+                                y: 80,
+                                x: 255,
+                              });
+                              if (isOpen) {
+                                handleClosePopup();
+                                setTempData(data);
+                              } else {
+                                handleOpenPopup(data);
+                              }
+                            }}
+                            className="flex-1 flex flex-col gap-[0.5em] p-[0.25em] hover:bg-[#f3f4f6]"
+                          >
                             <div
-                              key={`experience-${item.id}`}
-                              draggable
-                              onDragStart={() =>
-                                handleDragStart({
-                                  dragId: item.id,
-                                  type: 'experience',
-                                })
-                              }
-                              onDragOver={handleDragOver}
-                              onDrop={(event) =>
-                                handleDropSectionInfo({
-                                  event,
-                                  dropId: item.id,
-                                  type: 'experience',
-                                  cvMinuteSectionId: experiences.id,
-                                })
-                              }
-                              onClick={(
-                                event: React.MouseEvent<HTMLDivElement>,
-                              ) => {
+                              onClick={(event) => {
+                                event.stopPropagation();
+
                                 const data: PopupInterface = {
                                   align: 'right',
-                                  section: 'experience',
-                                  title: "Optimiser l'expérience",
-                                  actionLabel:
-                                    'Recalculer le score de  matching',
-                                  large: true,
-                                  openly: true,
-                                  withScore: true,
-                                  suggestionTitle: 'Idées de redactions',
-                                  suggestionKey: 'content',
+                                  title: "Modifier ou supprimer l'expérience",
+                                  actionLabel: "Supprimer l'expérience",
                                   onClick: async () =>
-                                    await handleRecalculateExperienceMatching(
-                                      item.id,
-                                      experiences.id,
-                                    ),
-                                  onGenerate: async () =>
-                                    await handleGenerateSectionInfoProposition({
-                                      sectionInfoId: item.id,
-                                      cvMinuteSectionId: experiences.id,
-                                      section: 'experience',
-                                    }),
-                                  sectionInfoId: item.id,
-                                  cvMinuteSectionId: experiences.id,
+                                    await handleDeleteCvMinuteSection(item.id),
+                                  cvMinuteSectionId: item.id,
                                   updateExperience: true,
                                   fields: [
                                     {
@@ -1519,7 +1465,6 @@ export default function CvPreview() {
                                       placeholder: item.title ?? 'Titre...',
                                       value: item.title ?? '',
                                       initialValue: item.title ?? '',
-                                      show: false,
                                     },
                                     {
                                       label: "Nom de l'entreprise",
@@ -1531,7 +1476,6 @@ export default function CvPreview() {
                                         item.company ?? 'Entreprise...',
                                       value: item.company ?? '',
                                       initialValue: item.company ?? '',
-                                      show: false,
                                     },
                                     {
                                       label: 'Mois début - Mois fin',
@@ -1542,7 +1486,6 @@ export default function CvPreview() {
                                       placeholder: item.date ?? 'Mois...',
                                       value: item.date ?? '',
                                       initialValue: item.date ?? '',
-                                      show: false,
                                     },
                                     {
                                       label: 'Type de contrat',
@@ -1553,12 +1496,12 @@ export default function CvPreview() {
                                       placeholder: item.contrat ?? 'Contrat...',
                                       value: item.contrat ?? '',
                                       initialValue: item.contrat ?? '',
-                                      show: false,
                                     },
                                     {
                                       label: 'Description',
                                       type: 'text',
                                       key: 'content',
+                                      show: false,
                                       requiredError: 'Description requise',
                                       placeholder:
                                         item.content ?? 'Description...',
@@ -1568,10 +1511,7 @@ export default function CvPreview() {
                                   ],
                                 };
 
-                                handleGetPosition(event, 'right', {
-                                  y: 80,
-                                  x: 255,
-                                });
+                                handleGetPosition(event, 'center', { y: 80 });
                                 if (isOpen) {
                                   handleClosePopup();
                                   setTempData(data);
@@ -1579,184 +1519,97 @@ export default function CvPreview() {
                                   handleOpenPopup(data);
                                 }
                               }}
-                              className="flex-1 flex flex-col gap-[0.5em] p-[0.25em] hover:bg-[#f3f4f6]"
-                              style={{ order: item.order ?? 1 }}
+                              className="flex flex-col gap-[0.25em] hover:bg-[#f3f4f6]"
                             >
-                              <div
-                                onClick={(
-                                  event: React.MouseEvent<HTMLDivElement>,
-                                ) => {
-                                  event.stopPropagation();
-
-                                  const data: PopupInterface = {
-                                    align: 'right',
-                                    title: "Modifier ou supprimer l'expérience",
-                                    actionLabel: "Supprimer l'expérience",
-                                    onClick: async () =>
-                                      await handleDeleteSectionInfo({
-                                        sectionInfoId: item.id,
-                                        cvMinuteSectionId: experiences.id,
-                                      }),
-                                    sectionInfoId: item.id,
-                                    cvMinuteSectionId: experiences.id,
-                                    updateExperience: true,
-                                    fields: [
-                                      {
-                                        label: 'Titre du poste',
-                                        type: 'input',
-                                        key: 'title',
-                                        requiredError: 'Titre du poste requis',
-                                        placeholder: item.title ?? 'Titre...',
-                                        value: item.title ?? '',
-                                        initialValue: item.title ?? '',
-                                      },
-                                      {
-                                        label: "Nom de l'entreprise",
-                                        type: 'input',
-                                        key: 'company',
-                                        requiredError:
-                                          "Nom de l'entreprise requis",
-                                        placeholder:
-                                          item.company ?? 'Entreprise...',
-                                        value: item.company ?? '',
-                                        initialValue: item.company ?? '',
-                                      },
-                                      {
-                                        label: 'Mois début - Mois fin',
-                                        example: 'Ex : 03-2023 05-2025',
-                                        type: 'input',
-                                        key: 'date',
-                                        requiredError: 'Mois requis',
-                                        placeholder: item.date ?? 'Mois...',
-                                        value: item.date ?? '',
-                                        initialValue: item.date ?? '',
-                                      },
-                                      {
-                                        label: 'Type de contrat',
-                                        example: 'Ex : CDI, CDD, Intérim...',
-                                        type: 'input',
-                                        key: 'contrat',
-                                        requiredError: 'Type de contrat requis',
-                                        placeholder:
-                                          item.contrat ?? 'Contrat...',
-                                        value: item.contrat ?? '',
-                                        initialValue: item.contrat ?? '',
-                                      },
-                                      {
-                                        label: 'Description',
-                                        type: 'text',
-                                        key: 'content',
-                                        show: false,
-                                        requiredError: 'Description requise',
-                                        placeholder:
-                                          item.content ?? 'Description...',
-                                        value: item.content ?? '',
-                                        initialValue: item.content ?? '',
-                                      },
-                                    ],
-                                  };
-
-                                  handleGetPosition(event, 'right', { y: 80 });
-                                  if (isOpen) {
-                                    handleClosePopup();
-                                    setTempData(data);
-                                  } else {
-                                    handleOpenPopup(data);
-                                  }
-                                }}
-                                className="flex flex-col gap-[0.25em] hover:bg-[#f3f4f6]"
-                              >
-                                <div className="flex items-end gap-[0.5em] font-semibold">
-                                  <h3>
-                                    <span
-                                      className="text-nowrap text-[0.875em] word-spacing"
-                                      style={{ color: cvMinute.primaryBg }}
-                                    >
-                                      {item.date} :
-                                    </span>{' '}
-                                    {item.title}
-                                  </h3>
-                                </div>
-                                <p
-                                  className="text-[0.75em] tracking-[0.025em] p-[0.25em]"
-                                  style={{ background: cvMinute.tertiaryBg }}
-                                >
-                                  {item.company} - <span>({item.contrat})</span>
-                                </p>
+                              <div className="flex items-end gap-[0.5em] font-semibold">
+                                <h3>
+                                  <span
+                                    className="text-nowrap word-spacing"
+                                    style={{ color: cvMinute.primaryBg }}
+                                  >
+                                    {item.date} :{' '}
+                                  </span>
+                                  {item.title}
+                                </h3>
                               </div>
-                              <div
-                                className={`text-[0.75em] ${getSpacing(
-                                  experiences.sectionInfos
-                                    ? (experiences.sectionInfos.length /
-                                        getParagraphCount(item.content)) *
-                                        experiences.sectionInfos.length
-                                    : 6,
-                                )}`}
-                                dangerouslySetInnerHTML={{
-                                  __html: DOMPurify.sanitize(item.content),
-                                }}
-                              />
-
-                              {item.evaluation && (
-                                <div className="absolute -right-[13em] w-[12em] flex flex-col gap-[0.5em]">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-[0.875em] font-medium text-[#4a5565] truncate">
-                                      {item.title}
-                                    </span>
-                                    <span className="text-[0.875em] font-semibold text-primary">
-                                      {item.evaluation.actualScore
-                                        ? item.evaluation.actualScore
-                                        : item.evaluation.initialScore}
-                                      %
-                                    </span>
-                                  </div>
-                                  <div className="relative h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
-                                    <div
-                                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
-                                      style={{
-                                        width: `${
-                                          item.evaluation.actualScore
-                                            ? item.evaluation.actualScore
-                                            : item.evaluation.initialScore
-                                        }%`,
-                                      }}
-                                    />
-                                  </div>
-                                  <button className="w-full text-[0.75em] font-semibold hover:text-[var(--u-primary-color)] cursor-pointer">
-                                    Optimiser cette expérience
-                                  </button>
-                                </div>
-                              )}
+                              <p
+                                className="text-[0.875em] tracking-[0.025em] p-[0.25em]"
+                                style={{ background: cvMinute.tertiaryBg }}
+                              >
+                                {item.company} - <span>({item.contrat})</span>
+                              </p>
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-[#6a7282] italic text-[0.875em] p-[0.25em]">
-                          Aucune expérience ajoutée
-                        </p>
-                      )}
-                    </div>
-                  )}
+
+                            <TextEditor
+                              readOnly
+                              content={item.content}
+                              className="readOnlyEditor"
+                            />
+
+                            {item.evaluation && (
+                              <div className="absolute -right-[13em] w-[12em] flex flex-col gap-[0.5em]">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[0.875em] font-medium text-[#4a5565] truncate">
+                                    {item.title}
+                                  </span>
+                                  <span className="text-[0.875em] font-semibold text-primary">
+                                    {item.evaluation.actualScore ??
+                                      item.evaluation.initialScore}
+                                    %
+                                  </span>
+                                </div>
+                                <div className="relative h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
+                                  <div
+                                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
+                                    style={{
+                                      width: `${
+                                        item.evaluation.actualScore ??
+                                        item.evaluation.initialScore
+                                      }%`,
+                                    }}
+                                  />
+                                </div>
+                                <button className="w-full text-[0.75em] font-semibold hover:text-[var(--u-primary-color)] cursor-pointer">
+                                  Optimiser cette expérience
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[#6a7282] italic text-[0.875em] p-[0.25em]">
+                        Aucune expérience ajoutée
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
 
             {isOpen &&
               popup &&
-              (((popup.updateCvMinuteSection ||
+              (popup.updateBg ||
+                popup.updateName ||
+                popup.updateFirstname ||
+                popup.updateContact ||
+                popup.updateEditableSection ||
+                popup.updateTitle ||
+                popup.updatePresentation ||
                 popup.updateExperience ||
-                popup.updateContactSection) &&
-                popup.cvMinuteSectionId) ||
-                popup.updateBg ||
-                popup.static ||
-                popup.newSection) && (
-                <EditPopup
-                  popup={popup}
-                  cvMinuteId={cvMinute.id}
-                  currentPosition={currentPosition}
-                  setCurrentPosition={setCurrentPosition}
-                  handleClosePopup={handleClosePopup}
-                />
+                popup.newExperience ||
+                popup.newEditableSection ||
+                popup.newContact ||
+                popup.static) && (
+                <div className="fixed top-0 left-0 z-50 w-full h-full bg-black/20">
+                  <EditPopup
+                    popup={popup}
+                    cvMinuteId={cvMinute.id}
+                    currentPosition={currentPosition}
+                    setCurrentPosition={setCurrentPosition}
+                    handleClosePopup={handleClosePopup}
+                  />
+                </div>
               )}
 
             {showVideo && (

@@ -3,7 +3,6 @@ import HtmlToPdfText from '@/components/utils/HtmlToPDFText';
 
 import { Document, Page, Text, View, Image, Font } from '@react-pdf/renderer';
 import { LucidePDFIcon } from '@/components/utils/LucidePDFIcon';
-import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionInfo.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
 
 Font.registerHyphenationCallback((word) => [word]);
@@ -24,12 +23,12 @@ export default function PdfTempldate({
   image?: string;
   name?: string;
   firstname?: string;
-  contacts?: SectionInfoInterface[];
+  contacts?: CvMinuteSectionInterface[];
   editableSections?: CvMinuteSectionInterface[];
 
   title?: string;
   presentation?: string;
-  experiences?: SectionInfoInterface[];
+  experiences?: CvMinuteSectionInterface[];
 
   primaryBg: string;
   secondaryBg: string;
@@ -207,31 +206,27 @@ export default function PdfTempldate({
                           fontWeight: 'semibold',
                         }}
                       >
-                        {s.sectionTitle}
+                        {s.name}
                       </Text>
                     </View>
-                    {s.sectionInfos && s.sectionInfos.length > 0 && (
-                      <View
-                        style={{
-                          width: '100%',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '2px',
-                          padding: '0 5px',
-                        }}
-                      >
-                        {s.sectionInfos[0].content
-                          ?.split('\n')
-                          .map((line, i) => (
-                            <Text
-                              key={`editableSectionText-${i}`}
-                              style={{ fontSize: '10px', lineHeight: '13px' }}
-                            >
-                              {line.trim() === '' ? ' ' : line}
-                            </Text>
-                          ))}
-                      </View>
-                    )}
+                    <View
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '2px',
+                        padding: '0 5px',
+                      }}
+                    >
+                      {s.content?.split('\n').map((line, i) => (
+                        <Text
+                          key={`editableSectionText-${i}`}
+                          style={{ fontSize: '10px', lineHeight: '13px' }}
+                        >
+                          {line.trim() === '' ? ' ' : line}
+                        </Text>
+                      ))}
+                    </View>
                   </View>
                 ))}
               </View>

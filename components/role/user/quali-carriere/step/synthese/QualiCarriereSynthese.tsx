@@ -28,12 +28,12 @@ import {
   updateResumeReducer,
 } from '@/redux/slices/role/user/qualiCarriere.slice';
 import { QualiCarriereChatInterface } from '@/interfaces/role/user/quali-carriere/chatInterface';
-import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionInfo.interface';
 import { QualiCarriereCompetenceInteface } from '@/interfaces/role/user/quali-carriere/competence.interface';
 import { updateUserReducer } from '@/redux/slices/user.slice';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSocket } from '@/providers/Socket.provider';
+import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
 
 const profilerChatSchema = z.object({
   message: z.string().trim().min(1, 'Message requis'),
@@ -45,7 +45,7 @@ const initialMessage =
   'Bonjour ! Je suis là pour vous aider à valoriser vos expériences professionnelles.';
 
 export default function QualiCarriereSynthese() {
-  const { experiences, messages } = useSelector(
+  const { cvMinute, messages } = useSelector(
     (state: RootState) => state.qualiCarriere,
   );
   const { isLoadingResponse, setIsLoadingResponse } = useSocket();
@@ -55,7 +55,7 @@ export default function QualiCarriereSynthese() {
   const lastMessage = React.useRef<HTMLDivElement | null>(null);
 
   const [editedExperiences, setEditedExperiences] = React.useState<
-    SectionInfoInterface[]
+    CvMinuteSectionInterface[]
   >([]);
 
   const [totalPages, setTotalPages] = React.useState(0);
@@ -70,7 +70,7 @@ export default function QualiCarriereSynthese() {
     QualiCarriereCompetenceInteface[]
   >([]);
   const [actualExperience, setActualExperience] =
-    React.useState<SectionInfoInterface | null>(null);
+    React.useState<CvMinuteSectionInterface | null>(null);
   const [loadingStatus, setLoadingStatus] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [saveLoading, setSaveLoading] = React.useState(false);
@@ -91,11 +91,14 @@ export default function QualiCarriereSynthese() {
   }, [lastMessage.current, messages]);
 
   React.useEffect(() => {
-    if (experiences.length > 0) {
+    if (cvMinute) {
+      const experiences = cvMinute.cvMinuteSections.filter(
+        (c) => c.name === 'experiences',
+      );
       setTotalPages(experiences.length);
       setEditedExperiences(experiences);
     }
-  }, [experiences]);
+  }, [cvMinute]);
 
   React.useEffect(() => {
     if (editedExperiences[actualIndex]) {
@@ -104,31 +107,31 @@ export default function QualiCarriereSynthese() {
   }, [editedExperiences, actualIndex]);
 
   React.useEffect(() => {
-    if (!actualExperience) return;
+    if (actualExperience) {
+      const lines =
+        actualExperience.qualiCarriereResumes?.[0]?.content
+          ?.split('\n')
+          .filter((r) => r.trim() !== '') || [];
 
-    const lines =
-      actualExperience.qualiCarriereResumes?.[0]?.content
-        ?.split('\n')
-        .filter((r) => r.trim() !== '') || [];
+      const newTotalSubIndex = lines.length + 6;
+      setTotalSubIndex(newTotalSubIndex);
 
-    const newTotalSubIndex = lines.length + 6;
-    setTotalSubIndex(newTotalSubIndex);
+      if (actualSubIndex < newTotalSubIndex - 6) {
+        // Affichage de résumé ligne par ligne
+        setActualCompetenceContent([]);
+        setActualExperienceContent({
+          id: actualExperience.id,
+          content: lines[actualSubIndex] || '',
+        });
+      } else {
+        // Affichage des compétences
+        setActualExperienceContent(null);
 
-    if (actualSubIndex < newTotalSubIndex - 6) {
-      // Affichage de résumé ligne par ligne
-      setActualCompetenceContent([]);
-      setActualExperienceContent({
-        id: actualExperience.id,
-        content: lines[actualSubIndex] || '',
-      });
-    } else {
-      // Affichage des compétences
-      setActualExperienceContent(null);
-
-      const competences = actualExperience.qualiCarriereCompetences || [];
-      const start = (actualSubIndex - (newTotalSubIndex - 6)) * 5;
-      const end = start + 5;
-      setActualCompetenceContent(competences.slice(start, end));
+        const competences = actualExperience.qualiCarriereCompetences || [];
+        const start = (actualSubIndex - (newTotalSubIndex - 6)) * 5;
+        const end = start + 5;
+        setActualCompetenceContent(competences.slice(start, end));
+      }
     }
   }, [actualExperience, actualSubIndex]);
 
@@ -256,7 +259,7 @@ export default function QualiCarriereSynthese() {
     }
   };
 
-  if (experiences.length === 0) return <StepLoader />;
+  if (!cvMinute) return <StepLoader />;
 
   return (
     <div className="h-full flex flex-col p-8 gap-8">

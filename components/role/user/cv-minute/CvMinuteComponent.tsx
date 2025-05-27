@@ -10,11 +10,9 @@ import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { addCvMinuteService } from '@/services/role/user/cvMinute.service';
 import { useDispatch } from 'react-redux';
-import { updateUserReducer } from '@/redux/slices/user.slice';
 
 export default function CvMinuteComponent() {
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const [file, setFile] = React.useState<File | null>(null);
   const [message, setMessage] = React.useState('');
@@ -46,8 +44,6 @@ export default function CvMinuteComponent() {
       const res = await addCvMinuteService(formData);
 
       if (res.cvMinuteId) {
-        dispatch(updateUserReducer({ cvMinuteCount: res.cvMinuteCount }));
-
         router.push(`/cv-minute/${res.cvMinuteId}`);
       } else if (res.invalidDocument) {
         setMessage('Le CV doit être en format PDF ou WORD seulement');

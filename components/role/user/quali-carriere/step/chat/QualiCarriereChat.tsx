@@ -90,10 +90,10 @@ export default function QualiCarriereChat() {
         formData,
       });
 
-      toast.success('Entretien terminé !', {
-        description: 'Génération des synthèses en cours...',
-      });
       if (res.nextStep) {
+        toast.success('Entretien terminé !', {
+          description: 'Génération des synthèses en cours...',
+        });
         router.push('/quali-carriere/2');
       } else if (res.nextQuestion) {
         setIsLoading(false);

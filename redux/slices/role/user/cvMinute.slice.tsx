@@ -1,21 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { FileInterface } from '@/interfaces/file.interface';
 import { CvMinuteInterface } from '@/interfaces/role/user/cv-minute/cvMinute.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
-import { EvaluationInterface } from '@/interfaces/role/user/cv-minute/evaluation.interface';
-import { SectionInterface } from '@/interfaces/role/user/cv-minute/section.interface';
-import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionInfo.interface';
+import { EvaluationInterface } from '@/interfaces/evaluation.interface';
+import { FileInterface } from '@/interfaces/file.interface';
 
 const initialState: {
   cvMinute: CvMinuteInterface | null;
   cvMinutes: CvMinuteInterface[];
-  files: FileInterface[];
-  sections: SectionInterface[];
 } = {
   cvMinute: null,
   cvMinutes: [],
-  files: [],
-  sections: [],
 };
 
 const cvMinuteSlice = createSlice({
@@ -26,8 +20,6 @@ const cvMinuteSlice = createSlice({
       const data: {
         cvMinute: CvMinuteInterface;
         cvMinutes: CvMinuteInterface[];
-        files: FileInterface[];
-        sections: SectionInterface[];
       } = action.payload;
 
       if (data.cvMinute) {
@@ -36,60 +28,45 @@ const cvMinuteSlice = createSlice({
       if (data.cvMinutes) {
         state.cvMinutes = data.cvMinutes;
       }
-      if (data.files) {
-        state.files = data.files;
-      }
-      if (data.sections) {
-        state.sections = data.sections;
-      }
     },
     updateCvMinuteReducer: (state, action) => {
-      const data: {
-        file?: FileInterface;
-        section?: SectionInterface;
-        cvMinute?: CvMinuteInterface;
-        cvMinuteSection?: CvMinuteSectionInterface;
-      } = action.payload;
+      const data: { cvMinute: CvMinuteInterface } = action.payload;
 
-      if (data.cvMinute && state.cvMinute) {
+      if (state.cvMinute) {
         state.cvMinute = {
           ...state.cvMinute,
           ...data.cvMinute,
         };
       }
+    },
+    updateCvMinuteSectionReducer: (state, action) => {
+      const data: { cvMinuteSection: CvMinuteSectionInterface } =
+        action.payload;
 
-      if (data.section) {
-        const index = state.sections.findIndex(
-          (c) => c.id === data.section?.id,
-        );
-
-        if (index !== -1) {
-          state.sections[index] = data.section;
-        } else {
-          state.sections.push(data.section);
-        }
-      }
-
-      if (data.cvMinuteSection && state.cvMinute?.cvMinuteSections) {
+      if (state.cvMinute) {
         const index = state.cvMinute.cvMinuteSections.findIndex(
-          (c) => c.id === data.cvMinuteSection?.id,
+          (c) => c.id === data.cvMinuteSection.id,
         );
 
         if (index !== -1) {
           state.cvMinute.cvMinuteSections[index] = data.cvMinuteSection;
         } else {
-          state.cvMinute.cvMinuteSections.push(data.cvMinuteSection);
+          state.cvMinute.cvMinuteSections.unshift(data.cvMinuteSection);
         }
       }
+    },
+    updateCvMinuteProfileReducer: (state, action) => {
+      const data: { file: FileInterface } = action.payload;
 
-      if (data.file) {
-        const index = state.files.findIndex((f) => f.id === data.file?.id);
-
-        if (index !== -1) {
-          state.files[index] = data.file;
-        } else {
-          state.files.push(data.file);
-        }
+      if (state.cvMinute) {
+        state.cvMinute = {
+          ...state.cvMinute,
+          cvMinuteSections: state.cvMinute.cvMinuteSections.map((c) =>
+            c.id === data.file.cvMinuteSectionId
+              ? { ...c, files: [...c.files, data.file] }
+              : c,
+          ),
+        };
       }
     },
     updateOneCvMinuteReducer: (state, action) => {
@@ -98,88 +75,41 @@ const cvMinuteSlice = createSlice({
         c.id === data.cvMinute.id ? { ...c, ...data.cvMinute } : c,
       );
     },
-    updateCvMinuteSectionPropositionReducer: (state, action) => {
+    updateCvMinuteAdvicesReducer: (state, action) => {
       const data: { cvMinute: CvMinuteInterface } = action.payload;
 
       if (state.cvMinute && state.cvMinute.id === data.cvMinute.id) {
         state.cvMinute = {
           ...state.cvMinute,
           advices: data.cvMinute.advices,
+          updatedAt: data.cvMinute.updatedAt,
         };
       }
     },
     updateCvMinuteScoreReducer: (state, action) => {
-      const data: {
-        evaluation: EvaluationInterface;
-        cvMinuteId: number;
-      } = action.payload;
+      const data: { evaluation: EvaluationInterface } = action.payload;
 
-      if (state.cvMinute && state.cvMinute.id === data.cvMinuteId) {
+      if (state.cvMinute && state.cvMinute.id === data.evaluation.cvMinuteId) {
         state.cvMinute = {
           ...state.cvMinute,
           evaluation: data.evaluation,
         };
       }
     },
-    updateSectionInfoOrderReducer: (state, action) => {
+    updateCvMinuteSectionAdvicesReducer: (state, action) => {
       const data: {
-        section: SectionInfoInterface;
-        targetSection: SectionInfoInterface;
-        cvMinuteSectionId: number;
+        cvMinuteSection: CvMinuteSectionInterface;
       } = action.payload;
 
-      if (state.cvMinute?.cvMinuteSections) {
-        state.cvMinute.cvMinuteSections.forEach((c) => {
-          if (c.id === data.cvMinuteSectionId && c.sectionInfos) {
-            c.sectionInfos = c.sectionInfos.map((s) => {
-              if (s.id === data.section.id) {
-                return { ...s, order: data.section.order };
-              } else if (s.id === data.targetSection.id) {
-                return { ...s, order: data.targetSection.order };
-              }
-              return s;
-            });
-          }
-        });
-      }
-    },
-    updateSectionInfoPropositionReducer: (state, action) => {
-      const data: {
-        sectionInfo: SectionInfoInterface;
-        cvMinuteSectionId: number;
-      } = action.payload;
-
-      if (state.cvMinute?.cvMinuteSections) {
-        state.cvMinute.cvMinuteSections.forEach((c) => {
-          if (c.id === data.cvMinuteSectionId && c.sectionInfos) {
-            c.sectionInfos = c.sectionInfos.map((s) => {
-              if (s.id === data.sectionInfo.id) {
-                return { ...s, advices: data.sectionInfo.advices };
-              }
-              return s;
-            });
-          }
-        });
-      }
-    },
-    updateSectionInfoScoreReducer: (state, action) => {
-      const data: {
-        evaluation: EvaluationInterface;
-        sectionInfoId: number;
-        cvMinuteSectionId: number;
-      } = action.payload;
-
-      if (state.cvMinute?.cvMinuteSections) {
-        state.cvMinute.cvMinuteSections.forEach((c) => {
-          if (c.id === data.cvMinuteSectionId && c.sectionInfos) {
-            c.sectionInfos = c.sectionInfos.map((s) => {
-              if (s.id === data.sectionInfoId) {
-                return { ...s, evaluation: data.evaluation };
-              }
-              return s;
-            });
-          }
-        });
+      if (state.cvMinute) {
+        state.cvMinute.cvMinuteSections = state.cvMinute.cvMinuteSections.map(
+          (c) => {
+            if (c.id === data.cvMinuteSection.id) {
+              return { ...c, advices: data.cvMinuteSection.advices };
+            }
+            return c;
+          },
+        );
       }
     },
     updateCvMinuteSectionOrderReducer: (state, action) => {
@@ -192,32 +122,16 @@ const cvMinuteSlice = createSlice({
         state.cvMinute.cvMinuteSections = state.cvMinute.cvMinuteSections.map(
           (c) => {
             if (c.id === data.cvMinuteSection.id) {
-              return { ...c, sectionOrder: data.cvMinuteSection.sectionOrder };
+              return { ...c, order: data.cvMinuteSection.order };
             } else if (c.id === data.targetCvMinuteSection.id) {
               return {
                 ...c,
-                sectionOrder: data.targetCvMinuteSection.sectionOrder,
+                order: data.targetCvMinuteSection.order,
               };
             }
             return c;
           },
         );
-      }
-    },
-    deleteSectionInfoReducer: (state, action) => {
-      const data: {
-        section: SectionInfoInterface;
-        cvMinuteSectionId: number;
-      } = action.payload;
-
-      if (state.cvMinute?.cvMinuteSections) {
-        state.cvMinute.cvMinuteSections.forEach((c) => {
-          if (c.id === data.cvMinuteSectionId && c.sectionInfos) {
-            c.sectionInfos = c.sectionInfos.filter(
-              (s) => s.id !== data.section.id,
-            );
-          }
-        });
       }
     },
     deleteCvMinuteSectionReducer: (state, action) => {
@@ -239,13 +153,12 @@ export const {
   setCvMinuteReducer,
   updateCvMinuteReducer,
   updateOneCvMinuteReducer,
-  updateCvMinuteSectionPropositionReducer,
+  updateCvMinuteProfileReducer,
+  updateCvMinuteSectionReducer,
+  updateCvMinuteAdvicesReducer,
   updateCvMinuteScoreReducer,
-  updateSectionInfoOrderReducer,
-  updateSectionInfoPropositionReducer,
-  updateSectionInfoScoreReducer,
+  updateCvMinuteSectionAdvicesReducer,
   updateCvMinuteSectionOrderReducer,
-  deleteSectionInfoReducer,
   deleteCvMinuteSectionReducer,
 } = cvMinuteSlice.actions;
 

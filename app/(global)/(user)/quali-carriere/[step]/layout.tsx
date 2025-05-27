@@ -40,7 +40,7 @@ export default function StepLayout({
           if (res.nextStep) {
             dispatch(
               setQuestionReducer({
-                experiences: res.experiences,
+                cvMinute: res.cvMinute,
                 messages: res.messages,
               }),
             );

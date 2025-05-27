@@ -11,9 +11,9 @@ import {
   setQuestionReducer,
 } from '@/redux/slices/role/user/qualiCarriere.slice';
 import { QualiCarriereQuestionInteface } from '@/interfaces/role/user/quali-carriere/questionInterface';
-import { SectionInfoInterface } from '@/interfaces/role/user/cv-minute/sectionInfo.interface';
 import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-critere.interface';
 import { setCvThequeCritereReducer } from '@/redux/slices/role/recruiter/cvtheque.slice';
+import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
 
 interface SocketContextType {
   isSocketReady: boolean;
@@ -84,7 +84,7 @@ export default function SocketProvider({
           question,
           totalQuestions,
         }: {
-          experience: SectionInfoInterface;
+          experience: CvMinuteSectionInterface;
           question: QualiCarriereQuestionInteface;
           totalQuestions: number;
         }) => {

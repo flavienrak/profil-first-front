@@ -72,20 +72,35 @@ const updateCvMinuteVisibilityService = async (id: number) => {
   }
 };
 
-// GENERATE CVMINUTE SECTION ADVICE
-const generateCvMinuteSectionPropositionService = async (id: number) => {
+// GENERATE NEW CVMINUTE SECTION ADVICES
+const generateNewCvMinuteSectionsService = async (id: number) => {
   try {
-    const res = await api.post(`${cvMinutePrefix}/${id}`);
+    const res = await api.post(`${cvMinutePrefix}/${id}/suggestions`);
     return res.data;
   } catch (error) {
-    return { error: `GENERATE CVMINUTE PROPOSITION ERROR: ${error}` };
+    return { error: `GENERATE NEW CVMINUTE SECTION ERROR: ${error}` };
+  }
+};
+
+// GENERATE CVMINUTE SECTION ADVICES
+const generateCvMinuteSectionAdvicesService = async (data: {
+  id: number;
+  cvMinuteSectionId: number;
+}) => {
+  try {
+    const res = await api.post(
+      `${cvMinutePrefix}/${data.id}/cv-minute-section/${data.cvMinuteSectionId}/advices`,
+    );
+    return res.data;
+  } catch (error) {
+    return { error: `GENERATE CVMINUTE SECTION ADVICES ERROR: ${error}` };
   }
 };
 
 // UPDATE CVMINUTE SCORE
 const updateCvMinuteScoreService = async (id: number) => {
   try {
-    const res = await api.put(`${cvMinutePrefix}/${id}`);
+    const res = await api.put(`${cvMinutePrefix}/${id}/score`);
     return res.data;
   } catch (error) {
     return { error: `UPDATE CVMINUTE SCORE ERROR: ${error}` };
@@ -117,8 +132,9 @@ const updateCvMinuteProfileService = async (id: number, formData: FormData) => {
 // UPDATE CVMINUTESECTION
 const updateCvMinuteSectionService = async (data: {
   id: number;
-  title?: string;
+  name?: string;
   sectionTitle?: string;
+  title?: string;
   content: string;
   company?: string;
   date?: string;
@@ -128,37 +144,53 @@ const updateCvMinuteSectionService = async (data: {
   primaryBg?: string;
   secondaryBg?: string;
   tertiaryBg?: string;
-  sectionInfoId?: PopupInterface['sectionInfoId'];
   cvMinuteSectionId?: PopupInterface['cvMinuteSectionId'];
 
   updateBg?: PopupInterface['updateBg'];
-  newSection?: PopupInterface['newSection'];
+  updateName?: PopupInterface['updateName'];
+  updateFirstname?: PopupInterface['updateFirstname'];
+  updateContact?: PopupInterface['updateContact'];
+  updateEditableSection?: PopupInterface['updateEditableSection'];
+  updateTitle?: PopupInterface['updateTitle'];
+  updatePresentation?: PopupInterface['updatePresentation'];
   updateExperience?: PopupInterface['updateExperience'];
-  updateContactSection?: PopupInterface['updateContactSection'];
-  updateCvMinuteSection?: PopupInterface['updateCvMinuteSection'];
+
+  newContact?: PopupInterface['newContact'];
+  newEditableSection?: PopupInterface['newEditableSection'];
+  newExperience?: PopupInterface['newExperience'];
 }) => {
   try {
-    const res = await api.put(`${cvMinutePrefix}/${data.id}/section`, {
-      title: data.title,
-      sectionTitle: data.sectionTitle,
-      content: data.content,
-      company: data.company,
-      date: data.date,
-      contrat: data.contrat,
-      icon: data.icon,
-      iconSize: data.iconSize,
-      primaryBg: data.primaryBg,
-      secondaryBg: data.secondaryBg,
-      tertiaryBg: data.tertiaryBg,
-      sectionInfoId: data.sectionInfoId,
-      cvMinuteSectionId: data.cvMinuteSectionId,
+    const res = await api.put(
+      `${cvMinutePrefix}/${data.id}/cv-minute-section`,
+      {
+        name: data.name,
+        sectionTitle: data.sectionTitle,
+        title: data.title,
+        content: data.content,
+        company: data.company,
+        date: data.date,
+        contrat: data.contrat,
+        icon: data.icon,
+        iconSize: data.iconSize,
+        primaryBg: data.primaryBg,
+        secondaryBg: data.secondaryBg,
+        tertiaryBg: data.tertiaryBg,
+        cvMinuteSectionId: data.cvMinuteSectionId,
 
-      updateBg: data.updateBg,
-      newSection: data.newSection,
-      updateExperience: data.updateExperience,
-      updateContactSection: data.updateContactSection,
-      updateCvMinuteSection: data.updateCvMinuteSection,
-    });
+        updateBg: data.updateBg,
+        updateName: data.updateName,
+        updateFirstname: data.updateFirstname,
+        updateContact: data.updateContact,
+        updateEditableSection: data.updateEditableSection,
+        updateTitle: data.updateTitle,
+        updatePresentation: data.updatePresentation,
+        updateExperience: data.updateExperience,
+
+        newContact: data.newContact,
+        newEditableSection: data.newEditableSection,
+        newExperience: data.newExperience,
+      },
+    );
     return res.data;
   } catch (error) {
     return { error: `UPDATE CV MINUTE SECTION ERROR: ${error}` };
@@ -166,13 +198,13 @@ const updateCvMinuteSectionService = async (data: {
 };
 
 // DELETE CVMINUTE SECTION
-const deleteCvMinuteSectionService = async (
-  id: number,
-  cvMinuteSectionId: number,
-) => {
+const deleteCvMinuteSectionService = async (data: {
+  id: number;
+  cvMinuteSectionId: number;
+}) => {
   try {
     const res = await api.delete(
-      `${cvMinutePrefix}/${id}/section/${cvMinuteSectionId}`,
+      `${cvMinutePrefix}/${data.id}/cv-minute-section/${data.cvMinuteSectionId}`,
     );
     return res.data;
   } catch (error) {
@@ -180,55 +212,18 @@ const deleteCvMinuteSectionService = async (
   }
 };
 
-// UPDATE SECTIONINFO ORDER
-const updateSectionInfoOrderService = async (data: {
+// UPDATE CVMINUTE SECTION SCORE
+const updateCvMinuteSectionScoreService = async (data: {
   id: number;
-  sectionInfoId: number;
-  targetSectionInfoId: number;
+  cvMinuteSectionId: number;
 }) => {
   try {
     const res = await api.put(
-      `${cvMinutePrefix}/${data.id}/section-info/order`,
-      {
-        sectionInfoId: data.sectionInfoId,
-        targetSectionInfoId: data.targetSectionInfoId,
-      },
+      `${cvMinutePrefix}/${data.id}/cv-minute-section/${data.cvMinuteSectionId}/score`,
     );
     return res.data;
   } catch (error) {
-    return { error: `UPDATE SECTIONINFO ORDER ERROR: ${error}` };
-  }
-};
-
-// GENERATE SECTIONINFO ADVICE
-const generateSectionInfoPropositionService = async (data: {
-  id: number;
-  sectionInfoId: number;
-  section: string;
-}) => {
-  try {
-    const res = await api.post(
-      `${cvMinutePrefix}/${data.id}/section-info/${data.sectionInfoId}`,
-      { section: data.section },
-    );
-    return res.data;
-  } catch (error) {
-    return { error: `GENERATE SECTIONINFO PROPOSITION ERROR: ${error}` };
-  }
-};
-
-// UPDATE SECTIONINFO SCORE
-const updateSectionInfoScoreService = async (data: {
-  id: number;
-  sectionInfoId: number;
-}) => {
-  try {
-    const res = await api.put(
-      `${cvMinutePrefix}/${data.id}/section-info/${data.sectionInfoId}`,
-    );
-    return res.data;
-  } catch (error) {
-    return { error: `UPDATE SECTIONINFO SCORE ERROR: ${error}` };
+    return { error: `UPDATE CVMINUTE SECTION SCORE ERROR: ${error}` };
   }
 };
 
@@ -236,31 +231,23 @@ const updateSectionInfoScoreService = async (data: {
 const updateCvMinuteSectionOrderService = async (data: {
   id: number;
   cvMinuteSectionId: number;
+  dragIndex: number;
   targetCvMinuteSectionId: number;
+  dropIndex: number;
 }) => {
   try {
-    const res = await api.put(`${cvMinutePrefix}/${data.id}/section/order`, {
-      cvMinuteSectionId: data.cvMinuteSectionId,
-      targetCvMinuteSectionId: data.targetCvMinuteSectionId,
-    });
-    return res.data;
-  } catch (error) {
-    return { error: `UPDATE CVMINUTE SECTION ORDER ERROR: ${error}` };
-  }
-};
-
-// DELETE SECTIONINFO
-const deleteSectionInfoService = async (data: {
-  id: number;
-  sectionInfoId: number;
-}) => {
-  try {
-    const res = await api.delete(
-      `${cvMinutePrefix}/${data.id}/section-info/${data.sectionInfoId}`,
+    const res = await api.put(
+      `${cvMinutePrefix}/${data.id}/cv-minute-section/order`,
+      {
+        cvMinuteSectionId: data.cvMinuteSectionId,
+        dragIndex: data.dragIndex,
+        targetCvMinuteSectionId: data.targetCvMinuteSectionId,
+        dropIndex: data.dropIndex,
+      },
     );
     return res.data;
   } catch (error) {
-    return { error: `DELETE SECTIONINFO ERROR: ${error}` };
+    return { error: `UPDATE CVMINUTE SECTION ORDER ERROR: ${error}` };
   }
 };
 
@@ -275,16 +262,12 @@ export {
   updateCvMinuteScoreService,
   optimizeCvMinuteService,
   updateCvMinuteProfileService,
+  generateNewCvMinuteSectionsService,
 
   // CVMINUTE SECTION
-  generateCvMinuteSectionPropositionService,
+  generateCvMinuteSectionAdvicesService,
   updateCvMinuteSectionService,
   updateCvMinuteSectionOrderService,
   deleteCvMinuteSectionService,
-
-  // SECTIONINFO
-  updateSectionInfoOrderService,
-  generateSectionInfoPropositionService,
-  updateSectionInfoScoreService,
-  deleteSectionInfoService,
+  updateCvMinuteSectionScoreService,
 };

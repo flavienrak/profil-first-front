@@ -898,13 +898,13 @@ export default function CvThequeDetailsLayout({
               <div className="max-h-[80vh] h-full pt-14 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
                 <div className="flex flex-col gap-6">
                   <TextEditor
-                    auto
                     readOnly
                     content={
                       cvAnonym.cvThequeContacts.find(
                         (c) => c.userId === cvAnonym.userId,
                       )?.message ?? ''
                     }
+                    className="readOnlyEditor"
                   />
                 </div>
               </div>

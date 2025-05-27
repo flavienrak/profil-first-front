@@ -22,9 +22,14 @@ import {
   Zap,
   Linkedin,
   Heart,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { UserInterface } from '@/interfaces/user.interface';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { updatePersistReducer } from '@/redux/slices/persist.slice';
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -41,6 +46,10 @@ const staggerContainer = {
 };
 
 export default function LandingComponent() {
+  const { mode } = useSelector((state: RootState) => state.persistInfos);
+
+  const dispatch = useDispatch();
+
   const [showAuth, setShowAuth] = React.useState(false);
   const [role, setRole] = React.useState<UserInterface['role']>('user');
 
@@ -52,7 +61,6 @@ export default function LandingComponent() {
   return (
     <div className="min-h-screen bg-[#faf7f5] p-6">
       <div className="container max-w-6xl mx-auto">
-        {/* Logo */}
         <motion.div
           className="flex justify-between items-center mb-12"
           initial={{ opacity: 0, y: -20 }}
@@ -60,18 +68,37 @@ export default function LandingComponent() {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center gap-3">
-            <div className="text-[#4461F2] w-8 h-8">
+            <div className="text-[var(--u-secondary-color)] w-8 h-8">
               <Users className="w-full h-full" strokeWidth={2.5} />
             </div>
-            <span className="text-2xl font-bold text-[#4461F2]">
+            <span className="text-2xl font-bold text-[var(--u-secondary-color)]">
               ProfilFirst
             </span>
           </div>
-          <PrimaryButton
-            label="Se connecter"
-            className="w-max px-8 py-2 rounded-full"
-            onClick={() => handleShowAuth('user')}
-          />
+          <div className="flex items-center gap-4">
+            <div
+              onClick={() =>
+                dispatch(
+                  updatePersistReducer({
+                    mode: mode === 'light' ? 'dark' : 'light',
+                  }),
+                )
+              }
+              className="flex justify-center items-center p-2.5 rounded-full bg-gray-200 border border-gray-100 cursor-pointer hover:opacity-80"
+            >
+              {mode === 'light' ? (
+                <Moon size={22} className="text-[var(--u-primary-color)]" />
+              ) : (
+                <Sun size={22} className="text-[var(--u-primary-color)]" />
+              )}
+            </div>
+
+            <PrimaryButton
+              label="Se connecter"
+              className="w-max px-8 py-2 rounded-full"
+              onClick={() => handleShowAuth('user')}
+            />
+          </div>
         </motion.div>
 
         {/* Header Section */}

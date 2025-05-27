@@ -2,7 +2,7 @@ export interface QualiCarriereResponseInteface {
   id: number;
   content: string;
   questionId: number;
-  sectionInfoId: number;
+  cvMinuteSectionId: number;
   userId: number;
 
   createdAt: Date;
