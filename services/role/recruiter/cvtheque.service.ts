@@ -6,7 +6,7 @@ import {
 
 const cvThequePrefix = '/role/recruiter/cvtheque';
 
-const getCvThequeHistory = async () => {
+const getCvThequeHistoryService = async () => {
   try {
     const res = await api.get(`${cvThequePrefix}/history`);
     return res.data;
@@ -118,7 +118,7 @@ const contactAnonymService = async (data: {
 };
 
 export {
-  getCvThequeHistory,
+  getCvThequeHistoryService,
   getCvAnonymService,
   getCvThequeCritereService,
   addCvThequeCritereService,

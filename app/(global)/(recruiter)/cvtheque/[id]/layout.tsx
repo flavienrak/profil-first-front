@@ -125,29 +125,25 @@ export default function CvThequeDetailsLayout({
         router.push('/cvtheque');
       } else if (Number(params.id) !== actualId) {
         setActualId(Number(params.id));
+
+        (async () => {
+          setIsLoading(true);
+          const res = await getCvThequeCritereService(Number(params.id));
+
+          if (res.cvThequeCritere) {
+            dispatch(
+              setCvThequeCritereReducer({
+                cvThequeCritere: res.cvThequeCritere,
+              }),
+            );
+          } else {
+            router.push('/cvtheque');
+          }
+          setIsLoading(false);
+        })();
       }
     }
   }, [params.id]);
-
-  React.useEffect(() => {
-    if (actualId) {
-      (async () => {
-        setIsLoading(true);
-        const res = await getCvThequeCritereService(actualId);
-
-        if (res.cvThequeCritere) {
-          dispatch(
-            setCvThequeCritereReducer({
-              cvThequeCritere: res.cvThequeCritere,
-            }),
-          );
-        } else {
-          router.push('/cvtheque');
-        }
-        setIsLoading(false);
-      })();
-    }
-  }, [actualId]);
 
   React.useEffect(() => {
     if (cvAnonym) {
@@ -781,13 +777,13 @@ export default function CvThequeDetailsLayout({
                   <div className="flex items-center gap-2">
                     <i
                       onClick={increaseFontSize}
-                      className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.25em]"
+                      className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.35em]"
                     >
                       <ZoomIn size={20} />
                     </i>
                     <i
                       onClick={decreaseFontSize}
-                      className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.25em]"
+                      className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.35em]"
                     >
                       <ZoomOut size={20} />
                     </i>

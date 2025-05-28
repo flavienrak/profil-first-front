@@ -11,13 +11,12 @@ export interface UserInterface {
   acceptConditions: boolean;
   role: 'user' | 'recruiter' | 'admin';
   qualiCarriere: string;
-  image: string;
 
-  cvMinuteDomains?: CvMinuteDomainInterface[];
-  files?: FileInterface[];
-  cvMinutes?: CvMinuteInterface[];
-  cvThequeCriteres?: CvThequeCritereInterface[];
-  cvThequeUsers?: CvThequeUserInterface[];
+  cvMinuteDomains: CvMinuteDomainInterface[];
+  files: FileInterface[];
+  cvMinutes: CvMinuteInterface[];
+  cvThequeCriteres: CvThequeCritereInterface[];
+  cvThequeUsers: CvThequeUserInterface[];
 
   createdAt: Date;
   updatedAt: Date;

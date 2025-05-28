@@ -11,7 +11,7 @@ import { ArrowRight, Clock } from 'lucide-react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
   saveCvThequeCritereService,
-  getCvThequeHistory,
+  getCvThequeHistoryService,
   resendCvThequeCritereService,
 } from '@/services/role/recruiter/cvtheque.service';
 import {
@@ -53,7 +53,7 @@ export default function CvThequeLayout({
     }
 
     (async () => {
-      const res = await getCvThequeHistory();
+      const res = await getCvThequeHistoryService();
 
       if (res.history) {
         dispatch(setCvThequeHistoryReducer({ history: res.history }));

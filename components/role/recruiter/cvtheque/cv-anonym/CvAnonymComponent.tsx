@@ -49,7 +49,7 @@ export default function CvAnonymComponent() {
         })();
       }
     }
-  }, [params.id, params.cvAnonymId]);
+  }, [params.id, params.cvAnonymId, cvThequeCritere]);
 
   React.useEffect(() => {
     if (showCritere && fontSize > 11) {

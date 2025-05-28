@@ -57,7 +57,7 @@ import {
   setCvMinuteReducer,
   updateCvMinuteProfileReducer,
 } from '@/redux/slices/role/user/cvMinute.slice';
-import { videoUri } from '@/providers/User.provider';
+import { backendUri, videoUri } from '@/providers/User.provider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
 import { LucideIcon } from '@/components/utils/LucideIcon';
@@ -115,8 +115,6 @@ export interface PopupInterface {
   newEditableSection?: boolean;
   newExperience?: boolean;
 }
-
-const backendUri = process.env.NEXT_PUBLIC_API_URL;
 
 const steps: StepInterface[] = [
   { class: 'step-1', description: 'Un coup de pouce pour refaire votre CV' },

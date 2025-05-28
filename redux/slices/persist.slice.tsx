@@ -1,16 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+type Mode = 'light' | 'dark';
+
 const initialState: {
-  mode: 'light' | 'dark';
+  mode: Mode;
   showMenu: boolean;
   showFooter: boolean;
   showCritere: boolean;
+  showFilter: boolean;
   fontSize: number;
 } = {
   mode: 'light',
   showMenu: false,
   showFooter: true,
   showCritere: true,
+  showFilter: true,
   fontSize: 16,
 };
 
@@ -19,22 +23,32 @@ const persistSlice = createSlice({
   initialState,
   reducers: {
     updatePersistReducer: (state, action) => {
-      const { mode, showMenu, showFooter, showCritere, fontSize } =
-        action.payload;
-      if (mode) {
-        state.mode = mode;
+      const data: {
+        mode?: Mode;
+        showMenu?: boolean;
+        showFooter?: boolean;
+        showCritere?: boolean;
+        showFilter?: boolean;
+        fontSize?: number;
+      } = action.payload;
+
+      if (data.mode) {
+        state.mode = data.mode;
       }
-      if (showMenu !== undefined) {
-        state.showMenu = showMenu;
+      if (typeof data.showMenu === 'boolean') {
+        state.showMenu = data.showMenu;
       }
-      if (showFooter !== undefined) {
-        state.showFooter = showFooter;
+      if (typeof data.showFooter === 'boolean') {
+        state.showFooter = data.showFooter;
       }
-      if (showCritere !== undefined) {
-        state.showCritere = showCritere;
+      if (typeof data.showCritere === 'boolean') {
+        state.showCritere = data.showCritere;
       }
-      if (fontSize) {
-        state.fontSize = fontSize;
+      if (typeof data.showFilter === 'boolean') {
+        state.showFilter = data.showFilter;
+      }
+      if (data.fontSize) {
+        state.fontSize = data.fontSize;
       }
     },
   },

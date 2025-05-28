@@ -23,6 +23,7 @@ interface UserProviderContextType {
 }
 
 export const videoUri = process.env.NEXT_PUBLIC_VIDEO_URI;
+export const backendUri = process.env.NEXT_PUBLIC_API_URL;
 
 const UserContext = React.createContext<UserProviderContextType | undefined>(
   undefined,

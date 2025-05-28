@@ -25,32 +25,26 @@ const qualiCarriereSlice = createSlice({
   initialState,
   reducers: {
     setQuestionReducer: (state, action) => {
-      const {
-        experience,
-        cvMinute,
-        messages,
-        qualiCarriereQuestion,
-        totalQuestions,
-      }: {
+      const data: {
         experience: CvMinuteSectionInterface;
         cvMinute?: CvMinuteInterface;
         messages?: QualiCarriereChatInterface[];
         qualiCarriereQuestion: QualiCarriereQuestionInteface;
         totalQuestions?: number;
       } = action.payload;
-      state.experience = experience;
-      state.qualiCarriereQuestion = qualiCarriereQuestion;
+      state.experience = data.experience;
+      state.qualiCarriereQuestion = data.qualiCarriereQuestion;
 
-      if (messages) {
-        state.messages = messages;
+      if (data.messages) {
+        state.messages = data.messages;
       }
 
-      if (cvMinute) {
-        state.cvMinute = cvMinute;
+      if (data.cvMinute) {
+        state.cvMinute = data.cvMinute;
       }
 
-      if (totalQuestions) {
-        state.totalQuestions = totalQuestions;
+      if (data.totalQuestions) {
+        state.totalQuestions = data.totalQuestions;
       }
     },
     newMessageReducer: (state, action) => {

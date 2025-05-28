@@ -6,7 +6,9 @@ import persistSlice from './slices/persist.slice';
 import userSlice from './slices/user.slice';
 import cvMinuteSlice from './slices/role/user/cvMinute.slice';
 import qualiCarriereSlice from './slices/role/user/qualiCarriere.slice';
+
 import cvThequeSlice from './slices/role/recruiter/cvtheque.slice';
+import crossSourcingSlice from './slices/role/recruiter/cross-sourcing.slice';
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
@@ -45,6 +47,7 @@ const rootReducer = combineReducers({
   cvMinute: cvMinuteSlice,
   qualiCarriere: qualiCarriereSlice,
   cvTheque: cvThequeSlice,
+  crossSourcing: crossSourcingSlice,
   persistInfos: persistSlice,
 });
 

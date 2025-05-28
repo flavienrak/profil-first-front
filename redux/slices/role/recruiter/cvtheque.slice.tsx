@@ -18,52 +18,56 @@ const cvThequeSlice = createSlice({
   initialState,
   reducers: {
     setCvThequeHistoryReducer: (state, action) => {
-      const { history }: { history: CvThequeCritereInterface[] } =
-        action.payload;
-      state.history = history;
+      const data: { history: CvThequeCritereInterface[] } = action.payload;
+      state.history = data.history;
     },
     setCvThequeCritereReducer: (state, action) => {
-      const { cvThequeCritere }: { cvThequeCritere: CvThequeCritereInterface } =
+      const data: { cvThequeCritere: CvThequeCritereInterface } =
         action.payload;
 
-      state.cvThequeCritere = cvThequeCritere;
+      state.cvThequeCritere = data.cvThequeCritere;
       state.cvAnonym = null;
     },
     setCvAnonymReducer: (state, action) => {
-      const { cvAnonym }: { cvAnonym: CvMinuteInterface } = action.payload;
+      const data: { cvAnonym: CvMinuteInterface } = action.payload;
 
-      state.cvAnonym = cvAnonym;
+      state.cvAnonym = data.cvAnonym;
 
       if (state.cvThequeCritere) {
         state.cvThequeCritere = {
           ...state.cvThequeCritere,
           cvMinutes: state.cvThequeCritere.cvMinutes?.map((c) =>
-            c.id === cvAnonym.id ? cvAnonym : c,
+            c.id === data.cvAnonym.id ? data.cvAnonym : c,
           ),
         };
       }
     },
     saveCvThequeCritereReducer: (state, action) => {
-      const { cvThequeCritere }: { cvThequeCritere: CvThequeCritereInterface } =
+      const data: { cvThequeCritere: CvThequeCritereInterface } =
         action.payload;
 
       const existCvThequeCritere = state.history.find(
-        (c) => c.id === cvThequeCritere.id,
+        (c) => c.id === data.cvThequeCritere.id,
       );
 
       if (existCvThequeCritere) {
         const newCvThequeCritere = {
           ...existCvThequeCritere,
-          ...cvThequeCritere,
+          ...data.cvThequeCritere,
         };
 
         state.history = [
           newCvThequeCritere,
-          ...state.history.filter((item) => item.id !== cvThequeCritere.id),
+          ...state.history.filter(
+            (item) => item.id !== data.cvThequeCritere.id,
+          ),
         ];
       }
 
-      state.cvThequeCritere = { ...state.cvThequeCritere, ...cvThequeCritere };
+      state.cvThequeCritere = {
+        ...state.cvThequeCritere,
+        ...data.cvThequeCritere,
+      };
     },
     addCvThequeContactReducer: (state, action) => {
       const { cvThequeContact }: { cvThequeContact: CvThequeContactInterface } =
