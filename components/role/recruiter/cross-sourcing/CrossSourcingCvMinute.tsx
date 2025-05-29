@@ -27,14 +27,14 @@ export default function CrossSourcingCvMinute() {
     if (params.cvMinuteId) {
       (async () => {
         const res = await getUserCvMinuteService({
-          id: Number(params.id),
+          id: Number(params.userId),
           cvMinuteId: Number(params.cvMinuteId),
         });
 
         if (res.cvMinute) {
           dispatch(setUserCvMinuteReducer({ cvMinute: res.cvMinute }));
         } else {
-          router.push(`/cross-sourcing/${params.id}`);
+          router.push(`/cross-sourcing/${params.userId}`);
         }
         setLoadingCvMinute(false);
       })();

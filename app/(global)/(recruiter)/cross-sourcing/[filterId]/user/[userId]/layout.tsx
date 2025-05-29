@@ -36,23 +36,23 @@ export default function CrossSourcingUserLayout({
   }, [pathname]);
 
   React.useEffect(() => {
-    if (params.id) {
+    if (params.userId) {
       (async () => {
-        const res = await getUserCvMinutesService(Number(params.id));
+        const res = await getUserCvMinutesService(Number(params.userId));
 
         if (res.cvMinutes) {
           dispatch(setUserCvMinutesReducer({ cvMinutes: res.cvMinutes }));
         } else {
-          router.push('/cross-sourcing');
+          router.push(`/cross-sourcing/${params.filterId}`);
         }
         setIsLoading(false);
       })();
     }
-  }, [params.id, users]);
+  }, [params.userId, users]);
 
   React.useEffect(() => {
     if (isNaN(Number(params.cvMinuteId))) {
-      router.push(`/cross-sourcing/${params.id}`);
+      router.push(`/cross-sourcing/${params.filterId}/user/${params.userId}`);
     } else {
       setActualCvMinuteId(Number(params.cvMinuteId));
     }
@@ -66,8 +66,8 @@ export default function CrossSourcingUserLayout({
         {cvMinutes.length > 0 ? (
           cvMinutes.map((c) => (
             <Link
-              key={`cv-minute-${params.id}`}
-              href={`/cross-sourcing/${params.id}/cv-minute/${c.id}`}
+              key={`cv-minute-${c.id}`}
+              href={`/cross-sourcing/${params.filterId}/user/${params.userId}/cv-minute/${c.id}`}
               onClick={() => setRedirectLoading(c.id)}
               className={`w-full flex items-center gap-2 p-3 text-left rounded-lg transition-colors ${
                 actualCvMinuteId === c.id || redirectLoading === c.id

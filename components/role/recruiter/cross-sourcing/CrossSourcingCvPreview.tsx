@@ -163,16 +163,14 @@ export default function CrossSourcingCvPreview({
             {title && (
               <div className="step-7 flex justify-between items-center px-[0.25em] py-[0.25em]">
                 <h1 className="text-[1.75em] leading-[1.125em] font-bold text-[#101828]">
-                  {title.content ?? 'Titre du CV'}
+                  {title.content}
                 </h1>
               </div>
             )}
 
             {presentation && (
-              <div className="step-8 flex justify-between text-[#364153] hover:bg-[#f3f4f6] p-[0.5em] text-[0.875em] whitespace-pre-line">
-                <p>
-                  {presentation.content ?? 'Résumé du profil professionnel'}
-                </p>
+              <div className="step-8 flex justify-between text-[#364153] p-[0.5em] text-[0.875em] whitespace-pre-line">
+                <p>{presentation.content}</p>
               </div>
             )}
 

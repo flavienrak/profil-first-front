@@ -393,7 +393,7 @@ export default function CvThequeDetailsLayout({
                             <SelectGroup>
                               {domains.map((d) => (
                                 <SelectItem
-                                  key={`doamin-${d.label}`}
+                                  key={`domain-${d.id}`}
                                   value={d.label}
                                   className={`h-8 ${
                                     field.value === d.label
