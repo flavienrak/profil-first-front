@@ -18,11 +18,11 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-gray-600 hover:bg-red-50 transition-colors duration-200 group cursor-pointer select-none"
+      className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-[var(--text-secondary-gray)] hover:text-red-500 hover:bg-red-500/25 group cursor-pointer select-none"
     >
-      <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
+      <LogOut className="w-5 h-5" />
       {showMenu && (
-        <span className="font-medium group-hover:text-red-500 transition-all duration-500 overflow-hidden whitespace-nowrap">
+        <span className="font-medium overflow-hidden whitespace-nowrap">
           Déconnexion
         </span>
       )}

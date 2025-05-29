@@ -36,7 +36,7 @@ export default function QualiCarriereComponent() {
           <div className="flex flex-col gap-8">
             <Title value={'Quali Carrière CV'} />
             <div className="flex items-center justify-between mb-4">
-              <p className="text-lg">
+              <p className="text-lg text-[var(--text-primary-gray)]">
                 Candidatez avec un CV adapté aux offres d'emploi sans effort
               </p>
               <button
@@ -46,15 +46,19 @@ export default function QualiCarriereComponent() {
                 En savoir plus
               </button>
             </div>
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
+            <div className="bg-[var(--bg-secondary-color)] rounded-2xl p-6 shadow-lg">
               <div className="space-y-8">
                 <div className="flex gap-4">
                   <div className="w-8 h-8 bg-[var(--u-primary-color)] text-white rounded-full flex items-center justify-center flex-shrink-0">
                     1
                   </div>
                   <div className="flex flex-col gap-2">
-                    <h3 className="font-semibold">Étape 1</h3>
-                    <p>Vous démarrez la discussion avec Profiler Coach Ai</p>
+                    <h3 className="font-semibold text-[var(--text-primary-color)]">
+                      Étape 1
+                    </h3>
+                    <p className="text-[var(--text-secondary-gray)]">
+                      Vous démarrez la discussion avec Profiler Coach Ai
+                    </p>
                   </div>
                 </div>
 
@@ -63,8 +67,10 @@ export default function QualiCarriereComponent() {
                     2
                   </div>
                   <div className="flex flex-col gap-2">
-                    <h3 className="font-semibold">Étape 2</h3>
-                    <p>
+                    <h3 className="font-semibold text-[var(--text-primary-color)]">
+                      Étape 2
+                    </h3>
+                    <p className="text-[var(--text-secondary-gray)]">
                       Vous validez les éléments de votre parcours. Vous pouvez
                       en discuter dans le Chat de Profiler Coach.
                     </p>
@@ -76,7 +82,7 @@ export default function QualiCarriereComponent() {
                     ✓
                   </div>
                   <div>
-                    <p className="font-semibold">
+                    <p className="font-semibold text-[var(--text-primary-color)]">
                       Et Hop Vous êtes contacté par un recruteur ! Nous activons
                       Quali Carrière pour proposer la meilleur version de votre
                       parcours en CV aux recruteurs selon les offres d'emploi.
@@ -87,15 +93,15 @@ export default function QualiCarriereComponent() {
             </div>
           </div>
           <div className="flex flex-col items-center gap-10">
-            <h2 className="text-2xl font-bold text-center">
+            <h2 className="text-2xl font-bold text-center text-[var(--text-primary-gray)]">
               Parlez-nous de vous ! On s'occupe du reste !
             </h2>
 
-            <div className="flex flex-col gap-7 bg-white p-6 rounded-xl shadow-md text-center w-full max-w-xl">
-              <h3 className="text-xl font-bold">
+            <div className="flex flex-col gap-7 bg-[var(--bg-secondary-color)] p-6 rounded-xl shadow-md text-center w-full max-w-xl">
+              <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
                 Partagez votre parcours avec Profiler Coach Ai
               </h3>
-              <p className="">
+              <p className="text-[var(--text-secondary-gray)]">
                 Profiler Coach Ai vous questionnera sur votre parcours
                 professionnel pour faire ressortir les meilleures informations
                 de votre profil.
@@ -138,7 +144,7 @@ export default function QualiCarriereComponent() {
         <Popup large onClose={() => setShowModal(false)}>
           <div className="h-4/5 flex flex-col justify-between gap-8 p-4">
             <div>
-              <div className="float-right flex flex-col gap-2 ps-6 h-44 w-64">
+              <div className="float-right flex flex-col gap-2 ps-6 h-44 w-64 text-[var(--text-secondary-gray)]">
                 <p className="text-center font-semibold tracking-tighter">
                   Vidéo explicative
                 </p>
@@ -156,20 +162,20 @@ export default function QualiCarriereComponent() {
               <div>
                 <div className="flex flex-col gap-8">
                   <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold">
+                    <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
                       100% CV optimisé à l'offre
                     </h3>
-                    <p className="text-gray-600">
+                    <p className=" text-[var(--text-secondary-gray)]">
                       Profil First crée votre CV en fonction de l'offre d'emploi
                       du recruteur
                     </p>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold">
+                    <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
                       100% de contrôle sur votre recherche
                     </h3>
-                    <p className="text-gray-600">
+                    <p className=" text-[var(--text-secondary-gray)]">
                       Profil First rend votre CV anonyme, les recruteurs
                       découvrent votre identité si vous acceptez la prise de
                       contact.
@@ -177,10 +183,10 @@ export default function QualiCarriereComponent() {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold">
+                    <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
                       100% de maîtrise de l'entretien
                     </h3>
-                    <p className="text-gray-600">
+                    <p className=" text-[var(--text-secondary-gray)]">
                       Profil First vous donne des conseils personnalisés pour
                       parler de votre parcours tout en restant aligné avec votre
                       nouveau CV ia
@@ -188,22 +194,22 @@ export default function QualiCarriereComponent() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 mt-8">
-                  <p className="text-gray-600">
+                  <p className=" text-[var(--text-secondary-gray)]">
                     Quali Carrière permet à Profil First de générer un CV de
                     votre profil qui est optimisé pour l'offre d'emploi du
                     recruteur.
                   </p>
-                  <p className="text-gray-600">
+                  <p className=" text-[var(--text-secondary-gray)]">
                     Après une discussion approfondie sur vos expériences avec
                     Profiler Coach Ai, Profil First va créer un CV personnalisé
                     en fonction de chaque offre d'un recruteur.
                   </p>
-                  <p className="text-gray-600">
+                  <p className=" text-[var(--text-secondary-gray)]">
                     Si un recruteur est intéressé par ce CV, alors il vous
                     enverra un message et vous aurez évidemment accès à ce CV
                     afin de prépar vos échanges avec le recruteur.
                   </p>
-                  <p className="text-gray-600 mt-6 text-sm italic">
+                  <p className=" text-[var(--text-secondary-gray)] mt-6 text-sm italic">
                     Vous pouvez désactiver Quali Carrière quand vous voulez
                   </p>
                 </div>
@@ -216,7 +222,7 @@ export default function QualiCarriereComponent() {
       {showError && (
         <Popup onClose={() => setShowError(false)}>
           <div className="flex items-center flex-col gap-6">
-            <p className="max-w-4/5 text-center text-lg tracking-wide">
+            <p className="max-w-4/5 text-center text-lg text-[var(--text-primary-color)] tracking-wide">
               Vous devez d'abord passer dans CV-minute.
             </p>
             <Link

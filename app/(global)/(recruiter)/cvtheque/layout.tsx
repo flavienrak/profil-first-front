@@ -175,7 +175,7 @@ export default function CvThequeLayout({
               </div>
             </div>
 
-            <div className="max-h-[80vh] flex flex-col gap-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+            <div className="max-h-[80vh] flex flex-col gap-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
               {history.map((item, index) => (
                 <div
                   key={`history-${item.id}`}

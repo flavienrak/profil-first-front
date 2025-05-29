@@ -637,8 +637,8 @@ export default function CvThequeDetailsLayout({
 
       {!cvThequeCritere || isLoading ? (
         <>
-          <Skeleton className="min-h-full w-64 bg-white rounded-xl" />
-          <Skeleton className="min-h-full flex-1 bg-white rounded-xl" />
+          <Skeleton className="min-h-full w-64 bg-[var(--bg-primary-color)] rounded-xl" />
+          <Skeleton className="min-h-full flex-1 bg-[var(--bg-primary-color)] rounded-xl" />
         </>
       ) : (
         <>
@@ -891,7 +891,7 @@ export default function CvThequeDetailsLayout({
                 </h2>
               </div>
 
-              <div className="max-h-[80vh] h-full pt-14 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+              <div className="max-h-[80vh] h-full pt-14 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
                 <div className="flex flex-col gap-6">
                   <TextEditor
                     readOnly

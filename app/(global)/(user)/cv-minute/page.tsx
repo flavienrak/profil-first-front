@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function CvMinute() {
-  return <CvMinuteComponent />;
+  return (
+    <div className="w-full h-full">
+      <CvMinuteComponent />
+    </div>
+  );
 }

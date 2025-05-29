@@ -15,7 +15,7 @@ export default function AuthComponent({
   const [isRegister, setIsRegister] = React.useState(false);
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full">
       <div className="w-[900px] flex gap-8">
         <div className="flex-1 flex flex-col py-6 px-3">
           {/* <Logo href={'/'} /> */}
@@ -29,8 +29,8 @@ export default function AuthComponent({
         </div>
         <div className="flex-1 flex justify-center p-10 bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] rounded-lg">
           <div className="w-full flex flex-col gap-10 justify-center items-center">
-            <Card className="w-full p-8">
-              <h1 className="text-4xl text-[var(--u-primary-color)] text-center font-semibold mb-4">
+            <Card className="w-full p-8 bg-[var(--bg-secondary-color)] border border-[var(--text-primary-color)]/10">
+              <h1 className="text-4xl text-[var(--u-primary-white)] text-center font-semibold mb-4">
                 {isRegister ? 'Inscription' : 'Connexion'}
               </h1>
               {isRegister ? (

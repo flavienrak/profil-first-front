@@ -17,7 +17,7 @@ export default function UserSideLayout({
   );
 
   return (
-    <div className="relative flex w-full min-h-screen overflow-hidden">
+    <div className="relative flex w-full min-h-screen [background-image:var(--bg-primary)] overflow-hidden">
       <UserSidebar showMenu={showMenu} />
       <div
         className={`w-full h-screen flex flex-col transition-[max-width] duration-500  ${
@@ -26,9 +26,7 @@ export default function UserSideLayout({
       >
         <div
           className={`h-full transition-[max-height] duration-500 ${
-            showFooter
-              ? 'max-h-[calc(100vh-5rem-2px)]'
-              : 'max-h-[calc(100vh-2px)]'
+            showFooter ? 'max-h-[calc(100vh-5rem)]' : 'max-h-screen'
           }`}
         >
           {children}

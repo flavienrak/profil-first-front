@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function CvMinutePage() {
-  return <CvPreview />;
+  return (
+    <div className="w-full h-full">
+      <CvPreview />
+    </div>
+  );
 }

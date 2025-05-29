@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function StepPage() {
-  return <QualiCarriereStep />;
+  return (
+    <div className="w-full h-full">
+      <QualiCarriereStep />
+    </div>
+  );
 }

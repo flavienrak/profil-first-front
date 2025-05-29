@@ -58,7 +58,7 @@ export default function QualiCarriereChat() {
       form.setValue('content', '');
       setIsLoadingQuestion(false);
     }
-  }, [isLoadingQuestion]);
+  }, [isLoadingQuestion, qualiCarriereQuestion]);
 
   const onSubmit = async (data: QuestionFormValues) => {
     const parseRes = questionSchema.safeParse(data);
@@ -106,12 +106,12 @@ export default function QualiCarriereChat() {
   if (!experience) return <StepLoader />;
 
   return (
-    <div className="min-h-full w-full flex flex-col gap-8 p-8">
+    <div className="max-h-full h-full w-full flex flex-col gap-8 p-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
           <Link
             href={'/quali-carriere'}
-            className="p-2 bg-gray-50 hover:bg-gray-200 rounded-full transition-colors cursor-pointer"
+            className="p-2 text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] hover:opacity-80 rounded-full cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
@@ -134,8 +134,8 @@ export default function QualiCarriereChat() {
         processus.
       </p>
 
-      <div className="flex-1 h-4/5 grid md:grid-cols-2 gap-12">
-        <div className="h-full bg-white rounded-xl shadow-lg p-10 flex flex-col gap-6">
+      <div className="flex-1 max-h-4/5 h-full grid md:grid-cols-2 gap-12">
+        <div className="max-h-full h-full bg-[var(--bg-secondary-color)] rounded-xl shadow-lg p-10 flex flex-col gap-6 overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-14 min-w-14 h-14 min-h-14 bg-purple-100 rounded-full flex items-center justify-center p-2 select-none">
               <Image
@@ -146,25 +146,25 @@ export default function QualiCarriereChat() {
                 className="w-full h-full object-contain"
               />
             </div>
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-xl font-semibold text-[var(--text-primary-color)]">
               Partagez vos expériences avec Profiler Coach Ai
             </h2>
           </div>
 
           {isLoadingQuestion ? (
             <div className="flex flex-col gap-4">
-              <Skeleton className="w-full h-4 rounded bg-gray-200" />
+              <Skeleton className="w-full h-4 rounded bg-[var(--bg-primary-color)]" />
               <div className="flex flex-col gap-1">
-                <Skeleton className="w-full h-4 rounded bg-gray-200" />
-                <Skeleton className="w-3/5 h-4 rounded bg-gray-200" />
+                <Skeleton className="w-full h-4 rounded bg-[var(--bg-primary-color)]" />
+                <Skeleton className="w-3/5 h-4 rounded bg-[var(--bg-primary-color)]" />
               </div>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <p className="font-semibold">
+              <p className="font-semibold text-[var(--text-primary-color)]">
                 {experience.date} : {experience.title} - {experience.company}
               </p>
-              <p className="text-gray-600 break-words text-sm first-letter:uppercase">
+              <p className="text-[var(--text-secondary-gray)] break-words text-sm first-letter:uppercase">
                 {qualiCarriereQuestion?.content}
               </p>
             </div>
@@ -179,13 +179,13 @@ export default function QualiCarriereChat() {
                 name="content"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem className="flex-1 flex flex-col max-h-4/5 rounded-md">
+                  <FormItem className="max-h-4/5 h-full flex-1 flex flex-col rounded-md overflow-hidden">
                     <FormControl className="flex-1">
-                      <div className="relative">
+                      <div className="relative h-full">
                         <Textarea
                           {...field}
                           autoComplete="off"
-                          className="h-full overflow-y-auto p-4 resize-none"
+                          className="max-h-full h-full text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] overflow-y-auto p-4 resize-none [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
                           placeholder="Votre réponse..."
                           autoFocus
                         />
@@ -204,14 +204,14 @@ export default function QualiCarriereChat() {
                         </div>
                       </div>
                     </FormControl>
-                    <FormMessage className="text-xs">
+                    <FormMessage className="text-sm">
                       {form.formState.errors.content?.message}
                     </FormMessage>
                   </FormItem>
                 )}
               />
               <div className="flex items-center justify-between">
-                <span className="text-gray-500">
+                <span className="text-[var(--text-primary-color)]">
                   Question {qualiCarriereQuestion?.order}/{totalQuestions}
                 </span>
                 <PrimaryButton
@@ -226,10 +226,12 @@ export default function QualiCarriereChat() {
           </Form>
         </div>
 
-        <div className="bg-purple-50 rounded-xl p-10 shadow-lg flex flex-col gap-8 justify-between">
+        <div className="bg-[var(--bg-secondary-color)] rounded-xl p-10 shadow-lg flex flex-col gap-8 justify-between">
           <div className="flex flex-col gap-8">
-            <h3 className="font-semibold text-xl">Profiler Coach Ai adore :</h3>
-            <ul className="space-y-6 text-gray-700 text-xl flex-1 break-words">
+            <h3 className="font-semibold text-xl text-[var(--text-primary-color)]">
+              Profiler Coach Ai adore :
+            </h3>
+            <ul className="space-y-6 text-[var(--text-secondary-gray)] text-xl flex-1 break-words">
               <li>- le contexte</li>
               <li>- les interlocuteurs</li>
               <li>- les faits</li>

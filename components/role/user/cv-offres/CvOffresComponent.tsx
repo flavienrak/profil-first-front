@@ -98,11 +98,11 @@ export default function CvOffresComponent() {
         )}
       </div>
 
-      <p className="text-gray-600 mb-8">
+      <p className="text-[var(--text-primary-gray)] mb-8">
         Je retrouve ici mes CV et offres enregistrées.
       </p>
       <div className="flex items-center justify-between mb-8">
-        <p className="font-bold text-lg text-gray-800">
+        <p className="font-bold text-lg text-[var(--text-primary-color)]">
           Tous vos CV sont anonymes pour les recruteurs
         </p>
         <button
@@ -117,7 +117,7 @@ export default function CvOffresComponent() {
         {infos.map((item, index) => (
           <div
             key={`cv-offre-section-${index}`}
-            className="flex items-center gap-2 text-sm text-gray-600"
+            className="flex items-center gap-2 text-sm text-[var(--text-primary-gray)]"
           >
             <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
             <span>{item.label}</span>
@@ -128,8 +128,8 @@ export default function CvOffresComponent() {
       <div className="grid md:grid-cols-3 gap-6">
         {isLoading ? (
           <>
-            <Skeleton className="w-full h-52 rounded-xl shadow-md" />
-            <Skeleton className="w-full h-52 rounded-xl shadow-md" />
+            <Skeleton className="w-full h-52 rounded-xl shadow-md bg-[var(--bg-primary-color)]" />
+            <Skeleton className="w-full h-52 rounded-xl shadow-md bg-[var(--bg-primary-color)]" />
           </>
         ) : (
           cvMinutes.map((c) => (

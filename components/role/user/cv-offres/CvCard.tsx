@@ -88,7 +88,7 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-[var(--bg-secondary-color)] rounded-lg shadow-md overflow-hidden">
       <div className="h-14 flex items-center bg-[var(--u-primary-color)]/5 px-4">
         <div className="flex items-center gap-2 flex-1">
           <FileText className="w-6 h-6 text-[var(--u-primary-color)]" />
@@ -106,7 +106,7 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
                           <Input
                             {...field}
                             autoComplete="off"
-                            className="flex-1 border-[var(--u-primary-color)] rounded bg-white focus:outline-none focus:ring-2 focus:ring-[var(--u-primary-color)]/20"
+                            className="flex-1 border-[var(--u-primary-color)] rounded bg-[var(--bg-secondary-color)] text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] focus:outline-none focus:ring-2 focus:ring-[var(--u-primary-color)]/20"
                             placeholder={cvMinute.name}
                             autoFocus
                             required
@@ -156,7 +156,7 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
           ) : (
             <label
               onClick={() => setIsEditing(true)}
-              className="font-medium text-gray-800 hover:text-[var(--u-primary-color)] transition-colors"
+              className="font-medium text-[var(--text-primary-color)] hover:text-[var(--u-primary-color)] transition-colors"
             >
               {cvMinute.name}
             </label>
@@ -168,7 +168,7 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
         <div className="px-4 pt-2">
           <button
             onClick={() => setUpdateChoice(true)}
-            className={`flex items-center w-full justify-center gap-2 px-3 py-2 rounded-lg text-[var(--u-primary-color)] transition-all ${
+            className={`flex items-center w-full justify-center gap-2 px-3 py-2 rounded-lg text-[var(--u-primary-white)] hover:text-[var(--u-primary-color)] transition-all ${
               redirectLoading
                 ? 'bg-[var(--u-primary-color)]/5 opacity-80 pointer-events-none'
                 : 'hover:bg-[var(--u-primary-color)]/5 cursor-pointer'
@@ -259,17 +259,17 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
 
       {updateChoice && (
         <Popup onClose={() => setUpdateChoice(false)}>
-          <div className="flex flex-col gap-8 bg-white rounded-xl p-8 max-w-lg w-full text-center">
+          <div className="flex flex-col gap-8 rounded-xl p-8 max-w-lg w-full text-center">
             <h2 className="text-2xl text-[var(--u-primary-color)] font-bold">
               Créer une copie ou modifier la version actuelle ?
             </h2>
 
             <div className="flex flex-col gap-4">
-              <p className="text-gray-700">
+              <p className="text-[var(--text-primary-color)]">
                 Lorsque vous cliquez sur copier, on va créer une copie de la
                 version actuelle.
               </p>
-              <p className="text-gray-700">
+              <p className="text-[var(--text-primary-color)]">
                 Vous pourrez ainsi avoir plusieurs versions de vos CV tout en
                 gardant l'original.
               </p>
@@ -279,7 +279,7 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
               <Link
                 href={`/cv-minute/${cvMinute.id}`}
                 onClick={() => setRedirectLoading(true)}
-                className={`flex-1 flex items-center justify-center gap-2 px-8 py-1 border border-[var(--u-primary-color)] text-[var(--u-primary-color)] font-semibold rounded-full select-none ${
+                className={`flex-1 flex items-center justify-center gap-2 px-8 py-1 border border-[var(--u-primary-white)] text-[var(--u-primary-white)] font-semibold rounded-full select-none ${
                   redirectLoading
                     ? 'opacity-80 pointer-events-none'
                     : 'hover:opacity-80 transition-opacity duration-150 cursor-pointer '
@@ -304,7 +304,7 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
                     />
                   </svg>
                 )}
-                <span className="leading-5.5">Modifier</span>
+                <span>Modifier</span>
               </Link>
               <PrimaryButton
                 label="Copier"
@@ -319,7 +319,7 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
 
       {showModal && (
         <Popup onClose={() => setShowModal(false)}>
-          <div className="flex flex-col gap-8 bg-white rounded-xl p-8 max-w-lg w-full text-center">
+          <div className="flex flex-col gap-8 rounded-xl p-8 max-w-lg w-full text-center">
             <h2 className="text-2xl text-[var(--u-primary-color)] font-bold">
               Actuellement ce CV est anonymisé par notre IA.
             </h2>

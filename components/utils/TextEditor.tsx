@@ -16,7 +16,7 @@ const MenuBar = () => {
   }
 
   return (
-    <div className="flex items-center gap-1 justify-between bg-gray-100 p-2 rounded-t-sm">
+    <div className="flex items-center gap-1 justify-between bg-[var(--bg-primary-color)] p-2 rounded-t-sm">
       <button
         onClick={(event) => {
           event.preventDefault();
@@ -25,7 +25,9 @@ const MenuBar = () => {
         disabled={!editor.can().chain().focus().toggleBold().run()}
         className={cn(
           'h-8 w-8 flex justify-center items-center cursor-pointer rounded-sm',
-          editor.isActive('bold') ? 'bg-gray-300' : 'hover:bg-gray-200',
+          editor.isActive('bold')
+            ? 'bg-gray-300 text-gray-800'
+            : 'hover:text-gray-800 hover:bg-gray-200',
         )}
       >
         <Bold size={16} />
@@ -38,7 +40,9 @@ const MenuBar = () => {
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         className={cn(
           'h-8 w-8 flex justify-center items-center cursor-pointer rounded-sm',
-          editor.isActive('italic') ? 'bg-gray-300' : 'hover:bg-gray-200',
+          editor.isActive('italic')
+            ? 'bg-gray-300 text-gray-800'
+            : 'hover:text-gray-800 hover:bg-gray-200',
         )}
       >
         <Italic size={16} />
@@ -51,7 +55,9 @@ const MenuBar = () => {
         disabled={!editor.can().chain().focus().toggleUnderline().run()}
         className={cn(
           'h-8 w-8 flex justify-center items-center cursor-pointer rounded-sm',
-          editor.isActive('underline') ? 'bg-gray-300' : 'hover:bg-gray-200',
+          editor.isActive('underline')
+            ? 'bg-gray-300 text-gray-800'
+            : 'hover:text-gray-800 hover:bg-gray-200',
         )}
       >
         <Underline size={18} />
@@ -65,7 +71,7 @@ const MenuBar = () => {
         className={cn(
           'h-8 w-8 p-1 flex justify-center items-center rounded-sm',
           editor.can().chain().focus().undo().run()
-            ? 'bg-gray-300 cursor-pointer'
+            ? 'bg-gray-300 text-gray-800 cursor-pointer'
             : '',
         )}
       >
@@ -80,7 +86,7 @@ const MenuBar = () => {
         className={cn(
           'h-8 w-8 p-1 flex justify-center items-center rounded-sm',
           editor.can().chain().focus().redo().run()
-            ? 'bg-gray-300 cursor-pointer'
+            ? 'bg-gray-300 text-gray-800 cursor-pointer'
             : '',
         )}
       >
@@ -107,11 +113,13 @@ function MyEditorContent({ content }: { content: string }) {
 export default function TextEditor({
   content,
   readOnly = false,
+  dynamic = false,
   className,
   onChange,
 }: {
   content: string;
   readOnly?: boolean;
+  dynamic?: boolean;
   className?: string;
   onChange?: (content: string) => void;
 }) {
@@ -120,6 +128,9 @@ export default function TextEditor({
       className={cn(
         'w-full flex flex-col text-[0.875em] cursor-text',
         className,
+        dynamic
+          ? 'text-[var(--text-primary-color)] border-[var(--text-primary-color)]/10'
+          : '',
       )}
     >
       <EditorProvider

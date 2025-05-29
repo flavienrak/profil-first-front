@@ -20,7 +20,7 @@ export default function RecruiterSideLayout({
           showMenu ? 'max-w-[calc(100%-16rem)]' : 'max-w-[calc(100%-5rem-1px)]'
         }`}
       >
-        <div className="h-full transition-[max-height] duration-500 max-h-[calc(100vh-2px)]">
+        <div className="h-full transition-[max-height] duration-500 max-h-screen">
           {children}
         </div>
       </div>

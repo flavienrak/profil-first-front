@@ -19,6 +19,7 @@ export default function StepLayout({
 }) {
   const { user } = useSelector((state: RootState) => state.user);
   const { isSocketReady } = useSocket();
+
   const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
@@ -105,7 +106,9 @@ export default function StepLayout({
       ) : questionLoaded && !showModal ? (
         <div className="max-w-7xl w-full h-full">{children}</div>
       ) : (
-        <StepLoader />
+        <div className="max-w-7xl w-full h-full flex justify-center items-center">
+          <StepLoader />
+        </div>
       )}
     </div>
   );

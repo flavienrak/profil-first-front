@@ -44,7 +44,7 @@ const QualiCarriereSuccess = () => {
             Quali carrière est activé !
           </h2>
 
-          <p className="text-xl text-gray-700 whitespace-nowrap">
+          <p className="text-xl text-[var(--text-primary-gray)] whitespace-nowrap">
             Nous proposons déjà votre meilleur profil aux recruteurs !
           </p>
 

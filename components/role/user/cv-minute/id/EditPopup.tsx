@@ -302,7 +302,7 @@ export default function EditPopup({
 
   return (
     <div
-      className={`z-50 fixed bg-white rounded-md shadow-xl border-1 border-gray-200 ${
+      className={`z-50 fixed bg-[var(--bg-secondary-color)] rounded-md shadow-xl border border-[var(--text-primary-color)]/10 ${
         popup.large && suggestions.length > 0 ? 'w-[40rem]' : 'w-[22rem]'
       }`}
       style={{
@@ -312,18 +312,18 @@ export default function EditPopup({
     >
       <div
         onMouseDown={handleMouseDown}
-        className="p-2.5 border-b-1 border-gray-200 flex items-center justify-end bg-[#F3EAFD] rounded-t-md cursor-move"
+        className="p-2.5 flex items-center justify-end bg-[var(--bg-purple)] rounded-t-md cursor-move"
       >
         <button
           onClick={handleClosePopup}
-          className="text-gray-500 hover:text-gray-700 cursor-pointer"
+          className="text-[var(--text-primary-color)] hover:opacity-80 cursor-pointer"
         >
           <X size={22} />
         </button>
       </div>
 
       <div
-        className={`max-h-[calc(100vh-9rem)] overflow-y-auto ${
+        className={`max-h-[calc(100vh-9rem)] rounded-b-md overflow-y-auto ${
           popup.hidden === false
             ? 'overflow-y-visible'
             : 'overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300'
@@ -332,14 +332,18 @@ export default function EditPopup({
         <div className="flex gap-4 p-4">
           <div className="flex-1 flex flex-col gap-4">
             {popup.title && (
-              <h3 className="text-center text-lg font-semibold tracking-wide px-4 select-none">
+              <h3 className="text-center text-lg text-[var(--text-primary-color)] font-semibold tracking-wide px-4 select-none">
                 {popup.title}
               </h3>
             )}
             {popup.conseil && (
               <div className="flex flex-col gap-1">
-                <p className="font-semibold">Nos conseils :</p>
-                <p className="text-sm whitespace-pre-line">{popup.conseil}</p>
+                <p className="font-semibold text-[var(--text-primary-color)]">
+                  Nos conseils :
+                </p>
+                <p className="text-sm whitespace-pre-line text-[var(--text-secondary-gray)]">
+                  {popup.conseil}
+                </p>
               </div>
             )}
 
@@ -350,7 +354,7 @@ export default function EditPopup({
                     <i className="text-[var(--u-primary-color)]">
                       <Lightbulb size={fontSize + 8} />
                     </i>
-                    <p className="text-xs font-semibold">
+                    <p className="text-xs font-semibold text-[var(--text-primary-color)]">
                       {actualExperience.title}
                     </p>
                   </div>
@@ -368,7 +372,7 @@ export default function EditPopup({
                           }}
                         />
                       </div>
-                      <p className="text-sm font-semibold text-primary">
+                      <p className="text-sm font-semibold text-[var(--text-primary-color)]">
                         {actualExperience?.evaluation.actualScore
                           ? actualExperience.evaluation.actualScore
                           : actualExperience?.evaluation.initialScore}
@@ -378,10 +382,10 @@ export default function EditPopup({
                   )}
                 </div>
                 {actualExperience.evaluation && (
-                  <div className="flex flex-col gap-2 p-2 rounded-sm bg-gray-100">
+                  <div className="flex flex-col gap-2 p-2 rounded-sm bg-[var(--bg-primary-color)]">
                     <div
                       onClick={() => setOpenDetails((prev) => !prev)}
-                      className="flex items-center justify-end gap-1 text-gray-600 cursor-pointer"
+                      className="flex items-center justify-end gap-1 text-[var(--text-primary-color)] cursor-pointer"
                     >
                       <p className="font-semibold text-xs select-none">
                         Pourquoi ce score ?
@@ -396,13 +400,18 @@ export default function EditPopup({
                       <div className="flex flex-col gap-2 text-xs">
                         {actualExperience.evaluation.content && (
                           <div className="flex flex-col gap-2">
-                            <p className="font-semibold">🟢 Points forts :</p>
+                            <p className="font-semibold text-[var(--text-primary-color)]">
+                              🟢 Points forts :
+                            </p>
                             <div>
                               {actualExperience.evaluation.content
                                 .split('✓')
                                 .filter((sentence) => sentence.trim() !== '')
                                 .map((sentence, index) => (
-                                  <p key={`point-fort-${index}`}>
+                                  <p
+                                    key={`point-fort-${index}`}
+                                    className="text-[var(--text-secondary-gray)]"
+                                  >
                                     ✓ {sentence.trim()}
                                   </p>
                                 ))}
@@ -411,7 +420,7 @@ export default function EditPopup({
                         )}
                         {actualExperience.evaluation.weakContent && (
                           <div className="flex flex-col gap-2">
-                            <p className="font-semibold">
+                            <p className="font-semibold text-[var(--text-primary-color)]">
                               🔴 Points à améliorer :
                             </p>
                             <div>
@@ -419,7 +428,10 @@ export default function EditPopup({
                                 .split('•')
                                 .filter((sentence) => sentence.trim() !== '')
                                 .map((sentence, index) => (
-                                  <p key={`point-fort-${index}`}>
+                                  <p
+                                    key={`point-fort-${index}`}
+                                    className="text-[var(--text-secondary-gray)]"
+                                  >
                                     • {sentence.trim()}
                                   </p>
                                 ))}
@@ -464,11 +476,13 @@ export default function EditPopup({
                             control={form.control}
                             render={({ field: formField }) => (
                               <FormItem className="flex flex-col gap-2">
-                                <FormLabel asChild>
-                                  <div className="w-full flex flex-col items-start font-normal">
-                                    <p className="text-base">{field.label}</p>
+                                <FormLabel>
+                                  <div className="w-full flex flex-col gap-1 items-start font-normal">
+                                    <p className="text-base text-[var(--text-primary-color)]">
+                                      {field.label}
+                                    </p>
                                     {field.example && (
-                                      <p className="text-[0.6rem] font-bold">
+                                      <p className="text-[0.6rem] font-bold text-[var(--text-secondary-gray)]">
                                         {field.example}
                                       </p>
                                     )}
@@ -498,10 +512,10 @@ export default function EditPopup({
                                             onClick={() =>
                                               setShowIcons((prev) => !prev)
                                             }
-                                            className={`h-10 w-10 flex justify-center items-center text-sm text-gray-700 border rounded-sm cursor-pointer ${
+                                            className={`h-10 w-10 flex justify-center items-center text-sm text-[var(--text-primary-color)] border rounded-sm cursor-pointer ${
                                               showIcons
                                                 ? 'bg-[var(--u-primary-color)] text-white'
-                                                : 'hover:bg-gray-200'
+                                                : 'hover:bg-[var(--bg-primary-color)]'
                                             }`}
                                           >
                                             <LucideIcon
@@ -515,12 +529,13 @@ export default function EditPopup({
                                         <Textarea
                                           {...formField}
                                           autoComplete="off"
-                                          className="flex-1 min-h-20 px-3 py-2 rounded-sm !text-sm !placeholder:text-sm resize-none"
+                                          className="flex-1 min-h-20 px-3 py-2 rounded-sm !text-sm !placeholder:text-sm text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] resize-none"
                                           placeholder={field.placeholder}
                                           required
                                         />
                                       ) : field.type === 'text' ? (
                                         <TextEditor
+                                          dynamic
                                           content={formField.value}
                                           onChange={formField.onChange}
                                           className="border rounded-sm"
@@ -529,13 +544,13 @@ export default function EditPopup({
                                         <Input
                                           {...formField}
                                           type="color"
-                                          className="flex-1 h-10 px-1 py-1 rounded-sm"
+                                          className="flex-1 h-10 px-1 py-1 text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] rounded-sm"
                                         />
                                       ) : (
                                         <Input
                                           {...formField}
                                           autoComplete="off"
-                                          className="flex-1 h-10 px-3 py-1 rounded-sm !text-sm !placeholder:text-sm"
+                                          className="flex-1 h-10 px-3 py-1 rounded-sm !text-sm !placeholder:text-sm text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)]"
                                           placeholder={field.placeholder}
                                           required
                                         />
@@ -579,7 +594,7 @@ export default function EditPopup({
                         }}
                         className="rounded-sm py-2"
                       />
-                      <p className="text-xs text-center text-gray-700">
+                      <p className="text-xs text-center text-[var(--text-secondary-gray)]">
                         Cliquer sur 'Génerer des suggestions pour obtenir des
                         propositions personnalisées'
                       </p>
@@ -603,8 +618,10 @@ export default function EditPopup({
                 {popup.type === 'desc' ? (
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1">
-                      <p className="font-semibold">Explications :</p>
-                      <p className="text-sm whitespace-pre-line">
+                      <p className="font-semibold text-[var(--text-primary-color)]">
+                        Explications :
+                      </p>
+                      <p className="text-sm whitespace-pre-line text-[var(--text-secondary-gray)]">
                         Lorem, ipsum dolor sit amet consectetur adipisicing
                         elit. Cupiditate autem ab provident tempore nulla quae
                         ipsa expedita facilis nobis, omnis, dolores nostrum
@@ -613,8 +630,10 @@ export default function EditPopup({
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="font-semibold">Disponibilité :</p>
-                      <p className="text-sm whitespace-pre-line">
+                      <p className="font-semibold text-[var(--text-primary-color)]">
+                        Disponibilité :
+                      </p>
+                      <p className="text-sm whitespace-pre-line text-[var(--text-secondary-gray)]">
                         Lorem, ipsum dolor sit amet consectetur adipisicing
                         elit. Cupiditate autem ab provident tempore nulla quae
                         ipsa expedita facilis nobis, omnis, dolores nostrum
@@ -698,7 +717,7 @@ export default function EditPopup({
 
           {suggestions.length > 0 && (
             <div className="w-1/2 flex flex-col gap-2 pb-2">
-              <h3 className="text-center font-medium">
+              <h3 className="text-center font-medium text-[var(--text-primary-color)]">
                 {popup.suggestionTitle}
               </h3>
               <ul className="list-disc list-inside flex flex-col gap-2">
@@ -706,7 +725,7 @@ export default function EditPopup({
                   <li
                     key={`suggestion-${s.id}`}
                     onClick={() => handleAddSuggestion(s.content)}
-                    className="text-sm border p-2 rounded-sm hover:bg-gray-100 cursor-pointer"
+                    className="text-sm border p-2 rounded-sm text-[var(--text-primary-color)] hover:bg-[var(--bg-primary-color)] cursor-pointer"
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(s.content),
                     }}

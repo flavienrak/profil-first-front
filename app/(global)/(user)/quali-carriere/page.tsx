@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function QualiCarriere() {
-  return <QualiCarriereComponent />;
+  return (
+    <div className="w-full h-full">
+      <QualiCarriereComponent />
+    </div>
+  );
 }

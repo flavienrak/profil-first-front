@@ -267,7 +267,7 @@ export default function QualiCarriereSynthese() {
         <div className="flex items-center gap-4 flex-1">
           <Link
             href={'/quali-carriere'}
-            className="p-2 bg-gray-50 hover:bg-gray-200 rounded-full transition-colors cursor-pointer"
+            className="p-2 text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] hover:opacity-80 rounded-full transition-colors cursor-pointer"
           >
             <ArrowLeft size={16} />
           </Link>
@@ -278,7 +278,7 @@ export default function QualiCarriereSynthese() {
       </div>
 
       <div className="flex-1 h-3/5 grid grid-cols-2 gap-12">
-        <div className="flex max-h-full flex-col gap-6 p-8 bg-gradient-to-br from-[var(--u-primary-color)]/5 to-purple-50 rounded-xl shadow-lg overflow-hidden">
+        <div className="flex max-h-full flex-col gap-6 p-8 bg-[var(--bg-secondary-color)] rounded-xl shadow-lg overflow-hidden">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold text-[var(--u-primary-color)]">
               Synthèse détaillée de vos expériences
@@ -329,10 +329,10 @@ export default function QualiCarriereSynthese() {
               </div>
             )}
           </div>
-          <div className="relative flex-1 h-4/5 py-6 px-1 bg-white rounded-xl shadow-inner overflow-y-auto">
+          <div className="relative flex-1 h-4/5 py-6 px-1 bg-[var(--bg-primary-color)] rounded-xl overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
             {actualExperience && actualExperience.qualiCarriereResumes && (
               <div className="flex flex-col gap-3">
-                <p className="text-xl font-semibold px-5">
+                <p className="text-xl font-semibold px-5 text-[var(--text-primary-color)]">
                   {actualExperience.date} : {actualExperience.title} -{' '}
                   {actualExperience.company}
                 </p>
@@ -348,18 +348,20 @@ export default function QualiCarriereSynthese() {
                     }}
                     spellCheck={false}
                     value={actualExperienceContent.content}
-                    className={`!text-base text-justify border-none py-3 px-5 shadow-none resize-none focus-visible:ring-0`}
+                    className={`!text-base text-justify border-none py-3 px-5 text-[var(--text-secondary-gray)] shadow-none resize-none focus-visible:ring-0`}
                   />
                 )}
 
                 {actualCompetenceContent.length > 0 && (
                   <div className="flex flex-col gap-3 px-5">
-                    <p className="text-lg font-semibold">30 compétences :</p>
+                    <p className="text-lg font-semibold text-[var(--text-primary-color)]">
+                      30 compétences :
+                    </p>
                     <div className="flex flex-col">
                       {actualCompetenceContent?.map((c) => (
                         <div
                           key={`competence-${c.id}`}
-                          className="flex items-center gap-1"
+                          className="flex items-center gap-1 text-[var(--text-secondary-gray)]"
                         >
                           <span>- </span>
                           <Textarea
@@ -372,7 +374,7 @@ export default function QualiCarriereSynthese() {
                             }}
                             spellCheck={false}
                             value={c.content}
-                            className={`h-max min-h-auto !text-base border-none px-2 shadow-none resize-none hover:bg-gray-100 focus-visible:ring-0`}
+                            className={`h-max min-h-auto !text-base border-none px-2 shadow-none resize-none hover:bg-[var(--bg-secondary-color)] focus-visible:ring-0`}
                           />
                         </div>
                       ))}
@@ -391,7 +393,7 @@ export default function QualiCarriereSynthese() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-4 bg-white rounded-xl p-8 shadow-lg overflow-hidden">
+        <div className="flex-1 flex flex-col gap-4 bg-[var(--bg-secondary-color)] rounded-xl p-8 shadow-lg overflow-hidden">
           <div className="flex items-center gap-4">
             <div className="w-14 min-w-14 h-14 min-h-14 bg-purple-100 rounded-full flex items-center justify-center p-2 select-none">
               <Image
@@ -402,7 +404,7 @@ export default function QualiCarriereSynthese() {
                 className="w-full h-full object-contain"
               />
             </div>
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-xl font-semibold text-[var(--text-primary-color)]">
               Discutez avec Profiler Carrière Ai
             </h2>
             {/* <button className="ml-auto px-4 py-2 bg-[var(--u-primary-color)] text-white rounded-full text-sm hover:bg-[#5a24cc] transition-colors select-none cursor-pointer">
@@ -410,8 +412,8 @@ export default function QualiCarriereSynthese() {
             </button> */}
           </div>
 
-          <div className="flex-1 h-3/5 flex flex-col bg-gray-50 rounded-xl p-4">
-            <div className="flex-1 flex flex-col gap-2 pb-4 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+          <div className="flex-1 h-3/5 flex flex-col bg-[var(--bg-primary-color)] rounded-xl p-4">
+            <div className="flex-1 flex flex-col gap-2 pb-4 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
               <ChatContent message={initialMessage} />
               {messages.map((m: QualiCarriereChatInterface) => (
                 <ChatContent
@@ -431,7 +433,7 @@ export default function QualiCarriereSynthese() {
                       className="w-full h-full object-contain"
                     />
                   </div>
-                  <Skeleton className="h-36 w-full rounded-md rounded-tl-none shadow-sm" />
+                  <Skeleton className="h-36 w-full rounded-md rounded-tl-none shadow-sm bg-[var(--bg-primary-color)]" />
                 </div>
               )}
               <div ref={lastMessage}></div>
@@ -452,7 +454,7 @@ export default function QualiCarriereSynthese() {
                           <Textarea
                             {...field}
                             autoComplete="off"
-                            className="max-h-28 min-h-10 overflow-y-auto text-sm placeholder:text-sm py-3 px-4 rounded-3xl resize-none"
+                            className="max-h-28 min-h-10 overflow-y-auto text-sm text-[var(--text-primary-color)] placeholder:text-sm placeholder:text-[var(--text-secondary-gray)] py-3 px-4 rounded-3xl resize-none"
                             placeholder="Votre message..."
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' && !e.shiftKey) {

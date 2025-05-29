@@ -61,7 +61,7 @@ export default function CvMinuteComponent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-7xl w-full flex flex-col gap-14 bg-white rounded-2xl p-8 shadow-lg"
+        className="max-w-7xl w-full flex flex-col gap-14 bg-[var(--bg-secondary-color)] rounded-2xl p-8 shadow-lg"
       >
         <div className="flex justify-center">
           <Title
@@ -77,20 +77,22 @@ export default function CvMinuteComponent() {
                 <span className="w-8 h-8 bg-[var(--u-primary-color)] text-white rounded-full flex items-center justify-center font-semibold">
                   1
                 </span>
-                <h2 className="text-lg font-semibold">Importez votre CV</h2>
+                <h2 className="text-lg font-semibold text-[var(--text-primary-color)]">
+                  Importez votre CV
+                </h2>
               </div>
 
               <label
                 onDrop={handleDrop}
                 onDragOver={(event) => event.preventDefault()}
                 htmlFor="file"
-                className="flex flex-col items-center gap-4 h-52 border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-[var(--u-primary-color)] transition-colors duration-300 cursor-pointer group"
+                className="flex flex-col items-center gap-4 h-52 border-2 border-dashed border-gray-200 rounded-xl p-8 text-center text-[var(--text-secondary-gray)] hover:border-[var(--u-primary-color)] transition-colors duration-300 cursor-pointer group"
               >
-                <Upload className="w-12 h-12 text-gray-400 group-hover:text-[var(--u-primary-color)] transition-colors duration-300 cursor-pointer" />
+                <Upload className="w-12 h-12 transition-colors duration-300 opacity-70 cursor-pointer" />
                 {file ? (
                   <p className="font-medium tracking-tighter">{file.name}</p>
                 ) : (
-                  <p className="text-gray-500">
+                  <p>
                     Déposez votre CV ici ou cliquez pour sélectionner <br />
                     Fichier: PDF ou WORD
                   </p>
@@ -110,14 +112,14 @@ export default function CvMinuteComponent() {
                 <span className="w-8 h-8 bg-[var(--u-primary-color)] text-white rounded-full flex items-center justify-center font-semibold">
                   2
                 </span>
-                <h2 className="text-lg font-semibold">
+                <h2 className="text-lg font-semibold text-[var(--text-primary-color)]">
                   Collez l'offre d'emploi
                 </h2>
               </div>
               <textarea
                 required
                 onChange={(event) => setPosition(event.target.value)}
-                className="w-full h-52 p-4 border-2 border-gray-200 rounded-xl focus:border-[var(--u-primary-color)] focus:ring-2 focus:ring-[var(--u-primary-color)]/20 transition-colors duration-300 resize-none"
+                className="w-full h-52 p-4 text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] border-2 border-gray-200 rounded-xl focus:border-[var(--u-primary-color)] focus:ring-2 focus:ring-[var(--u-primary-color)]/20 transition-colors duration-300 resize-none"
                 placeholder="Copiez-collez ici le contenu de l'offre d'emploi..."
               />
             </div>
@@ -137,7 +139,7 @@ export default function CvMinuteComponent() {
       {message && (
         <Popup onClose={() => setMessage('')}>
           <div className="flex items-center flex-col gap-6">
-            <p className="max-w-4/5 text-center text-lg tracking-wide">
+            <p className="max-w-4/5 text-center text-lg tracking-wide text-[var(--text-primary-color)]">
               {message}
             </p>
             <PrimaryButton

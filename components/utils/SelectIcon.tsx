@@ -82,10 +82,10 @@ export default function SelectIcon({
   }, [iconsRef]);
 
   return (
-    <div className="absolute bottom-[110%] left-0 w-[17.85em] h-[15em] shadow border bg-white p-[0.5em] flex flex-wrap rounded-[0.25em]">
-      <div className="w-full h-max flex justify-between items-center border-b-[0.0625em] gap-[0.5em] pb-[0.375em]">
+    <div className="absolute bottom-[110%] left-0 w-[17.85em] h-[15em] shadow border border-[var(--text-primary-color)]/10 bg-[var(--bg-secondary-color)] p-[0.5em] flex flex-wrap rounded-[0.25em]">
+      <div className="w-full h-max flex justify-between items-center border-b-[0.0625em] border-[var(--text-primary-color)]/10 gap-[0.5em] pb-[0.375em]">
         <div className="relative flex items-center">
-          <i className="absolute h-[2.5em] w-[2.5em] flex justify-center items-center text-gray-400">
+          <i className="absolute h-[2.5em] w-[2.5em] flex justify-center items-center text-[var(--text-secondary-gray)]">
             <Search size={size * (fontSize / 16)} />
           </i>
           <Input
@@ -98,7 +98,7 @@ export default function SelectIcon({
             }}
             type="search"
             placeholder="Rechercher..."
-            className="!text-[0.875em] !placeholder:text-[0.875em] ps-[2.5em] pe-[0.75em] py-[0.25em]"
+            className="!text-[0.875em] !placeholder:text-[0.875em] text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] border-[var(--text-primary-color)]/10 ps-[2.5em] pe-[0.75em] py-[0.25em]"
           />
         </div>
         <div className="flex items-center gap-[0.5em]">
@@ -108,13 +108,14 @@ export default function SelectIcon({
               onChangeSize(Number(event.target.value));
             }}
             value={size}
-            className="w-[4.5em] !text-[0.875em] px-[0.75em] py-[0.25em]"
+            placeholder="16"
+            className="w-[4.5em] !text-[0.875em] text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] px-[0.75em] py-[0.25em] border-[var(--text-primary-color)]/10"
           />
         </div>
       </div>
       <div
         ref={iconsRef}
-        className="w-full h-full max-h-[11em] overflow-y-auto &::-webkit-scrollbar]:w-[0.5em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
+        className="w-full h-full max-h-[11em] overflow-y-auto [&::-webkit-scrollbar]:w-[0.5em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
       >
         <div className="flex flex-wrap py-[0.25em] gap-[0.5em]">
           {visibleIcons.map((i) => (
@@ -124,7 +125,7 @@ export default function SelectIcon({
               className={`h-[2em] w-[2em] min-h-[2em] min-w-[2em] flex justify-center items-center rounded-[0.25em] ${
                 icon === i
                   ? 'bg-[var(--u-primary-color)] text-white'
-                  : 'text-gray-600 bg-gray-50 hover:bg-[var(--u-primary-color)] hover:text-white cursor-pointer'
+                  : 'text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:bg-[var(--u-primary-color)] hover:text-white cursor-pointer'
               }`}
             >
               <LucideIcon name={i} size={size * (fontSize / 16)} />

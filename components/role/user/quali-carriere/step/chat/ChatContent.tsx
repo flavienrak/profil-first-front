@@ -18,7 +18,7 @@ export default function ChatContent({
         </div>
       ) : (
         <div className="flex gap-2 max-w-4/5">
-          <div className="w-8 min-w-8 h-8 min-h-8 bg-purple-100 p-1.5 rounded-full">
+          <div className="w-8 min-w-8 h-8 min-h-8 bg-purple-100 p-1.5 rounded-full select-none">
             <Image
               src={'/coach.png'}
               width={24}
@@ -27,8 +27,8 @@ export default function ChatContent({
               className="w-full h-full object-contain"
             />
           </div>
-          <div className="flex-1 bg-white p-2 rounded-md rounded-tl-none shadow-sm">
-            <p className="text-gray-700 text-xs whitespace-pre-line">
+          <div className="flex-1 bg-[var(--bg-secondary-color)] p-2 rounded-md rounded-tl-none shadow-sm">
+            <p className="text-[var(--text-primary-color)] text-xs whitespace-pre-line">
               {message}
             </p>
           </div>

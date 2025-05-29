@@ -59,7 +59,7 @@ export default function LandingComponent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf7f5] p-6">
+    <div className="min-h-screen [background-image:var(--bg-primary)] p-6 transition-all duration-150">
       <div className="container max-w-6xl mx-auto">
         <motion.div
           className="flex justify-between items-center mb-12"
@@ -76,6 +76,11 @@ export default function LandingComponent() {
             </span>
           </div>
           <div className="flex items-center gap-4">
+            <PrimaryButton
+              label="Se connecter"
+              className="w-max px-8 py-2 rounded-full"
+              onClick={() => handleShowAuth('user')}
+            />
             <div
               onClick={() =>
                 dispatch(
@@ -84,30 +89,24 @@ export default function LandingComponent() {
                   }),
                 )
               }
-              className="flex justify-center items-center p-2.5 rounded-full bg-gray-200 border border-gray-100 cursor-pointer hover:opacity-80"
+              className="flex justify-center items-center p-2.5 rounded-full bg-[var(--bg-purple)] border border-[var(--border-primary-gray)] cursor-pointer hover:opacity-80"
             >
               {mode === 'light' ? (
-                <Moon size={22} className="text-[var(--u-primary-color)]" />
+                <Moon size={22} className="text-[var(--u-primary-white)]" />
               ) : (
-                <Sun size={22} className="text-[var(--u-primary-color)]" />
+                <Sun size={22} className="text-[var(--u-primary-white)]" />
               )}
             </div>
-
-            <PrimaryButton
-              label="Se connecter"
-              className="w-max px-8 py-2 rounded-full"
-              onClick={() => handleShowAuth('user')}
-            />
           </div>
         </motion.div>
 
         {/* Header Section */}
         <motion.div className="text-center mb-10" {...fadeIn}>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 flex flex-col gap-3">
+          <h1 className="text-3xl md:text-4xl font-bold mb-6 flex flex-col gap-3">
             <span className="bg-gradient-to-r from-[#4461F2] to-[#6B7FFF] bg-clip-text text-transparent">
               Un CV qui attire les recruteurs.
             </span>
-            <span className="text-[1.3rem] md:text-[1.7rem] tracking-tight text-gray-700">
+            <span className="text-[1.3rem] md:text-[1.7rem] tracking-tight text-[var(--text-primary-gray)]">
               Des offres qui vous correspondent, sans postuler.
             </span>
           </h1>
@@ -177,7 +176,7 @@ export default function LandingComponent() {
 
         {/* Stats Section */}
         <motion.div
-          className="flex gap-12 justify-center text-lg text-gray-600 mb-12"
+          className="flex gap-12 justify-center text-lg text-[var(--text-secondary-gray)] mb-12"
           variants={staggerContainer}
           initial="initial"
           animate="animate"
@@ -313,7 +312,7 @@ export default function LandingComponent() {
 
         {/* How it Works Section */}
         <div className="mt-24 w-full">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-16">
+          <h2 className="text-3xl font-bold text-center text-[var(--text-primary-gray)] mb-16">
             Comment ça marche ?
           </h2>
 
@@ -323,38 +322,38 @@ export default function LandingComponent() {
               Pour les candidats
             </h3>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-white shadow-lg">
+              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-[var(--bg-secondary-color)] shadow-lg">
                 <div className="p-4 bg-purple-100 rounded-full mb-4">
-                  <FileText className="w-8 h-8 text-purple-600" />
+                  <FileText className="w-8 h-8 text-[var(--u-primary-color)]" />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <h4 className="text-xl font-semibold text-[var(--text-primary-color)] mb-2">
                   1. Importez votre CV
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-[var(--text-tertiary-gray)]">
                   Téléchargez votre CV actuel ou créez-en un nouveau avec notre
                   éditeur intuitif
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-white shadow-lg">
+              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-[var(--bg-secondary-color)] shadow-lg">
                 <div className="p-4 bg-purple-100 rounded-full mb-4">
-                  <Zap className="w-8 h-8 text-purple-600" />
+                  <Zap className="w-8 h-8 text-[var(--u-primary-color)]" />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <h4 className="text-xl font-semibold text-[var(--text-primary-color)] mb-2">
                   2. Optimisation IA
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-[var(--text-tertiary-gray)]">
                   Notre IA analyse et optimise votre CV pour le rendre plus
                   attractif et pertinent
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-white shadow-lg">
+              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-[var(--bg-secondary-color)] shadow-lg">
                 <div className="p-4 bg-purple-100 rounded-full mb-4">
-                  <Target className="w-8 h-8 text-purple-600" />
+                  <Target className="w-8 h-8 text-[var(--u-primary-color)]" />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <h4 className="text-xl font-semibold text-[var(--text-primary-color)] mb-2">
                   3. Recevez des offres
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-[var(--text-tertiary-gray)]">
                   Les recruteurs vous contactent directement avec des offres qui
                   correspondent à votre profil
                 </p>
@@ -368,38 +367,38 @@ export default function LandingComponent() {
               Pour les recruteurs
             </h3>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-white shadow-lg">
+              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-[var(--bg-secondary-color)] shadow-lg">
                 <div className="p-4 bg-cyan-100 rounded-full mb-4">
                   <FileText className="w-8 h-8 text-cyan-600" />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <h4 className="text-xl font-semibold text-[var(--text-primary-color)] mb-2">
                   1. Décrivez votre besoin
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-[var(--text-tertiary-gray)]">
                   Précisez le profil recherché et les compétences requises pour
                   le poste
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-white shadow-lg">
+              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-[var(--bg-secondary-color)] shadow-lg">
                 <div className="p-4 bg-cyan-100 rounded-full mb-4">
                   <Search className="w-8 h-8 text-cyan-600" />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <h4 className="text-xl font-semibold text-[var(--text-primary-color)] mb-2">
                   2. Matching intelligent
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-[var(--text-tertiary-gray)]">
                   Notre IA identifie les candidats les plus pertinents pour
                   votre entreprise
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-white shadow-lg">
+              <div className="flex flex-col items-center text-center p-6 rounded-xl bg-[var(--bg-secondary-color)] shadow-lg">
                 <div className="p-4 bg-cyan-100 rounded-full mb-4">
                   <CheckCircle className="w-8 h-8 text-cyan-600" />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <h4 className="text-xl font-semibold text-[var(--text-primary-color)] mb-2">
                   3. Contactez directement
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-[var(--text-tertiary-gray)]">
                   Échangez avec les candidats sélectionnés et accélérez vos
                   recrutements
                 </p>
@@ -410,59 +409,59 @@ export default function LandingComponent() {
 
         {/* Benefits Section */}
         <div className="mt-24 w-full">
-          <h2 className="text-4xl font-bold text-center text-gray-800 mb-16">
+          <h2 className="text-4xl font-bold text-center text-[var(--text-primary-gray)] mb-16">
             Pourquoi nous choisir ?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
+            <div className="bg-[var(--bg-secondary-color)] p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
               <div className="flex flex-col items-center text-center gap-6">
                 <div className="p-4 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl transform group-hover:scale-110 transition-transform duration-300">
                   <Sparkles className="w-6 h-6 text-purple-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">
+                <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
                   IA Innovante
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-[var(--text-tertiary-gray)] leading-relaxed">
                   Optimisation intelligente basée sur les dernières tendances du
                   marché
                 </p>
               </div>
             </div>
-            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
+            <div className="bg-[var(--bg-secondary-color)] p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
               <div className="flex flex-col items-center text-center gap-6">
                 <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl transform group-hover:scale-110 transition-transform duration-300">
                   <Target className="w-6 h-6 text-blue-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">
+                <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
                   Matching Précis
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-[var(--text-tertiary-gray)] leading-relaxed">
                   Algorithmes avancés pour des correspondances pertinentes
                 </p>
               </div>
             </div>
-            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
+            <div className="bg-[var(--bg-secondary-color)] p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
               <div className="flex flex-col items-center text-center gap-6">
                 <div className="p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl transform group-hover:scale-110 transition-transform duration-300">
                   <Clock className="w-6 h-6 text-green-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">
+                <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
                   Gain de Temps
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-[var(--text-tertiary-gray)] leading-relaxed">
                   Process simplifié pour une expérience fluide
                 </p>
               </div>
             </div>
-            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
+            <div className="bg-[var(--bg-secondary-color)] p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
               <div className="flex flex-col items-center text-center gap-6">
                 <div className="p-4 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl transform group-hover:scale-110 transition-transform duration-300">
                   <CheckCircle className="w-6 h-6 text-yellow-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">
+                <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
                   Résultats Garantis
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-[var(--text-tertiary-gray)] leading-relaxed">
                   Accompagnement personnalisé jusqu'au succès
                 </p>
               </div>
@@ -472,16 +471,16 @@ export default function LandingComponent() {
 
         {/* CTA Section */}
         <div className="mt-24 w-full text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">
+          <h2 className="text-3xl font-bold text-[var(--text-primary-gray)] mb-6">
             Prêt à transformer votre approche du recrutement ?
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-xl text-[var(--text-secondary-gray)] mb-8">
             Rejoignez-nous et découvrez une nouvelle façon de recruter ou de
             trouver votre prochain emploi.
           </p>
           <div className="flex justify-center gap-8">
             <div className="flex flex-col items-center">
-              <span className="text-lg font-medium text-gray-600 mb-3">
+              <span className="text-lg font-medium text-[var(--text-secondary-gray)] mb-3">
                 Candidats
               </span>
               <button className="px-8 py-4 bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 shadow-lg">
@@ -489,7 +488,7 @@ export default function LandingComponent() {
               </button>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-lg font-medium text-gray-600 mb-3">
+              <span className="text-lg font-medium text-[var(--text-secondary-gray)] mb-3">
                 Recruteur
               </span>
               <button className="px-8 py-4 bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] text-white rounded-full font-semibold hover:opacity-80 transition-opacity duration-300 shadow-lg">
@@ -501,7 +500,7 @@ export default function LandingComponent() {
 
         {/* Founder's Message Section */}
         <div className="mt-24 mb-24 w-full max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-[var(--bg-secondary-color)] rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="flex flex-col md:flex-row gap-8 items-center">
               <div className="w-full md:w-1/2">
                 <div className="relative aspect-video bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl overflow-hidden shadow-inner">
@@ -523,7 +522,7 @@ export default function LandingComponent() {
                   </span>
                   <span className="text-2xl">🎥</span>
                 </h2>
-                <p className="text-lg text-gray-600 leading-relaxed tracking-wide">
+                <p className="text-lg text-[var(--text-secondary-gray)] leading-relaxed tracking-wide">
                   <span className="font-medium">
                     Pourquoi j'ai créé ProfilFirst ?
                   </span>
@@ -546,7 +545,7 @@ export default function LandingComponent() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-24 border-t border-gray-200 bg-[#F9FAFB]">
+        <footer className="mt-24 border-t bg-[var(--bg-secondary-color)] border border-[var(--text-primary-gray)]/10">
           <div className="max-w-6xl mx-auto px-4 py-8">
             <div className="flex justify-between items-start">
               <div className="flex items-start gap-8">
@@ -556,14 +555,14 @@ export default function LandingComponent() {
                     ProfilFirst
                   </span>
                 </div>
-                <div className="text-xs text-gray-500 flex flex-col">
+                <div className="text-xs text-[var(--text-tertiary-gray)] flex flex-col">
                   <p className="font-medium">© 2025 ProfilFirst</p>
                 </div>
-                <ul className="flex gap-4 text-xs text-gray-600">
+                <ul className="flex gap-4 text-xs text-[var(--text-tertiary-gray)]">
                   <li>
                     <a
                       href="#"
-                      className="hover:text-gray-900 transition-colors"
+                      className="hover:text-[var(--text-primary-color)] transition-colors"
                     >
                       Mentions légales
                     </a>
@@ -571,7 +570,7 @@ export default function LandingComponent() {
                   <li>
                     <a
                       href="#"
-                      className="hover:text-gray-900 transition-colors"
+                      className="hover:text-[var(--text-primary-color)] transition-colors"
                     >
                       Politique de confidentialité
                     </a>
@@ -579,7 +578,7 @@ export default function LandingComponent() {
                   <li>
                     <a
                       href="#"
-                      className="hover:text-gray-900 transition-colors"
+                      className="hover:text-[var(--text-primary-color)] transition-colors"
                     >
                       CGU
                     </a>
@@ -594,7 +593,7 @@ export default function LandingComponent() {
               </div>
               <Link
                 href="#"
-                className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center gap-1.5 text-xs text-[var(--text-tertiary-gray)] hover:text-gray-900 transition-colors"
               >
                 <Linkedin className="w-4 h-4" />
                 <span>LinkedIn</span>

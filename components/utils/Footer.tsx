@@ -28,25 +28,25 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative flex justify-center border-t border-gray-200 bg-[#F9FAFB]">
-      <div
-        className={`w-full flex items-center px-16 transition-[height] duration-500 ${
-          showFooter ? 'h-20' : 'h-0'
-        }`}
-      >
+    <footer
+      className={`relative flex justify-center border-t border border-[var(--text-primary-color)]/10 transition-[height] duration-500 ${
+        showFooter ? 'h-20' : 'h-0'
+      }`}
+    >
+      <div className={'w-full flex items-center px-16'}>
         {showFooter && (
           <div className="w-full flex justify-between items-center">
             <div className="flex items-center gap-8">
               <Logo href={'/'} />
-              <div className="text-xs text-gray-500 flex flex-col">
+              <div className="text-xs text-[var(--text-secondary-gray)] flex flex-col">
                 <p className="font-medium">© 2025 ProfilFirst</p>
               </div>
-              <ul className="flex gap-4 text-xs text-gray-600">
+              <ul className="flex gap-4 text-xs text-[var(--text-primary-gray)]">
                 {links.map((l) => (
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="hover:text-gray-900 transition-colors"
+                      className="hover:text-[var(--text-primary-color)] transition-colors"
                     >
                       {l.label}
                     </Link>
@@ -63,7 +63,7 @@ export default function Footer() {
 
             <Link
               href="#"
-              className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-[var(--text-primary-gray)] hover:text-[var(--text-primary-color)] transition-colors"
             >
               <Linkedin className="w-4 h-4" />
               <span>LinkedIn</span>
@@ -74,7 +74,7 @@ export default function Footer() {
 
       <i
         onClick={toggleShowFooter}
-        className="z-50 absolute right-0 -top-8 h-8 w-8 flex justify-center items-center bg-gray-50 border border-gray-200 rounded-t-sm hover:bg-gray-100 cursor-pointer"
+        className="z-50 absolute right-0 -top-8 h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] border border-[var(--text-primary-color)]/10 rounded-t-sm hover:opacity-80 cursor-pointer"
       >
         <Airplay />
       </i>

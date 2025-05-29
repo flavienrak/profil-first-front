@@ -93,7 +93,10 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="email" className="text-base">
+                  <FormLabel
+                    htmlFor="email"
+                    className="text-base text-[var(--text-primary-color)]"
+                  >
                     Email
                   </FormLabel>
                   <FormControl>
@@ -102,12 +105,12 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
                         id="email"
                         {...field}
                         autoComplete="off"
-                        className="h-12 ps-16"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="xyz@domain.com"
                         autoFocus
                         required
                       />
-                      <i className="absolute left-4 border-r pe-3 text-muted-foreground">
+                      <i className="absolute left-4 border-r pe-3 text-[var(--text-primary-color)]">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
@@ -136,7 +139,10 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="password" className="text-base">
+                  <FormLabel
+                    htmlFor="password"
+                    className="text-base text-[var(--text-primary-color)]"
+                  >
                     Mot de passe
                   </FormLabel>
                   <FormControl>
@@ -146,11 +152,11 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
                         id="password"
                         type="password"
                         autoComplete="off"
-                        className="h-12 ps-16"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="*******************"
                         required
                       />
-                      <i className="absolute left-4 border-r pe-3 text-muted-foreground">
+                      <i className="absolute left-4 border-r pe-3 text-[var(--text-primary-color)]">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
@@ -179,13 +185,13 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
               name="remember"
               control={form.control}
               render={({ field }) => (
-                <FormItem className="flex items-center gap-2">
+                <FormItem className="flex items-center gap-2 text-[var(--text-primary-color)]">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
                       id="remember-me"
-                      className="border-muted-foreground/40 data-[state=checked]:bg-[var(--u-primary-color)] data-[state=checked]:border-[var(--u-primary-color)] cursor-pointer"
+                      className="border-[var(--text-tertiary-gray)] data-[state=checked]:bg-[var(--u-primary-color)] data-[state=checked]:border-[var(--u-primary-color)] cursor-pointer"
                     />
                   </FormControl>
                   <FormLabel

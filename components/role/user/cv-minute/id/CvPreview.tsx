@@ -19,9 +19,7 @@ import {
   Goal,
   Plus,
   Rocket,
-  SquareCheck,
   Triangle,
-  TriangleAlert,
   UserPlus,
   Wallet,
   Zap,
@@ -499,7 +497,7 @@ export default function CvPreview() {
   if (cvMinute)
     return (
       <div className="flex justify-center flex-col">
-        <div className="w-full px-8 h-20 border-b border-gray-200 bg-white flex items-center">
+        <div className="w-full px-8 h-20 border-b border-[var(--text-primary-color)]/10 flex items-center">
           <div className="w-full flex justify-center items-center gap-5">
             <button
               onClick={(event) => {
@@ -518,32 +516,32 @@ export default function CvPreview() {
                   handleOpenPopup(data);
                 }
               }}
-              className="step-1 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none"
+              className="step-1 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] hover:opacity-80 cursor-pointer select-none"
             >
               Guide de rédaction du CV
             </button>
             <button
               onClick={() => setReview(true)}
-              className="step-2 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none"
+              className="step-2 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] hover:opacity-80 cursor-pointer select-none"
             >
               Relire l’offre
             </button>
             <button
               onClick={() => setShowMatching(true)}
-              className="step-3 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none"
+              className="step-3 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] hover:opacity-80 cursor-pointer select-none"
             >
               Matching score
             </button>
             <button
               onClick={() => setShowOptimize(true)}
-              className="step-4 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm bg-[#e5e7eb] hover:opacity-80 cursor-pointer select-none"
+              className="step-4 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] hover:opacity-80 cursor-pointer select-none"
             >
               Optimiser en un clic
             </button>
             <Link
               href="/cv-offres"
               onClick={() => setRedirectLoading(true)}
-              className={`step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-sm text-sm font-semibold bg-[#e5e7eb] select-none ${
+              className={`step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-sm text-sm font-semibold text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] select-none ${
                 redirectLoading
                   ? 'opacity-80 pointer-events-none'
                   : 'hover:opacity-80'
@@ -586,7 +584,7 @@ export default function CvPreview() {
             style={{ fontSize: `${fontSize}px` }}
           >
             <div className="w-full flex flex-col items-center gap-6">
-              <div className="w-full max-w-[50rem] flex justify-between bg-white shadow p-1 rounded-md">
+              <div className="w-full max-w-[50rem] flex justify-between border border-[var(--text-primary-color)]/10 p-1 rounded-md">
                 <button
                   onClick={(event) => {
                     const data: PopupInterface = {
@@ -598,7 +596,7 @@ export default function CvPreview() {
                       onShowVideo: () => setShowVideo(true),
                     };
 
-                    handleGetPosition(event, 'left', { y: 80 });
+                    handleGetPosition(event, 'left', { y: 80, x: 80 });
                     if (isOpen) {
                       handleClosePopup();
                       setTempData(data);
@@ -606,7 +604,7 @@ export default function CvPreview() {
                       handleOpenPopup(data);
                     }
                   }}
-                  className="h-full px-4 text-sm bg-[#e5e7eb] rounded-sm cursor-pointer transition-opacity duration-150 hover:opacity-80"
+                  className="h-full px-4 text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] rounded-sm cursor-pointer transition-opacity duration-150 hover:opacity-80 select-none"
                 >
                   Comment ça marche ?
                 </button>
@@ -614,19 +612,19 @@ export default function CvPreview() {
                 <div className="flex items-center gap-3">
                   <i
                     onClick={increaseFontSize}
-                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
+                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-tertiary-color)] cursor-pointer rounded-sm"
                   >
                     <ZoomIn size={22} />
                   </i>
                   <i
                     onClick={decreaseFontSize}
-                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
+                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-tertiary-color)] cursor-pointer rounded-sm"
                   >
                     <ZoomOut size={22} />
                   </i>
                   <i
                     onClick={resetFontSize}
-                    className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-sm"
+                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-tertiary-color)] cursor-pointer rounded-sm"
                   >
                     <CaptionsOff size={22} />
                   </i>
@@ -640,7 +638,7 @@ export default function CvPreview() {
                 <div className="absolute -left-[3.5em] top-0 flex flex-col gap-[0.5em]">
                   <TooltipProvider>
                     <Tooltip delayDuration={700}>
-                      <TooltipTrigger asChild>
+                      <TooltipTrigger>
                         <i
                           onClick={(event) => {
                             const data: PopupInterface = {
@@ -650,7 +648,7 @@ export default function CvPreview() {
                               conseil: cvMinute.advices.find(
                                 (a) => a.type === 'cvMinuteAdvice',
                               )?.content,
-                              suggestionTitle: 'Idées de rubrique',
+                              suggestionTitle: 'Idées de rubrique :',
                               suggestionKey: 'title',
                               onGenerate: async () =>
                                 await handleGenerateNewCvMinuteSections(),
@@ -701,7 +699,7 @@ export default function CvPreview() {
                   </TooltipProvider>
                   <TooltipProvider>
                     <Tooltip delayDuration={700}>
-                      <TooltipTrigger asChild>
+                      <TooltipTrigger>
                         <i
                           onClick={(event) => {
                             const data: PopupInterface = {
@@ -746,7 +744,7 @@ export default function CvPreview() {
                   </TooltipProvider>
                   <TooltipProvider>
                     <Tooltip delayDuration={700}>
-                      <TooltipTrigger asChild>
+                      <TooltipTrigger>
                         <i
                           onClick={(event) => {
                             const data: PopupInterface = {
@@ -1027,7 +1025,7 @@ export default function CvPreview() {
                                     conseil: cvMinuteSection.advices.find(
                                       (a) => a.type === 'cvMinuteSectionAdvice',
                                     )?.content,
-                                    suggestionTitle: 'Idées de rubrique',
+                                    suggestionTitle: 'Idées de rubrique :',
                                     actionLabel: 'Supprimer la rubrique',
                                     onClick: async () =>
                                       await handleDeleteCvMinuteSection(s.id),
@@ -1096,7 +1094,7 @@ export default function CvPreview() {
                                 <div className="absolute -left-[4em] top-0 flex flex-col gap-[0.5em]">
                                   <TooltipProvider>
                                     <Tooltip delayDuration={700}>
-                                      <TooltipTrigger asChild>
+                                      <TooltipTrigger>
                                         <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
                                           <Zap
                                             size={
@@ -1140,7 +1138,7 @@ export default function CvPreview() {
                               title.id,
                             );
                           },
-                          suggestionTitle: 'Idées de titre du CV',
+                          suggestionTitle: 'Idées de titre du CV :',
                           suggestionKey: 'content',
                           cvMinuteSectionId: title.id,
                           updateTitle: true,
@@ -1194,7 +1192,7 @@ export default function CvPreview() {
                           },
                           large: true,
                           openly: true,
-                          suggestionTitle: 'Idées de présentation',
+                          suggestionTitle: 'Idées de présentation :',
                           suggestionKey: 'content',
                           cvMinuteSectionId: presentation.id,
                           updatePresentation: true,
@@ -1310,7 +1308,7 @@ export default function CvPreview() {
                       <div className="absolute -right-[4em] top-[0.125em]">
                         <TooltipProvider>
                           <Tooltip delayDuration={700}>
-                            <TooltipTrigger asChild>
+                            <TooltipTrigger>
                               <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
                                 <Triangle
                                   size={(fontSize + 16) * (fontSize / 16)}
@@ -1360,7 +1358,7 @@ export default function CvPreview() {
                                 large: true,
                                 openly: true,
                                 withScore: true,
-                                suggestionTitle: 'Idées de redactions',
+                                suggestionTitle: 'Idées de redactions :',
                                 suggestionKey: 'content',
                                 onClick: async () =>
                                   await handleRecalculateExperienceMatching(
@@ -1547,10 +1545,10 @@ export default function CvPreview() {
                             {item.evaluation && (
                               <div className="absolute -right-[13em] w-[12em] flex flex-col gap-[0.5em]">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-[0.875em] font-medium text-[#4a5565] truncate">
+                                  <span className="text-[0.875em] font-medium text-[var(--text-secondary-gray)] truncate">
                                     {item.title}
                                   </span>
-                                  <span className="text-[0.875em] font-semibold text-primary">
+                                  <span className="text-[0.875em] font-semibold text-[var(--text-primary-color)]">
                                     {item.evaluation.actualScore ??
                                       item.evaluation.initialScore}
                                     %
@@ -1567,7 +1565,7 @@ export default function CvPreview() {
                                     }}
                                   />
                                 </div>
-                                <button className="w-full text-[0.75em] font-semibold hover:text-[var(--u-primary-color)] cursor-pointer">
+                                <button className="w-full text-[0.75em] font-semibold text-[var(--text-primary-color)] hover:text-[var(--u-primary-color)] cursor-pointer">
                                   Optimiser cette expérience
                                 </button>
                               </div>
@@ -1630,10 +1628,12 @@ export default function CvPreview() {
             {review && (
               <Popup large onClose={() => setReview(false)}>
                 <div
-                  className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
+                  className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
                   style={{ fontSize: '1rem' }}
                 >
-                  <p className="whitespace-pre-line">{cvMinute.position}</p>
+                  <p className="whitespace-pre-line text-[var(--text-primary-color)]">
+                    {cvMinute.position}
+                  </p>
                 </div>
               </Popup>
             )}
@@ -1641,10 +1641,10 @@ export default function CvPreview() {
             {showOptimize && (
               <Popup large onClose={() => setShowOptimize(false)}>
                 <div
-                  className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
+                  className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
                   style={{ fontSize: '1rem' }}
                 >
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-4 text-[var(--text-primary-color)]">
                     <div className="flex items-center gap-[0.5em]">
                       <i className="text-red-400">
                         <Goal />
@@ -1657,12 +1657,7 @@ export default function CvPreview() {
                     <div className="flex flex-col gap-1 py-2">
                       {optimizeOptions.map((item) => (
                         <div key={item.bold} className="flex gap-[0.5em]">
-                          <i className="text-green-500">
-                            <SquareCheck
-                              fill={'currentColor'}
-                              stroke={'white'}
-                            />
-                          </i>
+                          <span>✅</span>
 
                           <p className="text-sm">
                             <span className="font-semibold">{item.bold}</span>{' '}
@@ -1674,16 +1669,14 @@ export default function CvPreview() {
 
                     <div className="flex items-center gap-[0.5em]">
                       <i className="text-yellow-400">
-                        <Wallet fill={'currentColor'} stroke={'white'} />
+                        <Wallet fill={'currentColor'} />
                       </i>
                       <p className="font-semibold">
                         Coût estimé : <span>20 Crédits</span>
                       </p>
                     </div>
                     <div className="flex gap-[0.5em]">
-                      <i className="text-yellow-400">
-                        <TriangleAlert fill={'currentColor'} stroke={'white'} />
-                      </i>
+                      <span className="text-yellow-400">⚠️</span>
                       <p>
                         <span className="font-semibold">Important : </span>
                         Chaque modification doit être assumée en entretien.{' '}
@@ -1707,7 +1700,7 @@ export default function CvPreview() {
                     <div className="flex gap-6">
                       <button
                         onClick={() => setShowOptimize(false)}
-                        className="w-full p-3 rounded-md border border-gray-500 select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
+                        className="w-full p-3 rounded-md text-[var(--text-primary-color)] border border-[var(--text-primary-color)] select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
                       >
                         Revenir sur mon CV
                       </button>
@@ -1727,117 +1720,119 @@ export default function CvPreview() {
               <Popup large onClose={() => setShowMatching(false)}>
                 <div
                   style={{ fontSize: '1rem' }}
-                  className="max-h-[80vh] overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
+                  className="max-h-[80vh] overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
                 >
-                  <div className="bg-white rounded-lg p-6 max-w-lg w-full">
-                    <h3 className="text-xl font-bold mb-6">
-                      Score de Matching
-                    </h3>
+                  <div className="rounded-lg flex flex-col gap-6 p-6 max-w-lg w-full">
+                    <div className="flex flex-col gap-8">
+                      <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
+                        Score de Matching
+                      </h3>
 
-                    {cvMinute.evaluation && (
-                      <div className="flex justify-around items-center mb-8">
-                        <div className="text-center">
-                          <p className="text-sm text-gray-600 mb-2">
-                            Score initial
-                          </p>
-                          <div className="relative inline-flex items-center justify-center">
-                            <svg className="w-20 h-20">
-                              <circle
-                                className="text-gray-200"
-                                strokeWidth="5"
-                                stroke="currentColor"
-                                fill="transparent"
-                                r="30"
-                                cx="40"
-                                cy="40"
-                              />
-                              <circle
-                                className="text-blue-600"
-                                strokeWidth="5"
-                                strokeLinecap="round"
-                                stroke="currentColor"
-                                fill="transparent"
-                                r="30"
-                                cx="40"
-                                cy="40"
-                                strokeDasharray={`${2 * Math.PI * 30}`}
-                                strokeDashoffset={`${
-                                  2 *
-                                  Math.PI *
-                                  30 *
-                                  (1 - cvMinute.evaluation.initialScore / 100)
-                                }`}
-                                transform="rotate(90 40 40)"
-                              />
-                            </svg>
-                            <span className="absolute text-lg font-bold">
-                              {cvMinute.evaluation.initialScore}%
-                            </span>
+                      {cvMinute.evaluation && (
+                        <div className="flex justify-around items-center">
+                          <div className="text-center">
+                            <p className="text-sm text-[var(--text-primary-color)] mb-2">
+                              Score initial
+                            </p>
+                            <div className="relative inline-flex items-center justify-center">
+                              <svg className="w-20 h-20">
+                                <circle
+                                  className="text-gray-200"
+                                  strokeWidth="5"
+                                  stroke="currentColor"
+                                  fill="transparent"
+                                  r="30"
+                                  cx="40"
+                                  cy="40"
+                                />
+                                <circle
+                                  className="text-blue-600"
+                                  strokeWidth="5"
+                                  strokeLinecap="round"
+                                  stroke="currentColor"
+                                  fill="transparent"
+                                  r="30"
+                                  cx="40"
+                                  cy="40"
+                                  strokeDasharray={`${2 * Math.PI * 30}`}
+                                  strokeDashoffset={`${
+                                    2 *
+                                    Math.PI *
+                                    30 *
+                                    (1 - cvMinute.evaluation.initialScore / 100)
+                                  }`}
+                                  transform="rotate(90 40 40)"
+                                />
+                              </svg>
+                              <span className="absolute text-lg font-bold text-[var(--text-primary-color)]">
+                                {cvMinute.evaluation.initialScore}%
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="text-center">
+                            <p className="text-sm text-[var(--text-primary-color)] mb-2">
+                              Score actuel
+                            </p>
+                            <div className="relative inline-flex items-center justify-center">
+                              <svg className="w-20 h-20">
+                                <circle
+                                  className="text-gray-200"
+                                  strokeWidth="5"
+                                  stroke="currentColor"
+                                  fill="transparent"
+                                  r="30"
+                                  cx="40"
+                                  cy="40"
+                                />
+                                <circle
+                                  className="text-green-600"
+                                  strokeWidth="5"
+                                  strokeLinecap="round"
+                                  stroke="currentColor"
+                                  fill="transparent"
+                                  r="30"
+                                  cx="40"
+                                  cy="40"
+                                  strokeDasharray={`${2 * Math.PI * 30}`}
+                                  strokeDashoffset={`${
+                                    2 *
+                                    Math.PI *
+                                    30 *
+                                    (1 -
+                                      (cvMinute.evaluation.actualScore
+                                        ? cvMinute.evaluation.actualScore
+                                        : cvMinute.evaluation.initialScore) /
+                                        100)
+                                  }`}
+                                  transform="rotate(90 40 40)"
+                                />
+                              </svg>
+                              <span className="absolute text-lg font-bold text-[var(--text-primary-color)]">
+                                {cvMinute.evaluation.actualScore
+                                  ? cvMinute.evaluation.actualScore
+                                  : cvMinute.evaluation.initialScore}
+                                %
+                              </span>
+                            </div>
                           </div>
                         </div>
+                      )}
+                    </div>
 
-                        <div className="text-center">
-                          <p className="text-sm text-gray-600 mb-2">
-                            Score actuel
-                          </p>
-                          <div className="relative inline-flex items-center justify-center">
-                            <svg className="w-20 h-20">
-                              <circle
-                                className="text-gray-200"
-                                strokeWidth="5"
-                                stroke="currentColor"
-                                fill="transparent"
-                                r="30"
-                                cx="40"
-                                cy="40"
-                              />
-                              <circle
-                                className="text-green-600"
-                                strokeWidth="5"
-                                strokeLinecap="round"
-                                stroke="currentColor"
-                                fill="transparent"
-                                r="30"
-                                cx="40"
-                                cy="40"
-                                strokeDasharray={`${2 * Math.PI * 30}`}
-                                strokeDashoffset={`${
-                                  2 *
-                                  Math.PI *
-                                  30 *
-                                  (1 -
-                                    (cvMinute.evaluation.actualScore
-                                      ? cvMinute.evaluation.actualScore
-                                      : cvMinute.evaluation.initialScore) /
-                                      100)
-                                }`}
-                                transform="rotate(90 40 40)"
-                              />
-                            </svg>
-                            <span className="absolute text-lg font-bold">
-                              {cvMinute.evaluation.actualScore
-                                ? cvMinute.evaluation.actualScore
-                                : cvMinute.evaluation.initialScore}
-                              %
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="mb-6">
-                      <h4 className="text-base font-semibold mb-2">
+                    <div className="flex flex-col gap-2">
+                      <h4 className="text-base font-semibold text-[var(--text-primary-color)]">
                         L'analyse de Coach Victorien :
                       </h4>
-                      <p className="text-sm underline underline-offset-2 text-gray-600">
+                      <p className="text-sm underline underline-offset-2 text-[var(--text-primary-color)]">
                         Recommendations :
                       </p>
-                      <p className="text-sm text-gray-500 mt-2 italic">
+                      <p className="text-sm text-[var(--text-secondary-gray)] italic">
                         Rappel : Le score de matching est purement indicatif.
                         C'est à vous de jauger la pertinence de votre CV selon
                         vos objectifs.
                       </p>
-                      <p className="text-sm text-gray-500 mt-2 italic">
+                      <p className="text-sm text-[var(--text-secondary-gray)] italic">
                         {cvMinute.evaluation?.content}
                       </p>
                     </div>
@@ -1845,7 +1840,7 @@ export default function CvPreview() {
                     <div className="flex gap-4">
                       <button
                         onClick={() => setShowMatching(false)}
-                        className="w-full p-3 rounded-md border border-gray-500 select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
+                        className="w-full p-3 rounded-md text-[var(--text-primary-color)] border border-[var(--text-primary-color)] select-none transition-opacity duration-150 cursor-pointer hover:opacity-80"
                       >
                         Fermer
                       </button>

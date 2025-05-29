@@ -92,7 +92,10 @@ export default function RegisterForm({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="name" className="text-base">
+                  <FormLabel
+                    htmlFor="name"
+                    className="text-base text-[var(--text-primary-color)]"
+                  >
                     Nom
                   </FormLabel>
                   <FormControl>
@@ -101,12 +104,12 @@ export default function RegisterForm({
                         id="name"
                         {...field}
                         autoComplete="off"
-                        className="h-12 ps-16"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="Votre nom"
                         autoFocus
                         required
                       />
-                      <i className="absolute left-4 border-r pe-3 text-muted-foreground">
+                      <i className="absolute left-4 border-r pe-3 text-[var(--text-primary-color)]">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
@@ -135,7 +138,10 @@ export default function RegisterForm({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="email" className="text-base">
+                  <FormLabel
+                    htmlFor="email"
+                    className="text-base text-[var(--text-primary-color)]"
+                  >
                     Email
                   </FormLabel>
                   <FormControl>
@@ -144,11 +150,11 @@ export default function RegisterForm({
                         id="email"
                         {...field}
                         autoComplete="off"
-                        className="h-12 ps-16"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="xyz@domain.com"
                         required
                       />
-                      <i className="absolute left-4 border-r pe-3 text-muted-foreground">
+                      <i className="absolute left-4 border-r pe-3 text-[var(--text-primary-color)]">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
@@ -177,7 +183,10 @@ export default function RegisterForm({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="password" className="text-base">
+                  <FormLabel
+                    htmlFor="password"
+                    className="text-base text-[var(--text-primary-color)]"
+                  >
                     Mot de passe
                   </FormLabel>
                   <FormControl>
@@ -187,11 +196,11 @@ export default function RegisterForm({
                         id="password"
                         type="password"
                         autoComplete="off"
-                        className="h-12 ps-16"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="*******************"
                         required
                       />
-                      <i className="absolute left-4 border-r pe-3 text-muted-foreground">
+                      <i className="absolute left-4 border-r pe-3 text-[var(--text-primary-color)]">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"

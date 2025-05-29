@@ -218,7 +218,7 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
             </h2>
           </div>
 
-          <div className="max-h-[80vh] h-full pt-14 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
+          <div className="max-h-[80vh] h-full pt-14 pe-4 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
             {isConfirm ? (
               <div className="flex flex-col gap-6">
                 <TextEditor
@@ -320,7 +320,7 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
                                     setShowCalendar(value)
                                   }
                                 >
-                                  <PopoverTrigger asChild>
+                                  <PopoverTrigger>
                                     <p
                                       className={`flex items-center gap-2 text-[var(--r-primary-color)] px-3 py-1 rounded-lg select-none cursor-pointer ${
                                         showCalendar
