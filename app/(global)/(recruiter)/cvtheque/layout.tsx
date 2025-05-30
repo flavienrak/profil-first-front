@@ -105,13 +105,13 @@ export default function CvThequeLayout({
 
   return (
     <div className="h-full w-full flex flex-col">
-      <div className="w-full px-8 h-20 border-b border-gray-200 bg-white flex items-center">
+      <div className="w-full px-8 h-20 border-b border-[var(--text-primary-color)]/10 flex items-center">
         <div className="w-full flex items-center justify-between gap-6">
           <button
             onClick={() =>
               dispatch(updatePersistReducer({ showCritere: !showCritere }))
             }
-            className="px-4 py-2 text-[var(--r-secondary-color)] font-bold hover:bg-[var(--r-primary-color)]/5 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2 text-[var(--r-secondary-white)] font-bold hover:bg-[var(--text-primary-color)]/5 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
           >
             {showCritere ? 'Masquer' : 'Afficher'} mes critères
           </button>
@@ -119,10 +119,10 @@ export default function CvThequeLayout({
             {cvThequeCritere && !cvThequeCritere.saved && (
               <button
                 onClick={handleSaveCvThequeCritere}
-                className={`flex items-center gap-2 text-[var(--r-primary-color)] px-4 py-2 rounded-lg bg-[var(--r-primary-color)]/5 ${
+                className={`flex items-center gap-2 text-[var(--r-primary-white)] px-4 py-2 rounded-lg bg-[var(--text-primary-color)]/5 ${
                   saveLoading
                     ? 'opacity-80 pointer-events-none'
-                    : 'hover:bg-[var(--r-primary-color)]/10 cursor-pointer'
+                    : 'hover:bg-[var(--text-primary-color)]/10 cursor-pointer'
                 }`}
               >
                 {saveLoading && (
@@ -150,7 +150,7 @@ export default function CvThequeLayout({
             {history.length > 0 && (
               <button
                 onClick={() => setShowHistory(true)}
-                className="text-gray-600 hover:text-[var(--r-primary-color)] transition-colors px-4 py-2 rounded-lg hover:bg-gray-50 cursor-pointer"
+                className="text-[var(--text-secondary-gray)] hover:text-[var(--r-primary-color)] transition-colors px-4 py-2 rounded-lg hover:bg-[var(--r-primary-color)]/10 cursor-pointer"
               >
                 Historique
               </button>
@@ -169,7 +169,7 @@ export default function CvThequeLayout({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Clock className="w-6 h-6 text-[var(--r-primary-color)]" />
-                <h3 className="text-xl font-semibold">
+                <h3 className="text-xl font-semibold text-[var(--text-primary-color)]">
                   Historique des recherches
                 </h3>
               </div>
@@ -195,7 +195,7 @@ export default function CvThequeLayout({
                     className="flex flex-col gap-4"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-gray-500">
+                      <div className="flex items-center gap-2 text-[var(--text-secondary-gray)]">
                         {redirectLoading === item.id && (
                           <svg
                             aria-hidden="true"
@@ -232,7 +232,7 @@ export default function CvThequeLayout({
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <p className="font-medium line-clamp-1">
+                      <p className="font-medium line-clamp-1 text-[var(--text-primary-color)]">
                         {item.position}
                       </p>
                       <div className="flex flex-wrap gap-2">

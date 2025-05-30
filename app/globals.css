@@ -150,7 +150,8 @@
   --bg-secondary-color: #fff;
   --bg-tertiary-color: #e5e7eb;
 
-  --p-primary-white: #06b6d4;
+  --r-primary-white: #06b6d4;
+  --r-secondary-white: #1e3a8a;
 
   --bg-primary-gray: #f0f0f1;
   --border-primary-gray: #f3f4f6;
@@ -169,11 +170,12 @@
   --u-primary-white: #fff;
   --secondary-color: #1a1e2e;
 
-  --p-primary-white: #faf7f5;
+  --r-primary-white: #faf7f5;
+  --r-secondary-white: #faf7f5;
 
   --bg-primary-color: #1a1e2e;
   --bg-secondary-color: #31374b;
-  --bg-tertiary-color: #31374b;
+  --bg-tertiary-color: #151823;
 
   --bg-primary-gray: #1a1e2e;
   --border-primary-gray: #292e3e;

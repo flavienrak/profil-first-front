@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function CvThequePage() {
-  return <CvThequeComponent />;
+  return (
+    <div className="w-full h-full">
+      <CvThequeComponent />
+    </div>
+  );
 }

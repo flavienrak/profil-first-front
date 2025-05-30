@@ -59,7 +59,9 @@ export default function CvThequeDetailsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { fontSize } = useSelector((state: RootState) => state.persistInfos);
+  const { fontSize, mode } = useSelector(
+    (state: RootState) => state.persistInfos,
+  );
   const { cvThequeCritere, cvAnonym } = useSelector(
     (state: RootState) => state.cvTheque,
   );
@@ -278,7 +280,7 @@ export default function CvThequeDetailsLayout({
   };
 
   return (
-    <div className="relative min-h-full w-full flex gap-6 py-8 px-12 bg-[#faf7f5]">
+    <div className="relative min-h-full w-full flex gap-6 py-8 px-12 bg-[var(--bg-tertiary-color)]">
       {showCritere && (
         <Form {...form}>
           <form
@@ -324,7 +326,7 @@ export default function CvThequeDetailsLayout({
                     <FormItem>
                       <FormLabel
                         htmlFor="position"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-[var(--text-primary-color)]"
                       >
                         Mon offre d'emploi *
                       </FormLabel>
@@ -333,7 +335,7 @@ export default function CvThequeDetailsLayout({
                           {...field}
                           id="position"
                           autoComplete="off"
-                          className="h-32 p-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20 resize-none"
+                          className="h-32 p-3 text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] border border-[var(--text-primary-color)]/10 placeholder:text-[var(--text-secondary-gray)] rounded-lg focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20 resize-none"
                           placeholder="Décrivez votre offre d'emploi..."
                           required
                         />
@@ -352,7 +354,7 @@ export default function CvThequeDetailsLayout({
                     <FormItem>
                       <FormLabel
                         htmlFor="description"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-[var(--text-primary-color)]"
                       >
                         Je recherche...
                       </FormLabel>
@@ -361,7 +363,7 @@ export default function CvThequeDetailsLayout({
                           {...field}
                           id="description"
                           autoComplete="off"
-                          className="h-32 p-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20 resize-none"
+                          className="h-32 p-3 text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] border border-[var(--text-primary-color)]/10 placeholder:text-[var(--text-secondary-gray)] rounded-lg focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20 resize-none"
                           placeholder="Décrivez vos critères de recherche..."
                         />
                       </FormControl>
@@ -376,7 +378,7 @@ export default function CvThequeDetailsLayout({
                     <FormItem>
                       <FormLabel
                         htmlFor="domain"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-[var(--text-primary-color)]"
                       >
                         Domaine
                       </FormLabel>
@@ -386,10 +388,22 @@ export default function CvThequeDetailsLayout({
                           value={field.value}
                           onValueChange={field.onChange}
                         >
-                          <SelectTrigger className="w-full !h-12 p-3 bg-white data-[state=open]:border-[var(--r-primary-color)] data-[state=open]:ring-2 data-[state=open]:ring-[var(--r-primary-color)]/20">
+                          <SelectTrigger
+                            className={`w-full !h-12 p-3 !text-[var(--text-primary-color)] [&_svg]:!text-[var(--text-primary-color)] border-[var(--text-primary-color)]/10 data-[state=open]:border-[var(--r-primary-color)] data-[state=open]:ring-2 data-[state=open]:ring-[var(--r-primary-color)]/20 ${
+                              mode === 'light'
+                                ? 'bg-white'
+                                : 'bg-[var(--bg-secondary-color)]'
+                            }`}
+                          >
                             <SelectValue placeholder="Choisir le domaine" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent
+                            className={`${
+                              mode === 'light'
+                                ? ''
+                                : 'bg-[#31374b] border-[#FFFFFF]/10'
+                            }`}
+                          >
                             <SelectGroup>
                               {domains.map((d) => (
                                 <SelectItem
@@ -397,8 +411,16 @@ export default function CvThequeDetailsLayout({
                                   value={d.label}
                                   className={`h-8 ${
                                     field.value === d.label
-                                      ? '!text-[var(--r-primary-color)] [&_svg]:!text-[var(--r-primary-color)] !bg-accent'
-                                      : 'hover:!text-[var(--r-primary-color)] !bg-transparent hover:!bg-accent'
+                                      ? `${
+                                          mode === 'light'
+                                            ? '!text-[var(--r-primary-color)] [&_svg]:!text-[var(--r-primary-color)] !bg-accent'
+                                            : '!text-white [&_svg]:!text-white !bg-cyan-700'
+                                        }`
+                                      : `!text-[var(--text-primary-color)] hover:!text-[var(--r-primary-color)] !bg-transparent ${
+                                          mode === 'light'
+                                            ? 'hover:!bg-accent'
+                                            : '!text-white hover:!bg-cyan-700/25'
+                                        }`
                                   }`}
                                 >
                                   {d.label}
@@ -423,7 +445,7 @@ export default function CvThequeDetailsLayout({
                     <FormItem>
                       <FormLabel
                         htmlFor="competences"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-[var(--text-primary-color)]"
                       >
                         Compétences
                       </FormLabel>
@@ -451,7 +473,14 @@ export default function CvThequeDetailsLayout({
                           <PopoverTrigger className="text-sm text-[var(--r-primary-color)] focus:outline-none hover:underline cursor-pointer">
                             Ajouter des compétences
                           </PopoverTrigger>
-                          <PopoverContent align="start" className="rounded-lg">
+                          <PopoverContent
+                            align="start"
+                            className={`rounded-lg border ${
+                              mode === 'light'
+                                ? 'bg-white border-gray-700/10'
+                                : 'border-white/10 bg-[#31374b]'
+                            }`}
+                          >
                             <div className="w-full flex flex-col gap-4">
                               <Input
                                 type="text"
@@ -466,7 +495,11 @@ export default function CvThequeDetailsLayout({
                                   }
                                 }}
                                 placeholder="Compétence"
-                                className="w-full h-10 p-3 text-sm bg-white border border-gray-200 rounded-md focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20"
+                                className={`w-full h-10 p-3 text-sm border border-gray-200 rounded-md focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20 ${
+                                  mode === 'light'
+                                    ? 'bg-white'
+                                    : 'text-white bg-[#151823] border-white/25 placeholder:text-gray-400'
+                                }`}
                               />
                               <div className="flex gap-2">
                                 <button
@@ -504,7 +537,7 @@ export default function CvThequeDetailsLayout({
                     <FormItem>
                       <FormLabel
                         htmlFor="experience"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-[var(--text-primary-color)]"
                       >
                         Années d'expérience
                       </FormLabel>
@@ -522,7 +555,7 @@ export default function CvThequeDetailsLayout({
                           }}
                           id="experience"
                           autoComplete="off"
-                          className="h-12 p-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20"
+                          className="h-12 p-3 text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] border border-[var(--text-primary-color)]/10 placeholder:text-[var(--text-secondary-gray)] rounded-lg focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20"
                           placeholder="Nombre d'années"
                         />
                       </FormControl>
@@ -537,7 +570,7 @@ export default function CvThequeDetailsLayout({
                     <FormItem>
                       <FormLabel
                         htmlFor="diplome"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-[var(--text-primary-color)]"
                       >
                         Niveau de diplôme
                       </FormLabel>
@@ -546,19 +579,37 @@ export default function CvThequeDetailsLayout({
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="w-full !h-12 p-3 bg-white data-[state=open]:border-[var(--r-primary-color)] data-[state=open]:ring-2 data-[state=open]:ring-[var(--r-primary-color)]/20">
+                        <SelectTrigger
+                          className={`w-full !h-12 p-3 !text-[var(--text-primary-color)] [&_svg]:!text-[var(--text-primary-color)] border-[var(--text-primary-color)]/10 data-[state=open]:border-[var(--r-primary-color)] data-[state=open]:ring-2 data-[state=open]:ring-[var(--r-primary-color)]/20 ${
+                            mode === 'light' ? 'bg-white' : 'bg-[#31374b]'
+                          }`}
+                        >
                           <SelectValue placeholder="Choisir un niveau de diplôme" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent
+                          className={`${
+                            mode === 'light'
+                              ? ''
+                              : 'bg-[#31374b] border-[#FFFFFF]/10'
+                          }`}
+                        >
                           <SelectGroup>
                             {educationLevels.map((item) => (
                               <SelectItem
                                 key={`education-level-${item}`}
                                 value={item}
                                 className={`h-8 ${
-                                  form.getValues('diplome') === item
-                                    ? '!text-[var(--r-primary-color)] [&_svg]:!text-[var(--r-primary-color)] !bg-accent'
-                                    : 'hover:!text-[var(--r-primary-color)] !bg-transparent hover:!bg-accent'
+                                  field.value === item
+                                    ? `${
+                                        mode === 'light'
+                                          ? '!text-[var(--r-primary-color)] [&_svg]:!text-[var(--r-primary-color)] !bg-accent'
+                                          : '!text-white [&_svg]:!text-white !bg-cyan-700'
+                                      }`
+                                    : `!text-[var(--text-primary-color)] hover:!text-[var(--r-primary-color)] !bg-transparent ${
+                                        mode === 'light'
+                                          ? 'hover:!bg-accent'
+                                          : '!text-white hover:!bg-cyan-700/25'
+                                      }`
                                 }`}
                               >
                                 {item}
@@ -578,7 +629,7 @@ export default function CvThequeDetailsLayout({
                     <FormItem>
                       <FormLabel
                         htmlFor="localisation"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-[var(--text-primary-color)]"
                       >
                         Localisation
                       </FormLabel>
@@ -589,7 +640,7 @@ export default function CvThequeDetailsLayout({
                             {...field}
                             id="localisation"
                             autoComplete="off"
-                            className="h-12 pl-10 pr-3 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20"
+                            className="h-12 pl-10 pr-3 py-3 text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] border border-[var(--text-primary-color)]/10 placeholder:text-[var(--text-secondary-gray)] rounded-lg focus:outline-none focus:!border-[var(--r-primary-color)] focus:!ring-2 focus:!ring-[var(--r-primary-color)]/20"
                             placeholder="Ville ou région"
                           />
                         </div>
@@ -605,7 +656,7 @@ export default function CvThequeDetailsLayout({
                     <FormItem>
                       <FormLabel
                         htmlFor="distance"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-[var(--text-primary-color)]"
                       >
                         Rayon: {field.value}km
                       </FormLabel>
@@ -623,7 +674,7 @@ export default function CvThequeDetailsLayout({
                           min="0"
                           max="100"
                           autoComplete="off"
-                          className="h-2 p-0 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[var(--r-primary-color)]"
+                          className="h-2 p-0 bg-[var(--bg-secondary-color)] border-[var(--text-primary-color)]/10 rounded-lg appearance-none cursor-pointer accent-[var(--r-primary-color)]"
                         />
                       </FormControl>
                     </FormItem>
@@ -642,8 +693,10 @@ export default function CvThequeDetailsLayout({
         </>
       ) : (
         <>
-          <div className="w-64 min-w-64 flex flex-col gap-6 bg-white rounded-lg shadow-sm p-4">
-            <h2 className="font-medium">Talents disponibles</h2>
+          <div className="w-64 min-w-64 flex flex-col gap-6 bg-[var(--bg-secondary-color)] rounded-lg shadow-sm p-4">
+            <h2 className="font-medium text-xl text-[var(--text-primary-color)]">
+              Talents disponibles
+            </h2>
             {cvThequeCritere.cvMinutes &&
               cvThequeCritere.cvMinutes.length > 0 && (
                 <>
@@ -653,7 +706,7 @@ export default function CvThequeDetailsLayout({
                         onClick={() =>
                           setCurrentPage((prev) => Math.max(1, prev - 1))
                         }
-                        className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
+                        className={`w-8 h-8 flex items-center justify-center text-[var(--text-primary-color)] ${
                           currentPage === 1
                             ? 'opacity-50 pointer-events-none'
                             : 'hover:text-[var(--r-primary-color)] transition-colors cursor-pointer'
@@ -670,7 +723,7 @@ export default function CvThequeDetailsLayout({
                             className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
                               currentPage === pageNum
                                 ? 'bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] font-medium'
-                                : 'text-gray-600 hover:text-[var(--r-primary-color)] cursor-pointer'
+                                : 'text-[var(--text-secondary-gray)] hover:text-[var(--r-primary-color)] cursor-pointer'
                             }`}
                           >
                             {pageNum}
@@ -683,7 +736,7 @@ export default function CvThequeDetailsLayout({
                             Math.min(totalPages, prev + 1),
                           )
                         }
-                        className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
+                        className={`w-8 h-8 flex items-center justify-center text-[var(--text-primary-color)] ${
                           currentPage === totalPages
                             ? 'opacity-50 pointer-events-none'
                             : 'hover:text-[var(--r-primary-color)] transition-colors cursor-pointer'
@@ -704,7 +757,7 @@ export default function CvThequeDetailsLayout({
                           className={`w-full flex items-center gap-2 p-3 text-left rounded-lg transition-colors ${
                             cvAnonym?.id === c.id || redirectLoading === c.id
                               ? 'bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] font-medium'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer'
+                              : 'bg-[var(--bg-primary-color)] text-[var(--text-primary-color)] hover:text-[var(--r-primary-color)] cursor-pointer'
                           }`}
                         >
                           {redirectLoading === c.id && !cvAnonym && (
@@ -764,7 +817,7 @@ export default function CvThequeDetailsLayout({
           </div>
 
           <div
-            className={`flex-1 flex flex-col gap-4 bg-white rounded-lg shadow-sm p-4 overflow-auto ${
+            className={`flex-1 flex flex-col gap-4 bg-[var(--bg-secondary-color)] rounded-lg shadow-sm p-4 overflow-auto ${
               showCritere ? 'w-[calc(100%-17.5rem)]' : 'w-[37rem]'
             }`}
           >
@@ -777,13 +830,13 @@ export default function CvThequeDetailsLayout({
                   <div className="flex items-center gap-2">
                     <i
                       onClick={increaseFontSize}
-                      className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.35em]"
+                      className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--text-primary-color)]/10 cursor-pointer rounded-[0.35em]"
                     >
                       <ZoomIn size={20} />
                     </i>
                     <i
                       onClick={decreaseFontSize}
-                      className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.35em]"
+                      className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--text-primary-color)]/10 cursor-pointer rounded-[0.35em]"
                     >
                       <ZoomOut size={20} />
                     </i>
@@ -822,14 +875,14 @@ export default function CvThequeDetailsLayout({
               )}
             </div>
 
-            <div className="relative flex-1 bg-gray-50 rounded-lg overflow-auto">
+            <div className="relative flex-1 bg-[var(--bg-primary-color)] rounded-lg overflow-auto">
               {cvThequeCritere.cvMinutes &&
               cvThequeCritere.cvMinutes.length > 0 ? (
                 children
               ) : (
                 <div className="h-full w-full flex justify-center items-center">
                   <div className="flex flex-col gap-8">
-                    <div className="flex flex-col items-center gap-6 text-3xl text-gray-400">
+                    <div className="flex flex-col items-center gap-6 text-3xl text-[var(--text-secondary-gray)]">
                       <Inbox size={50} />
                       <p>Aucun resultat trouvé</p>
                     </div>

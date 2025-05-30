@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function CvThequeDetailsPage() {
   return (
-    <div className="h-full flex items-center justify-center text-gray-400">
+    <div className="h-full flex items-center justify-center text-[var(--text-secondary-gray)]">
       Sélectionnez un profil pour voir le CV
     </div>
   );

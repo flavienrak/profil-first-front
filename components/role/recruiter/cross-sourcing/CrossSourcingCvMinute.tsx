@@ -51,7 +51,7 @@ export default function CrossSourcingCvMinute() {
 
   if (actualCvMinute)
     return (
-      <div className="h-full w-full flex flex-col gap-4 bg-white rounded-lg shadow-sm p-4">
+      <div className="h-full w-full flex flex-col gap-4 bg-[var(--bg-secondary-color)] rounded-lg shadow-sm p-4">
         <div className="flex items-center justify-between">
           <div className="w-full flex items-center justify-between gap-4">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-[var(--r-primary-color)] to-[#22D3EE] bg-clip-text text-transparent">
@@ -60,13 +60,13 @@ export default function CrossSourcingCvMinute() {
             <div className="flex items-center gap-2">
               <i
                 onClick={increaseFontSize}
-                className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.35em]"
+                className="h-8 w-8 flex justify-center items-center text-[var(--text-secondary-gray)] hover:bg-[var(--text-primary-color)]/10 cursor-pointer rounded-[0.35em]"
               >
                 <ZoomIn size={20} />
               </i>
               <i
                 onClick={decreaseFontSize}
-                className="h-8 w-8 flex justify-center items-center hover:bg-[#f3f4f6] cursor-pointer rounded-[0.35em]"
+                className="h-8 w-8 flex justify-center items-center text-[var(--text-secondary-gray)] hover:bg-[var(--text-primary-color)]/10 cursor-pointer rounded-[0.35em]"
               >
                 <ZoomOut size={20} />
               </i>
@@ -74,8 +74,8 @@ export default function CrossSourcingCvMinute() {
           </div>
         </div>
 
-        <div className="relative flex-1 bg-gray-50 rounded-lg overflow-auto">
-          <div className="flex items-center justify-center h-full text-gray-400">
+        <div className="relative flex-1 bg-[var(--bg-primary-color)] rounded-lg overflow-auto">
+          <div className="flex items-center justify-center h-full text-[var(--text-secondary-gray)]">
             <CrossSourcingCvPreview cvMinute={actualCvMinute} />
           </div>
         </div>

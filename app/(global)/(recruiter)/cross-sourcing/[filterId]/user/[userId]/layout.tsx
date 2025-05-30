@@ -60,8 +60,10 @@ export default function CrossSourcingUserLayout({
 
   return (
     <div className="h-full w-full flex gap-6">
-      <div className="w-64 min-w-64 flex flex-col gap-4 bg-white rounded-lg shadow-sm p-4">
-        <h2 className="font-medium">CV</h2>
+      <div className="w-64 min-w-64 flex flex-col gap-4 bg-[var(--bg-secondary-color)] rounded-lg shadow-sm p-4">
+        <h2 className="font-medium text-xl text-[var(--text-primary-color)]">
+          CV
+        </h2>
 
         {cvMinutes.length > 0 ? (
           cvMinutes.map((c) => (
@@ -72,7 +74,7 @@ export default function CrossSourcingUserLayout({
               className={`w-full flex items-center gap-2 p-3 text-left rounded-lg transition-colors ${
                 actualCvMinuteId === c.id || redirectLoading === c.id
                   ? 'bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] font-medium'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer'
+                  : 'bg-[var(--bg-tertiary-color)] text-[var(--text-primary-color)] hover:text-[var(--r-primary-color)] cursor-pointer'
               }`}
             >
               {redirectLoading === c.id && (

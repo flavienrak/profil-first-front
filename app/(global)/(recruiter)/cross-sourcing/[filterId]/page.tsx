@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function CrossSourcingFilterPage() {
   return (
     <div className="w-full h-full">
-      <CrossSourcingComponent />;
+      <CrossSourcingComponent />
     </div>
   );
 }

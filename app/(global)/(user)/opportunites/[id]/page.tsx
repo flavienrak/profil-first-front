@@ -1,6 +1,8 @@
 import React from 'react';
-import OpportunityPresentation from '@/components/role/user/opportunites/id/OpportunityPresentation';
+// import OpportunityPresentation from '@/components/role/user/opportunites/id/OpportunityPresentation';
 
 export default function OpportuniteDetailsPage() {
-  return <OpportunityPresentation />;
+  return (
+    <div className="w-full h-full">{/* <OpportunityPresentation /> */}</div>
+  );
 }

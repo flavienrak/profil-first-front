@@ -13,7 +13,7 @@ export default function RecruiterSideLayout({
 }) {
   const { showMenu } = useSelector((state: RootState) => state.persistInfos);
   return (
-    <div className="relative flex w-full min-h-screen overflow-hidden">
+    <div className="relative flex w-full min-h-screen [background-image:var(--bg-primary)] overflow-hidden">
       <RecruiterSidebar showMenu={showMenu} />
       <div
         className={`w-full h-screen flex flex-col transition-[max-width] duration-500  ${

@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function CvAnonymPage() {
-  return <CvAnonymComponent />;
+  return (
+    <div className="w-full h-full">
+      <CvAnonymComponent />
+    </div>
+  );
 }

@@ -102,8 +102,10 @@ export default function CrossSourcingFilterLayout({
 
   return (
     <div className="h-full w-full flex gap-6">
-      <div className="w-64 min-w-64 bg-white rounded-lg shadow-sm p-4">
-        <h2 className="font-medium mb-4">Profils</h2>
+      <div className="w-64 min-w-64 flex flex-col gap-4 bg-[var(--bg-secondary-color)] rounded-lg shadow-sm p-4">
+        <h2 className="font-medium text-xl text-[var(--text-primary-color)]">
+          Profils
+        </h2>
         {users.length > 0 ? (
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
@@ -112,7 +114,7 @@ export default function CrossSourcingFilterLayout({
                   onClick={() =>
                     setCurrentPage((prev) => Math.max(1, prev - 1))
                   }
-                  className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
+                  className={`w-8 h-8 flex items-center justify-center text-[var(--text-primary-color)] ${
                     currentPage === 1
                       ? 'opacity-50 pointer-events-none'
                       : 'hover:text-[var(--r-primary-color)] transition-colors cursor-pointer'
@@ -129,7 +131,7 @@ export default function CrossSourcingFilterLayout({
                       className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
                         currentPage === pageNum
                           ? 'bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] font-medium'
-                          : 'text-gray-600 hover:text-[var(--r-primary-color)] cursor-pointer'
+                          : 'text-[var(--text-secondary-gray)] hover:text-[var(--r-primary-color)] cursor-pointer'
                       }`}
                     >
                       {pageNum}
@@ -140,7 +142,7 @@ export default function CrossSourcingFilterLayout({
                   onClick={() =>
                     setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                   }
-                  className={`w-8 h-8 flex items-center justify-center text-gray-400 ${
+                  className={`w-8 h-8 flex items-center justify-center text-[var(--text-primary-color)] ${
                     currentPage === totalPages
                       ? 'opacity-50 pointer-events-none'
                       : 'hover:text-[var(--r-primary-color)] transition-colors cursor-pointer'
@@ -152,8 +154,8 @@ export default function CrossSourcingFilterLayout({
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              {users &&
-                getCurrentPageItems()?.map((c) => (
+              {users.length > 0 &&
+                getCurrentPageItems().map((c) => (
                   <Link
                     key={`user-${c.id}`}
                     href={`/cross-sourcing/${params.filterId}/user/${c.id}`}
@@ -161,7 +163,7 @@ export default function CrossSourcingFilterLayout({
                     className={`w-full flex items-center gap-2 p-3 text-left rounded-lg transition-colors ${
                       actualId === c.id || redirectLoading === c.id
                         ? 'bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] font-medium'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer'
+                        : 'bg-[var(--bg-tertiary-color)] text-[var(--text-primary-color)] hover:text-[var(--r-primary-color)] cursor-pointer'
                     }`}
                   >
                     {redirectLoading === c.id && (
@@ -189,7 +191,7 @@ export default function CrossSourcingFilterLayout({
             </div>
           </div>
         ) : (
-          <p className="text-sm italic text-gray-400">
+          <p className="text-sm italic text-[var(--text-secondary-gray)]">
             Aucun profil disponible
           </p>
         )}

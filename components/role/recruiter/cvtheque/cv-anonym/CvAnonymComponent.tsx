@@ -200,7 +200,7 @@ export default function CvAnonymComponent() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-[#6a7282] italic text-[0.875em] p-[0.25em]">
+                  <p className="text-[var(--text-secondary-gray)] italic text-[0.875em] p-[0.25em]">
                     Aucune expérience ajoutée
                   </p>
                 )}
