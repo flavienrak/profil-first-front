@@ -1528,7 +1528,9 @@ export default function CvPreview() {
                                 className="text-[0.875em] tracking-[0.025em] p-[0.25em]"
                                 style={{ background: cvMinute.tertiaryBg }}
                               >
-                                {item.company} - <span>({item.contrat})</span>
+                                {item.company}{' '}
+                                {item.contrat &&
+                                  -(<span>({item.contrat})</span>)}
                               </p>
                             </div>
 
