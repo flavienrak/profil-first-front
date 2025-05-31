@@ -74,7 +74,7 @@ export default function Footer() {
 
       <i
         onClick={toggleShowFooter}
-        className="z-50 absolute right-0 -top-8 h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] border border-[var(--text-primary-color)]/10 rounded-t-sm hover:opacity-80 cursor-pointer"
+        className="z-50 absolute right-0 -top-8 h-8 w-8 flex justify-center items-center bg-[var(--bg-secondary-color)] text-[var(--text-primary-color)] border border-[var(--text-primary-color)]/10 rounded-t-sm hover:opacity-80 cursor-pointer"
       >
         <Airplay />
       </i>

@@ -105,7 +105,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
                         id="email"
                         {...field}
                         autoComplete="off"
-                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="xyz@domain.com"
                         autoFocus
                         required
@@ -152,7 +152,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
                         id="password"
                         type="password"
                         autoComplete="off"
-                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="*******************"
                         required
                       />
@@ -191,7 +191,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
                       checked={field.value}
                       onCheckedChange={field.onChange}
                       id="remember-me"
-                      className="border-[var(--text-tertiary-gray)] data-[state=checked]:bg-[var(--u-primary-color)] data-[state=checked]:border-[var(--u-primary-color)] cursor-pointer"
+                      className="border-[var(--text-primary-color)]/50 data-[state=checked]:bg-[var(--u-primary-color)] data-[state=checked]:border-[var(--u-primary-color)] cursor-pointer"
                     />
                   </FormControl>
                   <FormLabel

@@ -74,7 +74,7 @@ export default function CrossSourcingUserLayout({
               className={`w-full flex items-center gap-2 p-3 text-left rounded-lg transition-colors ${
                 actualCvMinuteId === c.id || redirectLoading === c.id
                   ? 'bg-[var(--r-primary-color)]/20 text-[var(--r-primary-color)] font-medium'
-                  : 'bg-[var(--bg-tertiary-color)] text-[var(--text-primary-color)] hover:text-[var(--r-primary-color)] cursor-pointer'
+                  : 'bg-[var(--bg-primary-color)] text-[var(--text-primary-color)] hover:text-[var(--r-primary-color)] cursor-pointer'
               }`}
             >
               {redirectLoading === c.id && (

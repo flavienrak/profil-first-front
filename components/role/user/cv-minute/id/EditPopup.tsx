@@ -46,16 +46,6 @@ import { LucideIcon } from '@/components/utils/LucideIcon';
 import { AdviceInterface } from '@/interfaces/advice.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
 
-interface EditPopupInterface {
-  popup: PopupInterface;
-  cvMinuteId: number;
-  currentPosition: { x: number; y: number };
-  handleClosePopup: () => void;
-  setCurrentPosition: React.Dispatch<
-    React.SetStateAction<{ x: number; y: number }>
-  >;
-}
-
 const guides = [
   {
     label: `Sélectionnez des compétences qui correspondent directement aux exigences de l'offre d'emploi. Privilégiez les compétences techniques spécifiques et les savoir-faire concrets plutôt que des qualités génériques.
@@ -81,7 +71,15 @@ export default function EditPopup({
   currentPosition,
   handleClosePopup,
   setCurrentPosition,
-}: EditPopupInterface) {
+}: {
+  popup: PopupInterface;
+  cvMinuteId: number;
+  currentPosition: { x: number; y: number };
+  handleClosePopup: () => void;
+  setCurrentPosition: React.Dispatch<
+    React.SetStateAction<{ x: number; y: number }>
+  >;
+}) {
   const dispatch = useDispatch();
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
   const { cvMinute } = useSelector((state: RootState) => state.cvMinute);
@@ -162,7 +160,7 @@ export default function EditPopup({
         }
       }
     }
-  }, [cvMinute.advices, cvMinute.cvMinuteSections, popup.suggestionKey]);
+  }, [cvMinute?.advices, cvMinute?.cvMinuteSections, popup.suggestionKey]);
 
   const dynamicSchema = (fields: FieldInterface[]) => {
     const shape: Record<string, z.ZodTypeAny> = {};
@@ -326,7 +324,7 @@ export default function EditPopup({
         className={`max-h-[calc(100vh-9rem)] rounded-b-md overflow-y-auto ${
           popup.hidden === false
             ? 'overflow-y-visible'
-            : 'overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-[0.325em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300'
+            : 'overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300'
         }`}
       >
         <div className="flex gap-4 p-4">
@@ -338,7 +336,7 @@ export default function EditPopup({
             )}
             {popup.conseil && (
               <div className="flex flex-col gap-1">
-                <p className="font-semibold text-[var(--text-primary-color)]">
+                <p className="font-semibold text-base text-[var(--text-primary-color)]">
                   Nos conseils :
                 </p>
                 <p className="text-sm whitespace-pre-line text-[var(--text-secondary-gray)]">
@@ -455,7 +453,7 @@ export default function EditPopup({
                     setLoadingButton(false);
                   }
                 }}
-                className="rounded-sm py-2"
+                className="rounded-sm py-2 text-sm"
                 isLoading={loadingButton}
               />
             )}
@@ -512,16 +510,13 @@ export default function EditPopup({
                                             onClick={() =>
                                               setShowIcons((prev) => !prev)
                                             }
-                                            className={`h-10 w-10 flex justify-center items-center text-sm text-[var(--text-primary-color)] border rounded-sm cursor-pointer ${
+                                            className={`h-10 w-10 flex justify-center items-center text-sm text-[var(--text-primary-color)] border border-[var(--text-primary-color)]/25 rounded-sm cursor-pointer ${
                                               showIcons
                                                 ? 'bg-[var(--u-primary-color)] text-white'
                                                 : 'hover:bg-[var(--bg-primary-color)]'
                                             }`}
                                           >
-                                            <LucideIcon
-                                              name={icon}
-                                              size={iconSize * (fontSize / 16)}
-                                            />
+                                            <LucideIcon name={icon} size={16} />
                                           </i>
                                         </div>
                                       )}
@@ -529,7 +524,7 @@ export default function EditPopup({
                                         <Textarea
                                           {...formField}
                                           autoComplete="off"
-                                          className="flex-1 min-h-20 px-3 py-2 rounded-sm !text-sm !placeholder:text-sm text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] resize-none"
+                                          className="flex-1 min-h-20 px-3 py-2 rounded-sm !text-sm !placeholder:text-sm text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-secondary-gray)] resize-none"
                                           placeholder={field.placeholder}
                                           required
                                         />
@@ -538,19 +533,19 @@ export default function EditPopup({
                                           dynamic
                                           content={formField.value}
                                           onChange={formField.onChange}
-                                          className="border rounded-sm"
+                                          className="border rounded-sm border-[var(--text-primary-color)]/25"
                                         />
                                       ) : field.type === 'color' ? (
                                         <Input
                                           {...formField}
                                           type="color"
-                                          className="flex-1 h-10 px-1 py-1 text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] rounded-sm"
+                                          className="flex-1 h-10 px-1 py-1 text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-secondary-gray)] rounded-sm"
                                         />
                                       ) : (
                                         <Input
                                           {...formField}
                                           autoComplete="off"
-                                          className="flex-1 h-10 px-3 py-1 rounded-sm !text-sm !placeholder:text-sm text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)]"
+                                          className="flex-1 h-10 px-3 py-1 rounded-sm !text-sm !placeholder:text-sm text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-secondary-gray)]"
                                           placeholder={field.placeholder}
                                           required
                                         />
@@ -565,7 +560,7 @@ export default function EditPopup({
                                         )?.message
                                       }
                                     </FormMessage>
-                                    <FormDescription className="text-xs">
+                                    <FormDescription className="text-xs text-[var(--text-secondary-gray)]">
                                       {field.description}
                                     </FormDescription>
                                   </div>
@@ -592,7 +587,7 @@ export default function EditPopup({
                             setLoadingSuggestion(false);
                           }
                         }}
-                        className="rounded-sm py-2"
+                        className="rounded-sm py-2 text-sm"
                       />
                       <p className="text-xs text-center text-[var(--text-secondary-gray)]">
                         Cliquer sur 'Génerer des suggestions pour obtenir des
@@ -607,7 +602,7 @@ export default function EditPopup({
                       popup.fields.length > 1 ? 'les' : 'la'
                     } modification${popup.fields.length > 1 ? 's' : ''}`}
                     isLoading={isLoading}
-                    className="rounded-sm py-2"
+                    className="rounded-sm py-2 text-sm"
                   />
                 </form>
               </Form>
@@ -618,7 +613,7 @@ export default function EditPopup({
                 {popup.type === 'desc' ? (
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1">
-                      <p className="font-semibold text-[var(--text-primary-color)]">
+                      <p className="text-base font-semibold text-[var(--text-primary-color)]">
                         Explications :
                       </p>
                       <p className="text-sm whitespace-pre-line text-[var(--text-secondary-gray)]">
@@ -630,7 +625,7 @@ export default function EditPopup({
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="font-semibold text-[var(--text-primary-color)]">
+                      <p className="text-base font-semibold text-[var(--text-primary-color)]">
                         Disponibilité :
                       </p>
                       <p className="text-sm whitespace-pre-line text-[var(--text-secondary-gray)]">
@@ -646,12 +641,12 @@ export default function EditPopup({
                       <PrimaryButton
                         onClick={popup.onShowGuide}
                         label="Je veux un guide de 30 secondes"
-                        className="py-2"
+                        className="py-2 rounded-md text-sm"
                       />
                       <PrimaryButton
                         onClick={popup.onShowVideo}
                         label="Visionner la vidéo explicative"
-                        className="py-2"
+                        className="py-2 rounded-md text-sm"
                       />
                     </div>
                   </div>

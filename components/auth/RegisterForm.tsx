@@ -104,7 +104,7 @@ export default function RegisterForm({
                         id="name"
                         {...field}
                         autoComplete="off"
-                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="Votre nom"
                         autoFocus
                         required
@@ -150,7 +150,7 @@ export default function RegisterForm({
                         id="email"
                         {...field}
                         autoComplete="off"
-                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="xyz@domain.com"
                         required
                       />
@@ -196,7 +196,7 @@ export default function RegisterForm({
                         id="password"
                         type="password"
                         autoComplete="off"
-                        className="h-12 ps-16 text-[var(--text-primary-color)] placeholder:text-[var(--text-tertiary-gray)]"
+                        className="h-12 ps-16 text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-tertiary-gray)]"
                         placeholder="*******************"
                         required
                       />

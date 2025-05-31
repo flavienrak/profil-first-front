@@ -82,11 +82,11 @@ export default function SelectIcon({
   }, [iconsRef]);
 
   return (
-    <div className="absolute bottom-[110%] left-0 w-[17.85em] h-[15em] shadow border border-[var(--text-primary-color)]/10 bg-[var(--bg-secondary-color)] p-[0.5em] flex flex-wrap rounded-[0.25em]">
-      <div className="w-full h-max flex justify-between items-center border-b-[0.0625em] border-[var(--text-primary-color)]/10 gap-[0.5em] pb-[0.375em]">
-        <div className="relative flex items-center">
-          <i className="absolute h-[2.5em] w-[2.5em] flex justify-center items-center text-[var(--text-secondary-gray)]">
-            <Search size={size * (fontSize / 16)} />
+    <div className="absolute bottom-[110%] left-0 w-80 h-56 shadow border border-[var(--text-primary-color)]/10 bg-[var(--bg-secondary-color)] p-2 flex flex-wrap rounded-md">
+      <div className="w-full h-max flex justify-between items-center border-b border-[var(--text-primary-color)]/10 gap-2 pb-2">
+        <div className="relative flex-1 flex items-center">
+          <i className="absolute h-8 w-8 flex justify-center items-center text-[var(--text-secondary-gray)]">
+            <Search size={16} />
           </i>
           <Input
             value={filter}
@@ -98,10 +98,10 @@ export default function SelectIcon({
             }}
             type="search"
             placeholder="Rechercher..."
-            className="!text-[0.875em] !placeholder:text-[0.875em] text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] border-[var(--text-primary-color)]/10 ps-[2.5em] pe-[0.75em] py-[0.25em]"
+            className="!text-sm !placeholder:text-sm text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] border-[var(--text-primary-color)]/10 ps-8 pe-3 py-1"
           />
         </div>
-        <div className="flex items-center gap-[0.5em]">
+        <div className="flex items-center gap-2">
           <Input
             type="number"
             onChange={(event) => {
@@ -109,20 +109,20 @@ export default function SelectIcon({
             }}
             value={size}
             placeholder="16"
-            className="w-[4.5em] !text-[0.875em] text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] px-[0.75em] py-[0.25em] border-[var(--text-primary-color)]/10"
+            className="w-16 !text-sm text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] px-2 py-1 border-[var(--text-primary-color)]/10"
           />
         </div>
       </div>
       <div
         ref={iconsRef}
-        className="w-full h-full max-h-[11em] overflow-y-auto [&::-webkit-scrollbar]:w-[0.5em] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
+        className="w-full h-full max-h-40 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
       >
-        <div className="flex flex-wrap py-[0.25em] gap-[0.5em]">
+        <div className="flex flex-wrap py-1 gap-2">
           {visibleIcons.map((i) => (
             <i
               key={i}
               onClick={() => onChange(i)}
-              className={`h-[2em] w-[2em] min-h-[2em] min-w-[2em] flex justify-center items-center rounded-[0.25em] ${
+              className={`h-8 w-8 min-h-8 min-w-8 flex justify-center items-center rounded-md ${
                 icon === i
                   ? 'bg-[var(--u-primary-color)] text-white'
                   : 'text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:bg-[var(--u-primary-color)] hover:text-white cursor-pointer'

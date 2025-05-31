@@ -635,7 +635,7 @@ export default function CvPreview() {
                 ref={cvRef}
                 className="relative flex bg-white w-[50em] min-h-[70em] rounded-[0.75em] shadow-md"
               >
-                <div className="absolute -left-[3.5em] top-0 flex flex-col gap-[0.5em]">
+                <div className="absolute -left-14 top-0 flex flex-col gap-2">
                   <TooltipProvider>
                     <Tooltip delayDuration={700}>
                       <TooltipTrigger>
@@ -684,14 +684,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="step-11 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white hover:opacity-80 cursor-pointer"
+                          className="step-11 h-10 w-10 flex justify-center items-center shadow rounded-full bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white hover:opacity-80 cursor-pointer"
                         >
-                          <Plus className="h-[1.5em]" />
+                          <Plus size={24} />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
                       >
                         <p>Ajouter rubrique</p>
                       </TooltipContent>
@@ -729,14 +729,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="step-12 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
+                          className="step-12 h-10 w-10 flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
                         >
-                          <UserPlus className="h-[1.5em]" />
+                          <UserPlus size={24} />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
                       >
                         <p>Adresse & Contacts</p>
                       </TooltipContent>
@@ -790,14 +790,14 @@ export default function CvPreview() {
                               handleOpenPopup(data);
                             }
                           }}
-                          className="step-13 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
+                          className="step-13 h-10 w-10 flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
                         >
-                          <Brush className="h-[1.5em]" />
+                          <Brush size={24} />
                         </i>
                       </TooltipTrigger>
                       <TooltipContent
                         side="left"
-                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
                       >
                         <p>Couleurs de fond</p>
                       </TooltipContent>
@@ -1091,21 +1091,17 @@ export default function CvPreview() {
                                   )}
                                 </div>
 
-                                <div className="absolute -left-[4em] top-0 flex flex-col gap-[0.5em]">
+                                <div className="absolute -left-15 top-0 flex flex-col gap-2">
                                   <TooltipProvider>
                                     <Tooltip delayDuration={700}>
                                       <TooltipTrigger>
                                         <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
-                                          <Zap
-                                            size={
-                                              (fontSize + 16) * (fontSize / 16)
-                                            }
-                                          />
+                                          <Zap size={28} />
                                         </i>
                                       </TooltipTrigger>
                                       <TooltipContent
                                         side="left"
-                                        className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] me-[0.25em] rounded-[0.25em]"
+                                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
                                       >
                                         <p>Modifier</p>
                                       </TooltipContent>

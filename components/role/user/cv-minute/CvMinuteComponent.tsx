@@ -86,7 +86,7 @@ export default function CvMinuteComponent() {
                 onDrop={handleDrop}
                 onDragOver={(event) => event.preventDefault()}
                 htmlFor="file"
-                className="flex flex-col items-center gap-4 h-52 border-2 border-dashed border-gray-200 rounded-xl p-8 text-center text-[var(--text-secondary-gray)] hover:border-[var(--u-primary-color)] transition-colors duration-300 cursor-pointer group"
+                className="flex flex-col items-center gap-4 h-52 border-2 border-dashed border-[var(--text-primary-color)]/25 rounded-xl p-8 text-center text-[var(--text-secondary-gray)] hover:border-[var(--u-primary-color)] transition-colors duration-300 cursor-pointer group"
               >
                 <Upload className="w-12 h-12 transition-colors duration-300 opacity-70 cursor-pointer" />
                 {file ? (
@@ -119,7 +119,7 @@ export default function CvMinuteComponent() {
               <textarea
                 required
                 onChange={(event) => setPosition(event.target.value)}
-                className="w-full h-52 p-4 text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] border-2 border-gray-200 rounded-xl focus:border-[var(--u-primary-color)] focus:ring-2 focus:ring-[var(--u-primary-color)]/20 transition-colors duration-300 resize-none"
+                className="w-full h-52 p-4 text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] border-2 border-[var(--text-primary-color)]/25 rounded-xl focus:outline-none focus:border-[var(--u-primary-color)] focus:ring-2 focus:ring-[var(--u-primary-color)]/20 resize-none"
                 placeholder="Copiez-collez ici le contenu de l'offre d'emploi..."
               />
             </div>

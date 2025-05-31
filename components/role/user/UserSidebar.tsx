@@ -96,7 +96,7 @@ export default function UserSidebar({ showMenu }: { showMenu: boolean }) {
 
       <i
         onClick={toggleshowMenu}
-        className="z-50 absolute -right-8 h-8 w-8 flex justify-center items-center rounded-r-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] border border-[var(--text-primary-color)]/10 hover:opacity-80 cursor-pointer"
+        className="z-50 absolute -right-8 h-8 w-8 flex justify-center items-center rounded-r-sm text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] border border-[var(--text-primary-color)]/10 hover:opacity-80 cursor-pointer"
       >
         {showMenu ? <ChevronLeft /> : <ChevronRight />}
       </i>
