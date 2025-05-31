@@ -28,11 +28,11 @@ export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
 
   return (
     <div
-      className={`relative h-screen flex flex-col justify-center border-r border-[var(--text-primary-color)]/10 transition-[width] duration-500 ${
+      className={`relative h-screen flex flex-col justify-center border-r border-[var(--text-primary-color)]/15 transition-[width] duration-500 ${
         showMenu ? 'w-64' : 'w-20'
       }`}
     >
-      <div className="px-6 h-20 flex items-center border-b border-[var(--text-primary-color)]/10">
+      <div className="px-6 h-20 flex items-center border-b border-[var(--text-primary-color)]/15">
         <Logo href={'/dashboard'} showText={showMenu} />
       </div>
 
@@ -78,7 +78,7 @@ export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
               }),
             )
           }
-          className={`h-12 flex items-center gap-3 text-[var(--r-primary-color)] hover:text-[var(--r-primary-color)] bg-[var(--r-primary-color)]/5 border-[var(--text-primary-color)]/10 cursor-pointer hover:opacity-80 ${
+          className={`h-12 flex items-center gap-3 text-[var(--r-primary-color)] hover:text-[var(--r-primary-color)] bg-[var(--r-primary-color)]/5 border-[var(--text-primary-color)]/15 cursor-pointer hover:opacity-80 ${
             showMenu ? 'px-8' : 'justify-center px-4'
           }`}
         >
@@ -91,14 +91,14 @@ export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
             </span>
           )}
         </div>
-        <div className="px-4 h-20 flex justify-center items-center border-t border-[var(--text-primary-color)]/10">
+        <div className="px-4 h-20 flex justify-center items-center border-t border-[var(--text-primary-color)]/15">
           <LogoutButton />
         </div>
       </div>
 
       <i
         onClick={toggleshowMenu}
-        className="z-50 absolute -right-8 h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] border border-[var(--text-primary-color)]/10 rounded-r-sm hover:opacity-80 cursor-pointer"
+        className="z-50 absolute -right-8 h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] border border-[var(--text-primary-color)]/15 rounded-r-sm hover:opacity-80 cursor-pointer"
       >
         {showMenu ? <ChevronLeft /> : <ChevronRight />}
       </i>

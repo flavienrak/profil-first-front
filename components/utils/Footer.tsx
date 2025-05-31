@@ -29,7 +29,7 @@ export default function Footer() {
 
   return (
     <footer
-      className={`relative flex justify-center bg-[var(--bg-secondary-color)] border-t border border-[var(--text-primary-color)]/10 transition-[height] duration-500 ${
+      className={`relative flex justify-center bg-[var(--bg-secondary-color)] border-t border border-[var(--text-primary-color)]/15 transition-[height] duration-500 ${
         showFooter ? 'h-20' : 'h-0'
       }`}
     >
@@ -74,7 +74,7 @@ export default function Footer() {
 
       <i
         onClick={toggleShowFooter}
-        className="z-50 absolute right-0 -top-8 h-8 w-8 flex justify-center items-center bg-[var(--bg-secondary-color)] text-[var(--text-primary-color)] border border-[var(--text-primary-color)]/10 rounded-t-sm hover:text-[var(--u-primary-color)] cursor-pointer"
+        className="z-50 absolute right-0 -top-8 h-8 w-8 flex justify-center items-center bg-[var(--bg-secondary-color)] text-[var(--text-primary-color)] border border-[var(--text-primary-color)]/15 rounded-t-sm hover:text-[var(--u-primary-color)] cursor-pointer"
       >
         <Airplay />
       </i>

@@ -105,7 +105,7 @@ export default function CvThequeLayout({
 
   return (
     <div className="h-full w-full flex flex-col">
-      <div className="w-full px-8 h-20 border-b border-[var(--text-primary-color)]/10 flex items-center">
+      <div className="w-full px-8 h-20 border-b border-[var(--text-primary-color)]/15 flex items-center">
         <div className="w-full flex items-center justify-between gap-6">
           <button
             onClick={() =>

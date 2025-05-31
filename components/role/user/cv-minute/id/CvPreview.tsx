@@ -497,7 +497,7 @@ export default function CvPreview() {
   if (cvMinute)
     return (
       <div className="flex justify-center flex-col">
-        <div className="w-full px-8 h-20 border-b border-[var(--text-primary-color)]/10 flex items-center">
+        <div className="w-full px-8 h-20 border-b border-[var(--text-primary-color)]/15 flex items-center">
           <div className="w-full flex justify-center items-center gap-5">
             <button
               onClick={(event) => {
@@ -584,7 +584,7 @@ export default function CvPreview() {
             style={{ fontSize: `${fontSize}px` }}
           >
             <div className="w-full flex flex-col items-center gap-6">
-              <div className="w-full max-w-[50rem] flex justify-between border border-[var(--text-primary-color)]/10 p-1 rounded-md">
+              <div className="w-full max-w-[50rem] flex justify-between border border-[var(--text-primary-color)]/15 p-1 rounded-md">
                 <button
                   onClick={(event) => {
                     const data: PopupInterface = {
