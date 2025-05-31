@@ -144,8 +144,8 @@ export default function QualiCarriereComponent() {
         <Popup large onClose={() => setShowModal(false)}>
           <div className="h-4/5 flex flex-col justify-between gap-8 p-4">
             <div>
-              <div className="float-right flex flex-col gap-2 ps-6 h-44 w-64 text-[var(--text-secondary-gray)]">
-                <p className="text-center font-semibold tracking-tighter">
+              <div className="float-right flex flex-col gap-2 ps-6 h-44 w-64">
+                <p className="text-center font-semibold tracking-tighter text-[var(--text-primary-color)]">
                   Vidéo explicative
                 </p>
                 {videoUri ? (
@@ -156,7 +156,9 @@ export default function QualiCarriereComponent() {
                     className="h-full w-full rounded-lg shadow"
                   ></iframe>
                 ) : (
-                  <p>Vidéo non trouvé</p>
+                  <p className="text-[var(--text-secondary-gray)]">
+                    Vidéo non trouvé
+                  </p>
                 )}
               </div>
               <div>

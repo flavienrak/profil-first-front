@@ -83,7 +83,7 @@ export default function CvMinuteLayout({
           <div className="h-4/5 flex flex-col justify-between gap-8 p-4">
             <div>
               <div className="float-right flex flex-col gap-2 ps-6 h-44 w-64">
-                <p className="text-center font-semibold tracking-tighter">
+                <p className="text-center font-semibold tracking-tighter text-[var(--text-primary-color)]">
                   Vidéo explicative
                 </p>
                 {videoUri ? (
@@ -94,11 +94,13 @@ export default function CvMinuteLayout({
                     className="h-full w-full rounded-lg shadow"
                   ></iframe>
                 ) : (
-                  <p>Vidéo non trouvé</p>
+                  <p className="text-[var(--text-secondary-gray)]">
+                    Vidéo non trouvé
+                  </p>
                 )}
               </div>
               <div>
-                <p className="text-justify">
+                <p className="text-justify text-[var(--text-primary-color)]">
                   Vous faite votre CV et vous pouvez le télécharger Vous avez
                   accès à tous vos CV Tous vos CV sont mis à disposition des
                   recruteurs de façon 100% anonyme Vous pouvez être en veille
@@ -121,7 +123,7 @@ export default function CvMinuteLayout({
             <div className="flex gap-6">
               <SecondaryButton
                 label={'En savoir plus'}
-                className="flex-1 font-semibold rounded-lg"
+                className="flex-1 font-semibold rounded-lg text-[var(--u-primary-white)] border-[var(--u-primary-white)]"
               />
               <PrimaryButton
                 label="Accepter les conditions générales d'utilisation"

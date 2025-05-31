@@ -516,32 +516,32 @@ export default function CvPreview() {
                   handleOpenPopup(data);
                 }
               }}
-              className="step-1 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] hover:opacity-80 cursor-pointer select-none"
+              className="step-1 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
             >
               Guide de rédaction du CV
             </button>
             <button
               onClick={() => setReview(true)}
-              className="step-2 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] hover:opacity-80 cursor-pointer select-none"
+              className="step-2 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
             >
               Relire l’offre
             </button>
             <button
               onClick={() => setShowMatching(true)}
-              className="step-3 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] hover:opacity-80 cursor-pointer select-none"
+              className="step-3 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
             >
               Matching score
             </button>
             <button
               onClick={() => setShowOptimize(true)}
-              className="step-4 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] hover:opacity-80 cursor-pointer select-none"
+              className="step-4 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
             >
               Optimiser en un clic
             </button>
             <Link
               href="/cv-offres"
               onClick={() => setRedirectLoading(true)}
-              className={`step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-sm text-sm font-semibold text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] select-none ${
+              className={`step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-sm text-sm font-semibold text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] select-none ${
                 redirectLoading
                   ? 'opacity-80 pointer-events-none'
                   : 'hover:opacity-80'
@@ -604,7 +604,7 @@ export default function CvPreview() {
                       handleOpenPopup(data);
                     }
                   }}
-                  className="h-full px-4 text-sm text-[var(--text-primary-color)] bg-[var(--bg-tertiary-color)] rounded-sm cursor-pointer transition-opacity duration-150 hover:opacity-80 select-none"
+                  className="h-full px-4 text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] rounded-sm cursor-pointer transition-opacity duration-150 hover:opacity-80 select-none"
                 >
                   Comment ça marche ?
                 </button>
@@ -612,19 +612,19 @@ export default function CvPreview() {
                 <div className="flex items-center gap-3">
                   <i
                     onClick={increaseFontSize}
-                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-tertiary-color)] cursor-pointer rounded-sm"
+                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-primary-color)] cursor-pointer rounded-sm"
                   >
                     <ZoomIn size={22} />
                   </i>
                   <i
                     onClick={decreaseFontSize}
-                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-tertiary-color)] cursor-pointer rounded-sm"
+                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-primary-color)] cursor-pointer rounded-sm"
                   >
                     <ZoomOut size={22} />
                   </i>
                   <i
                     onClick={resetFontSize}
-                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-tertiary-color)] cursor-pointer rounded-sm"
+                    className="h-8 w-8 flex justify-center items-center text-[var(--text-primary-color)] hover:bg-[var(--bg-primary-color)] cursor-pointer rounded-sm"
                   >
                     <CaptionsOff size={22} />
                   </i>
