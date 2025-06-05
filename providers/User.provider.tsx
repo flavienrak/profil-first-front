@@ -2,7 +2,7 @@
 
 import React from 'react';
 import qs from 'query-string';
-import Loading from '@/app/loading';
+import LoadingPage from '@/app/loading';
 
 import { jwtService } from '@/services/auth.service';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -129,7 +129,7 @@ export default function UserProvider({
         handleRemoveQuery,
       }}
     >
-      {isLoading ? <Loading /> : children}
+      {isLoading ? <LoadingPage /> : children}
     </UserContext.Provider>
   );
 }

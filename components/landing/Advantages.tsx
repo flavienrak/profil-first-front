@@ -83,14 +83,12 @@ export default function Advantages() {
         </motion.div>
 
         <motion.div className="text-center" variants={itemVariants}>
-          <Button
+          <a
             href="#start"
-            variant="primary"
-            size="lg"
-            className="shadow-xl hover:shadow-2xl"
+            className="inline-flex items-center justify-center text-lg px-8 py-4 rounded-full font-medium text-white bg-[#03E3F8] transition-all duration-300 focus:outline-none animate-subtle-pulse shadow-xl hover:shadow-2xl"
           >
             Démarrer mon CV gratuitement
-          </Button>
+          </a>
         </motion.div>
       </div>
     </section>

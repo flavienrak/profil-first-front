@@ -80,9 +80,12 @@ export default function Header({
           >
             FAQ
           </a>
-          <Button href="#start" variant="primary" size="sm">
+          <a
+            href="#start"
+            className="inline-flex items-center justify-center text-sm px-4 py-2 rounded-full font-medium bg-[#03E3F8] transition-all duration-300 focus:outline-none animate-subtle-pulse"
+          >
             Je démarre
-          </Button>
+          </a>
           <div
             onClick={() =>
               dispatch(
