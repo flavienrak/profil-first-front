@@ -19,7 +19,7 @@ import { UserInterface } from '@/interfaces/user.interface';
 
 export default function LandingComponent() {
   const [showAuth, setShowAuth] = React.useState({
-    show: 'login',
+    show: '',
     empty: false,
   });
   const [role, setRole] = React.useState<UserInterface['role']>('user');
