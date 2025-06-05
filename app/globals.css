@@ -128,6 +128,50 @@
   }
 }
 
+@layer components {
+  @keyframes subtle-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-breathe {
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  .animate-subtle-pulse {
+    animation: subtle-pulse 3s ease-in-out infinite;
+  }
+}
+
 *,
 *::before,
 *::after {
@@ -139,8 +183,13 @@
   color: #fff;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .lightMode {
   --bg-primary: linear-gradient(to right, #fbf2f2 7f5, #faf7f5);
+  --bg-secondary: linear-gradient(135deg, #4d0abe 0%, #0052cc 100%);
   --bg-purple: #f3e8ff;
 
   --u-primary-white: #6b2cf5;
@@ -165,6 +214,7 @@
 
 .darkMode {
   --bg-primary: linear-gradient(to right, #1a1e2e, #292e3e);
+  --bg-secondary: linear-gradient(to right, #1a1e2e, #292e3e);
   --bg-purple: #1a1e2e;
 
   --u-primary-white: #fff;
@@ -193,6 +243,10 @@ u {
 
 .word-spacing {
   word-spacing: 0.4em;
+}
+
+.customShadow {
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .text-style {

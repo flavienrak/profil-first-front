@@ -1,5 +1,6 @@
 import React from 'react';
 import iconsRaw from 'lucide-static/icon-nodes.json';
+
 import { IconInterface } from '@/interfaces/icon.interface';
 
 type IconNode =
@@ -29,20 +30,18 @@ type IconNode =
   | ['polygon', { points: string }]
   | ['polyline', { points: string }];
 
-interface LucideIconProps {
+export default function LucideIcon({
+  name,
+  size = 16,
+  strokeWidth = 2,
+  fill = 'none',
+}: {
   name: IconInterface;
   size?: number;
   color?: string;
   strokeWidth?: number;
   fill?: 'none' | 'currentColor';
-}
-
-export const LucideIcon: React.FC<LucideIconProps> = ({
-  name,
-  size = 16,
-  strokeWidth = 2,
-  fill = 'none',
-}) => {
+}) {
   const iconNodes = iconsRaw[name] as IconNode[];
   if (!iconNodes) return null;
 
@@ -62,4 +61,4 @@ export const LucideIcon: React.FC<LucideIconProps> = ({
       })}
     </svg>
   );
-};
+}

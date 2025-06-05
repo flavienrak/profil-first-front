@@ -3,12 +3,12 @@
 import React from 'react';
 import Image from 'next/image';
 import TextEditor from '@/components/utils/TextEditor';
+import LucideIcon from '@/components/utils/LucideIcon';
 
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { backendUri } from '@/providers/User.provider';
-import { LucideIcon } from '@/components/utils/LucideIcon';
 import { CvMinuteInterface } from '@/interfaces/role/user/cv-minute/cvMinute.interface';
 
 export default function CrossSourcingCvPreview({

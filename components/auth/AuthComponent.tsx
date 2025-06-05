@@ -9,40 +9,34 @@ import { UserInterface } from '@/interfaces/user.interface';
 
 export default function AuthComponent({
   role,
+  show,
+  empty,
 }: {
   role: UserInterface['role'];
+  show: string;
+  empty: boolean;
 }) {
-  const [isRegister, setIsRegister] = React.useState(false);
+  const [isRegister, setIsRegister] = React.useState(show === 'register');
 
   return (
-    <div className="w-full">
-      <div className="w-[900px] flex gap-8">
-        <div className="flex-1 flex flex-col py-6 px-3">
-          {/* <Logo href={'/'} /> */}
-          <div className="flex-1 flex justify-center items-center">
-            <h2 className="text-4xl font-bold max-w-[32rem] text-center bg-gradient-to-r from-[#4461F2] to-[#6B7FFF] bg-clip-text text-transparent">
-              {role === 'user'
-                ? 'Vous êtes candidat ?'
-                : 'Vous êtes recruteur ?'}
-            </h2>
-          </div>
-        </div>
-        <div className="flex-1 flex justify-center p-10 bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] rounded-lg">
-          <div className="w-full flex flex-col gap-10 justify-center items-center">
-            <Card className="w-full p-8 bg-[var(--bg-secondary-color)] border border-[var(--text-primary-color)]/10">
-              <h1 className="text-4xl text-[var(--u-primary-white)] text-center font-semibold mb-4">
-                {isRegister ? 'Inscription' : 'Connexion'}
-              </h1>
-              {isRegister ? (
-                <RegisterForm role={role} setIsRegister={setIsRegister} />
-              ) : (
-                <LoginForm role={role} />
-              )}
-            </Card>
+    <div className="w-[400px] p-1">
+      <div className="w-full flex flex-col gap-6 justify-center items-center rounded-lg">
+        <Card className="w-full p-4 bg-[var(--bg-secondary-color)] shadow-none border-none">
+          <h1 className="text-4xl text-[var(--u-primary-color)] text-center font-semibold mb-4">
+            {isRegister ? 'Inscription' : 'Connexion'}
+          </h1>
+          {isRegister ? (
+            <RegisterForm role={role} setIsRegister={setIsRegister} />
+          ) : (
+            <LoginForm role={role} />
+          )}
+        </Card>
+        {!empty && (
+          <>
             {isRegister ? (
               <p
                 onClick={() => setIsRegister(false)}
-                className="text-white text-center"
+                className="text-[var(--text-primary-color)] text-center"
               >
                 A déjà un compte ?{' '}
                 <span className="underline underline-offset-4 cursor-pointer">
@@ -52,7 +46,7 @@ export default function AuthComponent({
             ) : (
               <p
                 onClick={() => setIsRegister(true)}
-                className="text-white text-center"
+                className="text-[var(--text-primary-color)] text-center"
               >
                 N'a pas encore de compte ?{' '}
                 <span className="underline underline-offset-4 cursor-pointer">
@@ -60,8 +54,8 @@ export default function AuthComponent({
                 </span>
               </p>
             )}
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

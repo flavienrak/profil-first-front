@@ -46,4 +46,10 @@ const formatDateFr = (dateInput: Date): string => {
   return `${day} ${capitalizedMonth} ${year} à ${hours}h${minutes}`;
 };
 
-export { handleVideo, isArraysEqual, formatDateFr };
+const formatTextWithStrong = (value: string): string => {
+  return value.replace(/([^:\n]+):\s*(.+)/g, (_, bold, rest) => {
+    return `<p><strong>• ${bold.trim()} :</strong> ${rest.trim()}</p>`;
+  });
+};
+
+export { handleVideo, isArraysEqual, formatDateFr, formatTextWithStrong };

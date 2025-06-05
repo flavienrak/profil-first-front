@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import LucideIcon from '@/components/utils/LucideIcon';
 
 import { Input } from '@/components/ui/input';
 import { allIcons } from '@/lib/icons';
@@ -8,7 +9,6 @@ import { IconInterface } from '@/interfaces/icon.interface';
 import { Search } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { LucideIcon } from './LucideIcon';
 
 export default function SelectIcon({
   icon,

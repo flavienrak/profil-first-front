@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
+import DOMPurify from 'dompurify';
 import TextEditor from '@/components/utils/TextEditor';
 import SelectIcon from '@/components/utils/SelectIcon';
 import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
-import DOMPurify from 'dompurify';
+import LucideIcon from '@/components/utils/LucideIcon';
 
 import {
   Globe,
@@ -42,9 +43,9 @@ import {
 } from '@/redux/slices/role/user/cvMinute.slice';
 import { RootState } from '@/redux/store';
 import { IconInterface } from '@/interfaces/icon.interface';
-import { LucideIcon } from '@/components/utils/LucideIcon';
 import { AdviceInterface } from '@/interfaces/advice.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
+import { formatTextWithStrong } from '@/lib/function';
 
 const guides = [
   {
@@ -198,9 +199,12 @@ export default function EditPopup({
     if (popup.suggestionKey === 'title') {
       form.setValue('title', value);
     } else if (popup.suggestionKey === 'content') {
-      if (popup.section === 'experience') {
+      if (popup.updateExperience) {
         const currentContent = form.getValues('content') || '';
-        form.setValue('content', `${currentContent} <p>${value}</p>`);
+        form.setValue(
+          'content',
+          `${currentContent}  <p>${formatTextWithStrong(value)}</p>`,
+        );
       } else {
         form.setValue('content', value);
       }
@@ -334,6 +338,7 @@ export default function EditPopup({
                 {popup.title}
               </h3>
             )}
+
             {popup.conseil && (
               <div className="flex flex-col gap-1">
                 <p className="font-semibold text-base text-[var(--text-primary-color)]">
@@ -657,11 +662,11 @@ export default function EditPopup({
                         <i className="text-red-400">
                           <Goal />
                         </i>
-                        <p className="text-sm font-semibold">
+                        <p className="text-sm font-semibold text-[var(--text-primary-color)]">
                           Choisir les bonnes compétences :
                         </p>
                       </div>
-                      <p className="text-xs whitespace-pre-line">
+                      <p className="text-xs whitespace-pre-line text-[var(--text-secondary-gray)]">
                         {guides[0].label}
                       </p>
                     </div>
@@ -670,12 +675,12 @@ export default function EditPopup({
                         <i className="text-yellow-400">
                           <Scale />
                         </i>
-                        <p className="text-sm font-semibold">
+                        <p className="text-sm font-semibold text-[var(--text-primary-color)]">
                           Equilibrer vos compétences :
                         </p>
                       </div>
 
-                      <p className="text-xs whitespace-pre-line">
+                      <p className="text-xs whitespace-pre-line text-[var(--text-secondary-gray)]">
                         {guides[1].label}
                       </p>
                     </div>
@@ -684,10 +689,12 @@ export default function EditPopup({
                         <i className="text-blue-400">
                           <Globe />
                         </i>
-                        <p className="text-sm font-semibold">Langues :</p>
+                        <p className="text-sm font-semibold text-[var(--text-primary-color)]">
+                          Langues :
+                        </p>
                       </div>
 
-                      <p className="text-xs whitespace-pre-line">
+                      <p className="text-xs whitespace-pre-line text-[var(--text-secondary-gray)]">
                         {guides[2].label}
                       </p>
                     </div>
@@ -696,11 +703,11 @@ export default function EditPopup({
                         <i className="text-red-500">
                           <Heart fill={'currentColor'} />
                         </i>
-                        <p className="text-sm font-semibold">
+                        <p className="text-sm font-semibold text-[var(--text-primary-color)]">
                           Centres d'intérêt :
                         </p>
                       </div>
-                      <p className="text-xs whitespace-pre-line">
+                      <p className="text-xs whitespace-pre-line text-[var(--text-secondary-gray)]">
                         {guides[3].label}
                       </p>
                     </div>

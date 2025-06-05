@@ -9,6 +9,7 @@ import EditPopup from './EditPopup';
 import PdfTempldate from './PdfTempldate';
 import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
 import TextEditor from '@/components/utils/TextEditor';
+import LucideIcon from '@/components/utils/LucideIcon';
 
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -58,7 +59,6 @@ import {
 import { backendUri, videoUri } from '@/providers/User.provider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
-import { LucideIcon } from '@/components/utils/LucideIcon';
 import { handleVideo } from '@/lib/function';
 
 export interface FieldInterface {
@@ -353,11 +353,11 @@ export default function CvPreview() {
     }
   };
 
-  const handleDeleteCvMinuteSection = async (cvMinuteSectionId: number) => {
+  const handleDeleteCvMinuteSection = async (id: number) => {
     if (cvMinute) {
       const res = await deleteCvMinuteSectionService({
         id: cvMinute.id,
-        cvMinuteSectionId,
+        cvMinuteSectionId: id,
       });
 
       if (res.cvMinuteSection) {
@@ -996,121 +996,111 @@ export default function CvPreview() {
 
                     {editableSections && editableSections.length > 0 && (
                       <div className="flex-1 w-full flex flex-col">
-                        {editableSections.map((s, index) => {
-                          const cvMinuteSection = getCvMinuteSection(s.name);
-                          if (cvMinuteSection)
-                            return (
-                              <div
-                                key={`editableSection-${s.id}`}
-                                draggable
-                                onDragStart={() =>
-                                  handleDragStart({
-                                    type: 'editableSection',
-                                    dragId: cvMinuteSection.id,
-                                    dragIndex: index + 1,
-                                  })
-                                }
-                                onDragOver={handleDragOver}
-                                onDrop={(event) =>
-                                  handleDropCvMinuteSection({
-                                    event,
-                                    type: 'editableSection',
-                                    dropId: cvMinuteSection.id,
-                                    dropIndex: index + 1,
-                                  })
-                                }
-                                onClick={(event) => {
-                                  const data: PopupInterface = {
-                                    title: 'Modifier ou supprimer la rubrique',
-                                    conseil: cvMinuteSection.advices.find(
-                                      (a) => a.type === 'cvMinuteSectionAdvice',
-                                    )?.content,
-                                    suggestionTitle: 'Idées de rubrique :',
-                                    actionLabel: 'Supprimer la rubrique',
-                                    onClick: async () =>
-                                      await handleDeleteCvMinuteSection(s.id),
-                                    cvMinuteSectionId: cvMinuteSection.id,
-                                    updateEditableSection: true,
-                                    fields: [
-                                      {
-                                        label: 'Nom de la rubrique',
-                                        type: 'input',
-                                        key: 'name',
-                                        requiredError:
-                                          'Nom de la rubrique requis',
-                                        placeholder:
-                                          cvMinuteSection.name ?? 'Nom...',
-                                        value: cvMinuteSection.name ?? '',
-                                        initialValue:
-                                          cvMinuteSection.name ?? '',
-                                      },
-                                      {
-                                        label: 'Description',
-                                        type: 'textarea',
-                                        key: 'content',
-                                        requiredError:
-                                          'Description de la rubrique requise',
-                                        placeholder:
-                                          cvMinuteSection?.content ??
-                                          'Description...',
-                                        value: cvMinuteSection?.content ?? '',
-                                        initialValue:
-                                          cvMinuteSection?.content ?? '',
-                                      },
-                                    ],
-                                  };
+                        {editableSections.map((s, index) => (
+                          <div
+                            key={`editableSection-${s.id}`}
+                            draggable
+                            onDragStart={() =>
+                              handleDragStart({
+                                type: 'editableSection',
+                                dragId: s.id,
+                                dragIndex: index + 1,
+                              })
+                            }
+                            onDragOver={handleDragOver}
+                            onDrop={(event) =>
+                              handleDropCvMinuteSection({
+                                event,
+                                type: 'editableSection',
+                                dropId: s.id,
+                                dropIndex: index + 1,
+                              })
+                            }
+                            onClick={(event) => {
+                              const data: PopupInterface = {
+                                title: 'Modifier ou supprimer la rubrique',
+                                conseil: s.advices.find(
+                                  (a) => a.type === 'cvMinuteSectionAdvice',
+                                )?.content,
+                                suggestionTitle: 'Idées de rubrique :',
+                                actionLabel: 'Supprimer la rubrique',
+                                onClick: async () =>
+                                  await handleDeleteCvMinuteSection(s.id),
+                                cvMinuteSectionId: s.id,
+                                updateEditableSection: true,
+                                fields: [
+                                  {
+                                    label: 'Nom de la rubrique',
+                                    type: 'input',
+                                    key: 'name',
+                                    requiredError: 'Nom de la rubrique requis',
+                                    placeholder: s.name ?? 'Nom...',
+                                    value: s.name ?? '',
+                                    initialValue: s.name ?? '',
+                                  },
+                                  {
+                                    label: 'Description',
+                                    type: 'textarea',
+                                    key: 'content',
+                                    requiredError:
+                                      'Description de la rubrique requise',
+                                    placeholder: s.content ?? 'Description...',
+                                    value: s.content ?? '',
+                                    initialValue: s.content ?? '',
+                                  },
+                                ],
+                              };
 
-                                  handleGetPosition(event, 'left', {
-                                    y: 80,
-                                    x: 80,
-                                  });
-                                  if (isOpen) {
-                                    handleClosePopup();
-                                    setTempData(data);
-                                  } else {
-                                    handleOpenPopup(data);
-                                  }
-                                }}
-                                className="relative flex-1 w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em]"
-                              >
-                                <h3
-                                  className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.5em] font-semibold mb-[0.5em] text-[0.875em] select-none"
-                                  style={{ background: cvMinute.secondaryBg }}
-                                >
-                                  {cvMinuteSection.name}
-                                </h3>
-                                <div className="pl-[0.5em] text-[0.875em]">
-                                  {cvMinuteSection.content.trim().length > 0 ? (
-                                    <p className="whitespace-pre-line">
-                                      {cvMinuteSection.content}
-                                    </p>
-                                  ) : (
-                                    <p className="text-[0.875em] italic">
-                                      Aucune donnée ajoutée
-                                    </p>
-                                  )}
-                                </div>
+                              handleGetPosition(event, 'left', {
+                                y: 80,
+                                x: 80,
+                              });
+                              if (isOpen) {
+                                handleClosePopup();
+                                setTempData(data);
+                              } else {
+                                handleOpenPopup(data);
+                              }
+                            }}
+                            className="relative flex-1 w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em]"
+                          >
+                            <h3
+                              className="uppercase bg-[#1A5F6B] py-[0.25em] px-[0.5em] font-semibold mb-[0.5em] text-[0.875em] select-none"
+                              style={{ background: cvMinute.secondaryBg }}
+                            >
+                              {s.name}
+                            </h3>
+                            <div className="pl-[0.5em] text-[0.875em]">
+                              {s.content.trim().length > 0 ? (
+                                <p className="whitespace-pre-line">
+                                  {s.content}
+                                </p>
+                              ) : (
+                                <p className="text-[0.875em] italic">
+                                  Aucune donnée ajoutée
+                                </p>
+                              )}
+                            </div>
 
-                                <div className="absolute -left-15 top-0 flex flex-col gap-2">
-                                  <TooltipProvider>
-                                    <Tooltip delayDuration={700}>
-                                      <TooltipTrigger>
-                                        <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
-                                          <Zap size={28} />
-                                        </i>
-                                      </TooltipTrigger>
-                                      <TooltipContent
-                                        side="left"
-                                        className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
-                                      >
-                                        <p>Modifier</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                </div>
-                              </div>
-                            );
-                        })}
+                            <div className="absolute -left-15 top-0 flex flex-col gap-2">
+                              <TooltipProvider>
+                                <Tooltip delayDuration={700}>
+                                  <TooltipTrigger>
+                                    <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
+                                      <Zap size={28} />
+                                    </i>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    side="left"
+                                    className="text-white text-xs shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-2 py-1 me-1 rounded-sm"
+                                  >
+                                    <p>Modifier</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
@@ -1470,26 +1460,28 @@ export default function CvPreview() {
                               }}
                               className="flex flex-col gap-[0.25em] hover:bg-[#f3f4f6]"
                             >
-                              <div className="flex items-end gap-[0.5em] font-semibold">
-                                <h3>
-                                  <span
-                                    className="text-nowrap word-spacing"
-                                    style={{ color: cvMinute.primaryBg }}
+                              <div className="flex items-center gap-2">
+                                <p
+                                  className="w-[10em] font-semibold word-spacing"
+                                  style={{ color: cvMinute.primaryBg }}
+                                >
+                                  {item.date}
+                                </p>
+                                <div className="w-[calc(100%-10em)] flex flex-col gap-1 overflow-hidden">
+                                  <h3 className="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+                                    {item.title}
+                                  </h3>
+                                  <p
+                                    className="text-[0.875em] tracking-[0.025em] p-[0.25em]"
+                                    style={{ background: cvMinute.tertiaryBg }}
                                   >
-                                    {item.date} :{' '}
-                                  </span>
-                                  {item.title}
-                                </h3>
+                                    {item.company}
+                                    {item.contrat && (
+                                      <span> - ({item.contrat})</span>
+                                    )}
+                                  </p>
+                                </div>
                               </div>
-                              <p
-                                className="text-[0.875em] tracking-[0.025em] p-[0.25em]"
-                                style={{ background: cvMinute.tertiaryBg }}
-                              >
-                                {item.company}
-                                {item.contrat && (
-                                  <span> - ({item.contrat})</span>
-                                )}
-                              </p>
                             </div>
 
                             <TextEditor
@@ -1742,7 +1734,7 @@ export default function CvPreview() {
                                   cy="40"
                                 />
                                 <circle
-                                  className="text-green-600"
+                                  className="text-[#00E9FD]"
                                   strokeWidth="5"
                                   strokeLinecap="round"
                                   stroke="currentColor"
@@ -1776,22 +1768,11 @@ export default function CvPreview() {
                       )}
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                      <h4 className="text-base font-semibold text-[var(--text-primary-color)]">
-                        L'analyse de Coach Victorien :
-                      </h4>
-                      <p className="text-sm underline underline-offset-2 text-[var(--text-primary-color)]">
-                        Recommendations :
-                      </p>
-                      <p className="text-sm text-[var(--text-secondary-gray)] italic">
-                        Rappel : Le score de matching est purement indicatif.
-                        C'est à vous de jauger la pertinence de votre CV selon
-                        vos objectifs.
-                      </p>
-                      <p className="text-sm text-[var(--text-secondary-gray)] italic">
-                        {cvMinute.evaluation?.content}
-                      </p>
-                    </div>
+                    <p className="text-sm text-[var(--text-secondary-gray)] italic">
+                      Rappel : Le score de matching est purement indicatif.
+                      C'est à vous de jauger la pertinence de votre CV selon vos
+                      objectifs.
+                    </p>
 
                     <div className="flex gap-4">
                       <button

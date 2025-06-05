@@ -2,12 +2,12 @@
 
 import React from 'react';
 import TextEditor from '@/components/utils/TextEditor';
+import  LucideIcon  from '@/components/utils/LucideIcon';
 
 import { addDays, subDays, startOfWeek, isSameDay, format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { LucideIcon } from '@/components/utils/LucideIcon';
 import { IconInterface } from '@/interfaces/icon.interface';
 import { Calendar } from '@/components/ui/calendar';
 import {

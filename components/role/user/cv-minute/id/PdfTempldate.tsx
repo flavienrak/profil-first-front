@@ -322,8 +322,8 @@ export default function PdfTempldate({
                         style={{
                           display: 'flex',
                           flexDirection: 'row',
-                          alignItems: 'flex-end',
-                          gap: '8px',
+                          alignItems: 'center',
+                          gap: '6px',
                         }}
                       >
                         <Text
@@ -331,32 +331,53 @@ export default function PdfTempldate({
                             fontSize: '10px',
                             fontWeight: 'semibold',
                             color: primaryBg,
+                            width: '90px',
                           }}
                         >
-                          {item.date} :
+                          {item.date}
                         </Text>
-                        <Text
-                          style={{ fontSize: '12px', fontWeight: 'semibold' }}
-                        >
-                          {item.title}
-                        </Text>
-                      </View>
 
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          gap: '4px',
-                          padding: '3px 5px',
-                          backgroundColor: tertiaryBg,
-                        }}
-                      >
-                        <Text style={{ fontSize: '10px', fontWeight: 'light' }}>
-                          {item.company}
-                        </Text>
-                        <Text style={{ fontSize: '10px', fontWeight: 'light' }}>
-                          - ({item.contrat})
-                        </Text>
+                        <View
+                          style={{
+                            flex: '1',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '2px',
+                          }}
+                        >
+                          <Text
+                            wrap={false}
+                            style={{
+                              fontSize: '12px',
+                              fontWeight: 'semibold',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                          >
+                            {item.title}
+                          </Text>
+
+                          <View
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              gap: '4px',
+                              padding: '3px 5px',
+                              backgroundColor: tertiaryBg,
+                            }}
+                          >
+                            <Text
+                              style={{ fontSize: '10px', fontWeight: 'light' }}
+                            >
+                              {item.company}
+                            </Text>
+                            <Text
+                              style={{ fontSize: '10px', fontWeight: 'light' }}
+                            >
+                              - ({item.contrat})
+                            </Text>
+                          </View>
+                        </View>
                       </View>
 
                       {item.content?.split('\n').map((line, i) => (
