@@ -25,6 +25,7 @@ const advantages = [
 const testimonials = [
   {
     id: 1,
+    src: 'clara.png',
     content:
       "Je galérais à structurer mes expériences marketing… En 10 minutes, mon CV avait gagné en clarté et en impact. J'ai reçu une réponse positive deux jours après !",
     author: 'Clara',
@@ -32,6 +33,7 @@ const testimonials = [
   },
   {
     id: 2,
+    src: 'mehdi.png',
     content:
       "Le score par bloc m'a permis de voir ce qui bloquait. En intégrant les suggestions, j'ai rendu mon parcours data bien plus lisible pour les recruteurs.",
     author: 'Mehdi',
@@ -39,6 +41,7 @@ const testimonials = [
   },
   {
     id: 3,
+    src: 'sophie.png',
     content:
       "Je ne savais pas comment faire ressortir mes analyses financières. Les recommandations de mots-clés et de formulations m'ont beaucoup aidé.",
     author: 'Sophie',
@@ -46,6 +49,7 @@ const testimonials = [
   },
   {
     id: 4,
+    src: 'julien.png',
     content:
       "Grâce au matching, j'ai pu reformuler mes expériences commerciales avec plus de poids. Résultat : un CV bien plus ciblé et percutant.",
     author: 'Julien',
@@ -53,6 +57,7 @@ const testimonials = [
   },
   {
     id: 5,
+    src: 'fatou.png',
     content:
       "J'ai gagné un temps fou. J'ai collé l'offre, importé mon CV, et l'outil a tout de suite identifié ce qu'il fallait renforcer.",
     author: 'Fatou',
@@ -60,6 +65,7 @@ const testimonials = [
   },
   {
     id: 6,
+    src: 'thomas.png',
     content:
       "Ce que j'ai adoré, c'est le détail par expérience. En tant que PO, mes missions étaient floues. Là, tout est clair, orienté impact produit.",
     author: 'Thomas',
@@ -67,6 +73,7 @@ const testimonials = [
   },
   {
     id: 7,
+    src: 'lila.png',
     content:
       "L'outil m'a permis de valoriser mes missions RH avec les bons mots. Même les soft skills implicites ont été détectés.",
     author: 'Lila',
@@ -74,6 +81,7 @@ const testimonials = [
   },
   {
     id: 8,
+    src: 'marco.png',
     content:
       "J'avais un CV trop technique. Grâce aux suggestions, j'ai pu le rendre compréhensible sans perdre en précision.",
     author: 'Marco',
@@ -81,6 +89,7 @@ const testimonials = [
   },
   {
     id: 9,
+    src: 'isabelle.png',
     content:
       "En quelques clics, j'ai renforcé les points-clés attendus pour le poste. Le CV final était prêt à envoyer en 15 minutes.",
     author: 'Isabelle',

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import qs from 'query-string';
-import LoadingPage from '@/app/loading';
+import Loading from '@/app/loading';
 
 import { jwtService } from '@/services/auth.service';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -52,7 +52,8 @@ export default function UserProvider({
   const [isLoading, setIsLoading] = React.useState(true);
   const [userId, setUserId] = React.useState<string | number | null>(null);
 
-  const notProtectedPaths = ['/'];
+  const notProtectedPaths = ['/', '/conditions'];
+  const globalPaths = ['/conditions'];
 
   React.useEffect(() => {
     (async () => {
@@ -62,14 +63,20 @@ export default function UserProvider({
         setUserId(res.user.id);
 
         if (res.user.role === 'user') {
-          if (!userRoutes.some((r) => pathname.startsWith(r.href))) {
+          if (
+            !userRoutes.some((r) => pathname.startsWith(r.href)) &&
+            !globalPaths.includes(pathname)
+          ) {
             window.location.href =
               userRoutes.find((item) => item.ref)?.href ?? '/';
           } else {
             setIsLoading(false);
           }
         } else {
-          if (!recruiterRoutes.some((r) => pathname.startsWith(r.href))) {
+          if (
+            !recruiterRoutes.some((r) => pathname.startsWith(r.href)) &&
+            !globalPaths.includes(pathname)
+          ) {
             window.location.href =
               recruiterRoutes.find((item) => item.ref)?.href ?? '/';
           } else {
@@ -77,7 +84,10 @@ export default function UserProvider({
           }
         }
       } else {
-        if (!notProtectedPaths.includes(pathname)) {
+        if (
+          !notProtectedPaths.includes(pathname) &&
+          !globalPaths.includes(pathname)
+        ) {
           window.location.href = '/';
         } else {
           setIsLoading(false);
@@ -129,7 +139,7 @@ export default function UserProvider({
         handleRemoveQuery,
       }}
     >
-      {isLoading ? <LoadingPage /> : children}
+      {isLoading ? <Loading /> : children}
     </UserContext.Provider>
   );
 }

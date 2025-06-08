@@ -325,18 +325,18 @@ export default function CVCard({ cvMinute }: { cvMinute: CvMinuteInterface }) {
             </h2>
 
             <div className="flex flex-col gap-4">
-              <p className="text-gray-700">
+              <p className="text-[var(--text-secondary-gray)]">
                 Cette version anonyme est consultable par les recruteurs qui
                 cherchent un candidat.
               </p>
 
-              <p className="text-gray-700">
+              <p className="text-[var(--text-secondary-gray)]">
                 A tout moment vous pouvez être contacté par les recruteurs via
                 la messagerie.
               </p>
             </div>
 
-            <p className="text-gray-800 font-semibold">
+            <p className="text-[var(--text-primary-color)] font-semibold">
               Voulez-vous conserver l'accès de votre CV anonyme aux recruteurs ?
             </p>
 

@@ -10,9 +10,10 @@ import { RootState } from '@/redux/store';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 
 const links = [
-  { label: 'Mentions légales', href: '#' },
-  { label: 'Politique de confidentialité', href: '#' },
-  { label: 'CGU', href: '#' },
+  { label: 'Mentions légales', href: '/conditions' },
+  { label: 'CGU', href: '/conditions' },
+  { label: 'CGV', href: '/conditions' },
+  { label: 'Politique de confidentialité', href: '/conditions' },
 ];
 
 export default function Footer() {
@@ -42,15 +43,19 @@ export default function Footer() {
                 <p className="font-medium">© 2025 ProfilFirst</p>
               </div>
               <ul className="flex gap-4 text-xs text-[var(--text-primary-gray)]">
-                {links.map((l) => (
-                  <li key={l.label}>
+                {links.map((item, index) => (
+                  <div
+                    key={`link-${index}`}
+                    className="flex items-center gap-2"
+                  >
                     <Link
-                      href={l.href}
+                      href={item.href}
                       className="hover:text-[var(--text-primary-color)] transition-colors"
                     >
-                      {l.label}
+                      {item.label}
                     </Link>
-                  </li>
+                    {index < links.length - 1 && <span>|</span>}
+                  </div>
                 ))}
               </ul>
               <div className="flex items-center gap-1.5 text-xs">

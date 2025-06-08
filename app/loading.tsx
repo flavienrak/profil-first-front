@@ -1,13 +1,6 @@
 import React from 'react';
 
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Chargement...',
-  description: 'Chargement Profil First',
-};
-
-export default function LoadingPage() {
+export default function Loading() {
   return (
     <div className="h-full w-full [background-image:var(--bg-primary)]">
       <div className="flex h-full w-full justify-center items-center min-h-screen bg-gradient-to-r from-[#4461F2] to-[#6B7FFF] bg-clip-text text-transparent">

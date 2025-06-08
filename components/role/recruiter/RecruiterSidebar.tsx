@@ -32,7 +32,11 @@ export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
         showMenu ? 'w-64' : 'w-20'
       }`}
     >
-      <div className="px-6 h-20 flex items-center border-b border-[var(--text-primary-color)]/15">
+      <div
+        className={`h-20 flex items-center border-b border-[var(--text-primary-color)]/15 ${
+          showMenu ? 'px-6' : 'justify-center'
+        }`}
+      >
         <Logo href={'/dashboard'} showText={showMenu} />
       </div>
 

@@ -13,12 +13,15 @@ import { handleVideo } from '@/lib/function';
 
 export default function QualiCarriereComponent() {
   const { cvMinuteCount } = useSelector((state: RootState) => state.user);
+
   const router = useRouter();
 
   const [showModal, setShowModal] = React.useState(false);
   const [showError, setShowError] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [redirectLoading, setRedirectLoading] = React.useState(false);
+
+  console.log('cvMinuteCount:', cvMinuteCount);
 
   const handleContinue = async () => {
     if (cvMinuteCount < 1) {

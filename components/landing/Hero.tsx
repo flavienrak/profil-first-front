@@ -7,8 +7,17 @@ import Popup from '../utils/Popup';
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { UserInterface } from '@/interfaces/user.interface';
 
-export default function Hero() {
+export default function Hero({
+  handleShowAuth,
+}: {
+  handleShowAuth: (
+    value: UserInterface['role'],
+    show: string,
+    empty: boolean,
+  ) => void;
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -35,12 +44,14 @@ export default function Hero() {
               Dépose ton CV, colle l'offre d'emploi, 3 clics d'IA
               <br />→ puis télécharge ton CV.
             </p>
-            <a
-              href="#start"
-              className="inline-flex items-center justify-center text-lg px-8 py-4 rounded-full bg-[#03E3F8] font-medium transition-all duration-300 focus:outline-none animate-subtle-pulse shadow-xl hover:shadow-2xl"
+            <Button
+              onClick={() => handleShowAuth('user', 'register', true)}
+              variant="primary"
+              size="lg"
+              className="shadow-xl hover:shadow-2xl cursor-pointer"
             >
               Je créé (enfin) un vrai CV efficace
-            </a>
+            </Button>
           </motion.div>
           <motion.div
             className="w-full md:w-3/5 animate-float"

@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Popup from '@/components/utils/Popup';
 import ContactModal from '@/components/role/recruiter/cvtheque/cv-anonym/ContactModal';
+import TextEditor from '@/components/utils/TextEditor';
 
 import { X, MapPin, ZoomIn, ZoomOut, Inbox } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,7 +53,6 @@ import {
 import { UpdateCvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque-form';
 import { useParams, useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
-import TextEditor from '@/components/utils/TextEditor';
 
 export default function CvThequeDetailsLayout({
   children,

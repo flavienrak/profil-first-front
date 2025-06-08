@@ -13,7 +13,11 @@ import { UserInterface } from '@/interfaces/user.interface';
 export default function Header({
   handleShowAuth,
 }: {
-  handleShowAuth: (value: UserInterface['role']) => void;
+  handleShowAuth: (
+    value: UserInterface['role'],
+    show: string,
+    empty: boolean,
+  ) => void;
 }) {
   const { mode } = useSelector((state: RootState) => state.persistInfos);
 
@@ -38,23 +42,23 @@ export default function Header({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center bg-[var(--bg-secondary-color)] shadow-md py-2">
+    <header className="fixed top-0 left-0 right-0 h-14 z-50 flex justify-center bg-[var(--bg-secondary-color)] shadow-md">
       <div className="max-w-7xl container flex items-center">
         <a href="#" className="flex items-center">
           <Image
             src="/logo.png"
             alt="Profil First CV Logo"
             height={40}
-            width={310}
+            width={300}
           />
         </a>
 
         <div className="flex-1 flex justify-center">
           <Button
-            onClick={() => handleShowAuth('user')}
+            onClick={() => handleShowAuth('user', 'login', false)}
             variant="secondary"
             size="sm"
-            className="!bg-transparent text-[var(--u-primary-white)] border border-[var(--u-primary-white)] hover:opacity-90 shadow-[0_2px_4px_rgba(0,0,0,0.2)] cursor-pointer"
+            className="!bg-[#03E3F8] border border-[#03E3F8]/70 hover:opacity-90 shadow-[0_2px_4px_rgba(0,0,0,0.2)] cursor-pointer"
           >
             Se connecter
           </Button>
@@ -80,12 +84,14 @@ export default function Header({
           >
             FAQ
           </a>
-          <a
-            href="#start"
-            className="inline-flex items-center justify-center text-sm px-4 py-2 rounded-full font-medium bg-[#03E3F8] transition-all duration-300 focus:outline-none animate-subtle-pulse"
+          <Button
+            onClick={() => handleShowAuth('user', 'register', true)}
+            variant="primary"
+            size="sm"
+            className="cursor-pointer"
           >
             Je démarre
-          </a>
+          </Button>
           <div
             onClick={() =>
               dispatch(

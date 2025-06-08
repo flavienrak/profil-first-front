@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Target, Lightbulb, Settings } from 'lucide-react';
 import { advantages } from '@/data/content';
+import { UserInterface } from '@/interfaces/user.interface';
 
 const iconComponents = {
   target: Target,
@@ -15,7 +16,15 @@ const iconComponents = {
   settings: Settings,
 };
 
-export default function Advantages() {
+export default function Advantages({
+  handleShowAuth,
+}: {
+  handleShowAuth: (
+    value: UserInterface['role'],
+    show: string,
+    empty: boolean,
+  ) => void;
+}) {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -83,12 +92,14 @@ export default function Advantages() {
         </motion.div>
 
         <motion.div className="text-center" variants={itemVariants}>
-          <a
-            href="#start"
-            className="inline-flex items-center justify-center text-lg px-8 py-4 rounded-full font-medium text-white bg-[#03E3F8] transition-all duration-300 focus:outline-none animate-subtle-pulse shadow-xl hover:shadow-2xl"
+          <Button
+            onClick={() => handleShowAuth('user', 'register', true)}
+            variant="primary"
+            size="lg"
+            className="shadow-xl hover:shadow-2xl cursor-pointer"
           >
             Démarrer mon CV gratuitement
-          </a>
+          </Button>
         </motion.div>
       </div>
     </section>

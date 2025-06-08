@@ -1,5 +1,13 @@
-import Image from 'next/image';
 import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+const links = [
+  { label: 'Mentions légales', href: '/conditions' },
+  { label: 'CGU', href: '/conditions' },
+  { label: 'CGV', href: '/conditions' },
+  { label: 'Politique de confidentialité', href: '/conditions' },
+];
 
 export default function Footer() {
   return (
@@ -11,7 +19,7 @@ export default function Footer() {
               src="/logo.png"
               alt="Profil First CV Logo"
               height={40}
-              width={310}
+              width={300}
             />
           </div>
         </div>
@@ -22,33 +30,17 @@ export default function Footer() {
               © 2025 Profil First CV. Tous droits réservés.
             </p>
             <div className="flex space-x-4 text-sm text-gray-500">
-              <a
-                href="#"
-                className="hover:text-[var(--text-primary-color)] transition-colors"
-              >
-                Mentions légales
-              </a>
-              <span>|</span>
-              <a
-                href="#"
-                className="hover:text-[var(--text-primary-color)] transition-colors"
-              >
-                CGU
-              </a>
-              <span>|</span>
-              <a
-                href="#"
-                className="hover:text-[var(--text-primary-color)] transition-colors"
-              >
-                CGV
-              </a>
-              <span>|</span>
-              <a
-                href="#"
-                className="hover:text-[var(--text-primary-color)] transition-colors"
-              >
-                Politique de confidentialité
-              </a>
+              {links.map((item, index) => (
+                <div key={`link-${index}`} className="flex items-center gap-2">
+                  <Link
+                    href={item.href}
+                    className="hover:text-[var(--text-primary-color)] transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                  {index < links.length - 1 && <span>|</span>}
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -1,7 +1,9 @@
 import {
   Briefcase,
   Building2,
+  ClipboardList,
   Clock,
+  Euro,
   FileText,
   MessageSquare,
   Star,
@@ -15,6 +17,8 @@ const userRoutes = [
   { name: 'Quali Carrière CV', icon: FileText, href: '/quali-carriere' },
   { name: 'CV Minute', icon: Clock, href: '/cv-minute', ref: true },
   { name: 'CV et Offres', icon: Briefcase, href: '/cv-offres' },
+  { name: 'Mes Abonnements', icon: ClipboardList, href: '/mes-abonnements' },
+  { name: 'Mon Plan', icon: Euro, href: '/mon-plan' },
   // { name: 'Mes opportunités', icon: Star, href: '/opportunites' },
   // { name: 'Ma messagerie', icon: MessageSquare, href: '/user-message' },
   // { name: 'Mon Compte', icon: User, href: '/user-compte' },

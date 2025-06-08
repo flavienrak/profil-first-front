@@ -203,7 +203,7 @@ export default function EditPopup({
         const currentContent = form.getValues('content') || '';
         form.setValue(
           'content',
-          `${currentContent}  <p>${formatTextWithStrong(value)}</p>`,
+          `${currentContent} ${formatTextWithStrong(value)}`,
         );
       } else {
         form.setValue('content', value);

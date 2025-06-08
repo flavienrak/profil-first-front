@@ -1,6 +1,8 @@
-import { Users } from 'lucide-react';
-import Link from 'next/link';
+'use client';
+
 import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Logo({
   href,
@@ -12,17 +14,10 @@ export default function Logo({
   return (
     <Link href={href}>
       <div className="flex items-center gap-3 select-none">
-        <div className="text-[var(--u-secondary-color)] w-8 h-8">
-          <Users className="w-full h-full" strokeWidth={2.5} />
-        </div>
-        {showText && (
-          <span
-            className={`font-bold text-2xl text-[var(--u-secondary-color)] transition-all duration-500 overflow-hidden inline-block whitespace-nowrap ${
-              showText ? 'max-w-auto opacity-100' : 'max-w-0 opacity-0'
-            }`}
-          >
-            ProfilFirst
-          </span>
+        {showText ? (
+          <Image src={'/logo.png'} alt="" width={200} height={25} />
+        ) : (
+          <Image src={'/short-logo.png'} alt="" width={40} height={40} />
         )}
       </div>
     </Link>

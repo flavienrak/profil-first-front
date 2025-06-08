@@ -37,11 +37,11 @@ export default function LandingComponent() {
     <div className="min-h-screen [background-image:var(--bg-primary)] transition-all duration-150">
       <Header handleShowAuth={handleShowAuth} />
       <main>
-        <Hero />
+        <Hero handleShowAuth={handleShowAuth} />
         <CreatorInfo />
         <OptimizeExperience />
         <PersonalizedAdvice />
-        <Advantages />
+        <Advantages handleShowAuth={handleShowAuth} />
         <DemoSection />
         <Testimonials />
         <Faq />

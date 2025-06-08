@@ -20,8 +20,8 @@ export default function AuthComponent({
 
   return (
     <div className="w-[400px] p-1">
-      <div className="w-full flex flex-col gap-6 justify-center items-center rounded-lg">
-        <Card className="w-full p-4 bg-[var(--bg-secondary-color)] shadow-none border-none">
+      <div className="w-full justify-center items-center rounded-lg">
+        <Card className="w-full px-4 bg-[var(--bg-secondary-color)] shadow-none border-none">
           <h1 className="text-4xl text-[var(--u-primary-color)] text-center font-semibold mb-4">
             {isRegister ? 'Inscription' : 'Connexion'}
           </h1>
@@ -31,30 +31,31 @@ export default function AuthComponent({
             <LoginForm role={role} />
           )}
         </Card>
+
         {!empty && (
-          <>
+          <div className="pb-4">
             {isRegister ? (
-              <p
-                onClick={() => setIsRegister(false)}
-                className="text-[var(--text-primary-color)] text-center"
-              >
+              <p className="text-[var(--text-primary-color)] text-center">
                 A déjà un compte ?{' '}
-                <span className="underline underline-offset-4 cursor-pointer">
+                <span
+                  onClick={() => setIsRegister(false)}
+                  className="underline underline-offset-4 cursor-pointer"
+                >
                   Se connecter
                 </span>
               </p>
             ) : (
-              <p
-                onClick={() => setIsRegister(true)}
-                className="text-[var(--text-primary-color)] text-center"
-              >
+              <p className="text-[var(--text-primary-color)] text-center">
                 N'a pas encore de compte ?{' '}
-                <span className="underline underline-offset-4 cursor-pointer">
+                <span
+                  onClick={() => setIsRegister(true)}
+                  className="underline underline-offset-4 cursor-pointer"
+                >
                   S'inscrire
                 </span>
               </p>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>

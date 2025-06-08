@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import ReactPlayer from 'react-player';
 import MovingDots from './MovingDots';
 
 import { motion } from 'framer-motion';
@@ -76,21 +77,14 @@ export default function DemoSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* Demo Image Placeholder - Replace with actual demo UI */}
-            <div className="aspect-video rounded-lg bg-[var(--bg-primary-color)] overflow-hidden flex items-center justify-center">
-              <div className="text-center p-8">
-                <h3 className="text-2xl font-bold mb-4 text-[var(--text-primary-color)]">
-                  Visualisez comment optimiser votre CV
-                </h3>
-                <p className="text-lg text-[var(--text-secondary-gray)] mb-6">
-                  Notre interface intuitive vous guide à chaque étape pour
-                  maximiser l'impact de votre CV.
-                </p>
-                <div className="w-24 h-24 mx-auto rounded-full bg-[var(--u-primary-color)]/20 flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-[var(--u-primary-color)]/60 flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-[var(--u-primary-color)]"></div>
-                  </div>
-                </div>
-              </div>
+            <div className="aspect-video rounded-lg overflow-hidden flex items-center justify-center">
+              <ReactPlayer
+                url="/video.mp4"
+                playing={true}
+                loop={true}
+                controls={true}
+                muted={true}
+              />
             </div>
           </motion.div>
         </div>

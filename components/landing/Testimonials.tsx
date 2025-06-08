@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import MovingDots from './MovingDots';
 
 import { motion } from 'framer-motion';
@@ -89,9 +90,13 @@ export default function Testimonials() {
               >
                 <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
                   <div className="w-24 h-24 rounded-full bg-purple-100 flex items-center justify-center border-4 border-[var(--bg-secondary-color)] shadow-lg">
-                    <span className="text-5xl font-bold text-[var(--u-primary-color)]">
-                      {testimonial.author.charAt(0)}
-                    </span>
+                    <Image
+                      src={`/users/${testimonial.src}`}
+                      alt={testimonial.author}
+                      width={96}
+                      height={96}
+                      className="rounded-full"
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col h-full text-center">
