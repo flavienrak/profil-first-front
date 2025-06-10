@@ -46,6 +46,8 @@ export default function CvThequeLayout({
   );
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (pathname === '/cvtheque') {
       dispatch(resetCvThequeReducer());
     } else if (!params.cvAnonymId) {
@@ -55,10 +57,16 @@ export default function CvThequeLayout({
     (async () => {
       const res = await getCvThequeHistoryService();
 
-      if (res.history) {
-        dispatch(setCvThequeHistoryReducer({ history: res.history }));
+      if (isMounted) {
+        if (res.history) {
+          dispatch(setCvThequeHistoryReducer({ history: res.history }));
+        }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [pathname, params.cvAnonymId]);
 
   React.useEffect(() => {

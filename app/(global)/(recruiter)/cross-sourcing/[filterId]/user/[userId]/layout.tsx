@@ -36,18 +36,26 @@ export default function CrossSourcingUserLayout({
   }, [pathname]);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (params.userId) {
       (async () => {
         const res = await getUserCvMinutesService(Number(params.userId));
 
-        if (res.cvMinutes) {
-          dispatch(setUserCvMinutesReducer({ cvMinutes: res.cvMinutes }));
-        } else {
-          router.push(`/cross-sourcing/${params.filterId}`);
+        if (isMounted) {
+          if (res.cvMinutes) {
+            dispatch(setUserCvMinutesReducer({ cvMinutes: res.cvMinutes }));
+          } else {
+            router.push(`/cross-sourcing/${params.filterId}`);
+          }
+          setIsLoading(false);
         }
-        setIsLoading(false);
       })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [params.userId, users]);
 
   React.useEffect(() => {

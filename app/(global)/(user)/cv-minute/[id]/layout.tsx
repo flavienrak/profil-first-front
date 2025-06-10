@@ -36,6 +36,8 @@ export default function CvMinuteLayout({
   }, [user?.acceptConditions]);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (params.id) {
       if (isNaN(Number(params.id))) {
         router.push('/cv-minute');
@@ -44,23 +46,30 @@ export default function CvMinuteLayout({
           setIsLoading(true);
 
           const res = await getCvMinuteService(Number(params.id));
-          if (res.cvMinute) {
-            dispatch(
-              setCvMinuteReducer({
-                cvMinute: res.cvMinute,
-                sections: res.sections,
-                cvMinuteSections: res.cvMinuteSections,
-                files: res.files,
-              }),
-            );
-          } else {
-            router.push('/cv-minute');
-          }
 
-          setIsLoading(false);
+          if (isMounted) {
+            if (res.cvMinute) {
+              dispatch(
+                setCvMinuteReducer({
+                  cvMinute: res.cvMinute,
+                  sections: res.sections,
+                  cvMinuteSections: res.cvMinuteSections,
+                  files: res.files,
+                }),
+              );
+            } else {
+              router.push('/cv-minute');
+            }
+
+            setIsLoading(false);
+          }
         })();
       }
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [params.id]);
 
   const handleAcceptConditions = async () => {

@@ -122,6 +122,8 @@ export default function CvThequeDetailsLayout({
   }, [cvThequeCritere]);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (params.id) {
       if (isNaN(Number(params.id))) {
         router.push('/cvtheque');
@@ -132,19 +134,25 @@ export default function CvThequeDetailsLayout({
           setIsLoading(true);
           const res = await getCvThequeCritereService(Number(params.id));
 
-          if (res.cvThequeCritere) {
-            dispatch(
-              setCvThequeCritereReducer({
-                cvThequeCritere: res.cvThequeCritere,
-              }),
-            );
-          } else {
-            router.push('/cvtheque');
+          if (isMounted) {
+            if (res.cvThequeCritere) {
+              dispatch(
+                setCvThequeCritereReducer({
+                  cvThequeCritere: res.cvThequeCritere,
+                }),
+              );
+            } else {
+              router.push('/cvtheque');
+            }
+            setIsLoading(false);
           }
-          setIsLoading(false);
         })();
       }
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [params.id]);
 
   React.useEffect(() => {

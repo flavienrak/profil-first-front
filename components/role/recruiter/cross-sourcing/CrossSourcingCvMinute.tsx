@@ -24,6 +24,8 @@ export default function CrossSourcingCvMinute() {
   const [loadingCvMinute, setLoadingCvMinute] = React.useState(true);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (params.cvMinuteId) {
       (async () => {
         const res = await getUserCvMinuteService({
@@ -31,14 +33,20 @@ export default function CrossSourcingCvMinute() {
           cvMinuteId: Number(params.cvMinuteId),
         });
 
-        if (res.cvMinute) {
-          dispatch(setUserCvMinuteReducer({ cvMinute: res.cvMinute }));
-        } else {
-          router.push(`/cross-sourcing/${params.userId}`);
+        if (isMounted) {
+          if (res.cvMinute) {
+            dispatch(setUserCvMinuteReducer({ cvMinute: res.cvMinute }));
+          } else {
+            router.push(`/cross-sourcing/${params.userId}`);
+          }
+          setLoadingCvMinute(false);
         }
-        setLoadingCvMinute(false);
       })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [params.cvMinuteId, cvMinutes]);
 
   const increaseFontSize = () => {

@@ -24,6 +24,8 @@ export default function CvAnonymComponent() {
   const params = useParams();
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (params.id && params.cvAnonymId) {
       if (isNaN(Number(params.id)) || !cvThequeCritere) {
         router.push('/cvtheque');
@@ -36,19 +38,25 @@ export default function CvAnonymComponent() {
             Number(params.cvAnonymId),
           );
 
-          if (res.cvAnonym) {
-            dispatch(
-              setCvAnonymReducer({
-                cvAnonym: res.cvAnonym,
-                sections: res.sections,
-              }),
-            );
-          } else {
-            router.push(`/cvtheque/${params.id}`);
+          if (isMounted) {
+            if (res.cvAnonym) {
+              dispatch(
+                setCvAnonymReducer({
+                  cvAnonym: res.cvAnonym,
+                  sections: res.sections,
+                }),
+              );
+            } else {
+              router.push(`/cvtheque/${params.id}`);
+            }
           }
         })();
       }
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [params.id, params.cvAnonymId]);
 
   React.useEffect(() => {

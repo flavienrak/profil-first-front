@@ -52,20 +52,28 @@ export default function CrossSourcingFilterLayout({
   }, [params.userId]);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (domain) {
       (async () => {
         const res = await getUsersService(
           typeof domain === 'string' ? domain : domain.id,
         );
 
-        if (res.users) {
-          dispatch(setUsersReducer({ users: res.users }));
-        } else {
-          setDomain('all');
+        if (isMounted) {
+          if (res.users) {
+            dispatch(setUsersReducer({ users: res.users }));
+          } else {
+            setDomain('all');
+          }
+          setLoadingUsers(false);
         }
-        setLoadingUsers(false);
       })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [domain]);
 
   React.useEffect(() => {

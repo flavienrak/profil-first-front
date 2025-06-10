@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
 
+const nodeEnv = process.env.NODE_ENV;
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 const remotePatterns: { protocol: 'http' | 'https'; hostname: string }[] = [
   { protocol: 'https', hostname: 'images.unsplash.com' },
 ];
@@ -26,6 +28,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_VIDEO_URI: process.env.NEXT_PUBLIC_VIDEO_URI,
   },
+  reactStrictMode: nodeEnv === 'production' ? false : true,
 };
 
 export default nextConfig;

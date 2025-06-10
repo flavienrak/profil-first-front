@@ -29,6 +29,8 @@ export default function StepLayout({
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (user?.qualiCarriere === 'active') {
       router.push('/quali-carriere/success');
     } else if (params.step && isSocketReady) {
@@ -38,29 +40,35 @@ export default function StepLayout({
         (async () => {
           const res = await getQuestionService();
 
-          if (res.nextStep) {
-            dispatch(
-              setQuestionReducer({
-                cvMinute: res.cvMinute,
-                messages: res.messages,
-              }),
-            );
+          if (isMounted) {
+            if (res.nextStep) {
+              dispatch(
+                setQuestionReducer({
+                  cvMinute: res.cvMinute,
+                  messages: res.messages,
+                }),
+              );
 
-            if (Number(params.step) !== 2) {
-              router.push('/quali-carriere/2');
+              if (Number(params.step) !== 2) {
+                router.push('/quali-carriere/2');
+              }
+            } else if (res.nextQuestion) {
+              if (Number(params.step) !== 1) {
+                router.push('/quali-carriere/1');
+              }
+            } else if (res.noExperiences) {
+              setShowModal(true);
             }
-          } else if (res.nextQuestion) {
-            if (Number(params.step) !== 1) {
-              router.push('/quali-carriere/1');
-            }
-          } else if (res.noExperiences) {
-            setShowModal(true);
+
+            setQuestionLoaded(true);
           }
-
-          setQuestionLoaded(true);
         })();
       }
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [params.step, user?.qualiCarriere, isSocketReady]);
 
   return (

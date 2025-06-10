@@ -33,15 +33,23 @@ export default function CvOffresComponent() {
   const [showAnonym, setShowAnonym] = React.useState(false);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     (async () => {
       setIsLoading(true);
       const res = await getAllCvMinuteService();
 
-      if (res.cvMinutes) {
-        dispatch(setCvMinuteReducer({ cvMinutes: res.cvMinutes }));
+      if (isMounted) {
+        if (res.cvMinutes) {
+          dispatch(setCvMinuteReducer({ cvMinutes: res.cvMinutes }));
+        }
+        setIsLoading(false);
       }
-      setIsLoading(false);
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleChangeStatus = async () => {

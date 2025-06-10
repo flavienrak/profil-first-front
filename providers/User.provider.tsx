@@ -56,61 +56,76 @@ export default function UserProvider({
   const globalPaths = ['/conditions'];
 
   React.useEffect(() => {
+    let isMounted = true;
     (async () => {
       const res = await jwtService();
 
-      if (res.user) {
-        setUserId(res.user.id);
+      if (isMounted) {
+        if (res.user) {
+          setUserId(res.user.id);
 
-        if (res.user.role === 'user') {
-          if (
-            !userRoutes.some((r) => pathname.startsWith(r.href)) &&
-            !globalPaths.includes(pathname)
-          ) {
-            window.location.href =
-              userRoutes.find((item) => item.ref)?.href ?? '/';
+          if (res.user.role === 'user') {
+            if (
+              !userRoutes.some((r) => pathname.startsWith(r.href)) &&
+              !globalPaths.includes(pathname)
+            ) {
+              window.location.href =
+                userRoutes.find((item) => item.ref)?.href ?? '/';
+            } else {
+              setIsLoading(false);
+            }
           } else {
-            setIsLoading(false);
+            if (
+              !recruiterRoutes.some((r) => pathname.startsWith(r.href)) &&
+              !globalPaths.includes(pathname)
+            ) {
+              window.location.href =
+                recruiterRoutes.find((item) => item.ref)?.href ?? '/';
+            } else {
+              setIsLoading(false);
+            }
           }
         } else {
           if (
-            !recruiterRoutes.some((r) => pathname.startsWith(r.href)) &&
+            !notProtectedPaths.includes(pathname) &&
             !globalPaths.includes(pathname)
           ) {
-            window.location.href =
-              recruiterRoutes.find((item) => item.ref)?.href ?? '/';
+            window.location.href = '/';
           } else {
             setIsLoading(false);
           }
-        }
-      } else {
-        if (
-          !notProtectedPaths.includes(pathname) &&
-          !globalPaths.includes(pathname)
-        ) {
-          window.location.href = '/';
-        } else {
-          setIsLoading(false);
         }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [pathname]);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     if (userId) {
       (async () => {
         const res = await getUserService();
 
-        if (res.user) {
-          dispatch(
-            setUserReducer({
-              user: res.user,
-              cvMinuteCount: res.cvMinuteCount,
-            }),
-          );
+        if (isMounted) {
+          if (res.user) {
+            dispatch(
+              setUserReducer({
+                user: res.user,
+                cvMinuteCount: res.cvMinuteCount,
+              }),
+            );
+          }
         }
       })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [userId]);
 
   React.useEffect(() => {
