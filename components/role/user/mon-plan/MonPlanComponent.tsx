@@ -396,10 +396,7 @@ export default function MonPlanComponent() {
                   </h3>
                 </div>
                 <button
-                  onClick={() => {
-                    setShowFAQ(false);
-                    setSelectedQuestion(null);
-                  }}
+                  onClick={() => setShowFAQ(false)}
                   className="transition-colors cursor-pointer"
                 >
                   <X size={22} />
