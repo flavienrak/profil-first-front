@@ -110,12 +110,8 @@ const cgu = {
             applicable, chaque utilisateur dispose d’un droit d’accès, 
             de rectification, d’opposition et de suppression de ses données 
             personnelles, qu’il peut exercer en contactant le responsable 
-            du traitement à l’adresse suivante 
+            du traitement à l’adresse suivante info@savoircoaching.com.
           `,
-        },
-        {
-          type: 'mail',
-          desc: `victorien@savoircoaching.com.`,
         },
         {
           type: 'string',
@@ -225,22 +221,14 @@ const cgu = {
         },
         {
           type: 'string',
-          desc: 'L’interface principale des services est accessible à l’adresse suivante :',
-        },
-        {
-          type: 'link',
-          desc: 'https://profilfirst.com',
+          desc: 'L’interface principale des services est accessible à l’adresse suivante : https://profilfirst.com',
         },
         {
           type: 'string',
           desc: `Les demandes de contact formel, les échanges relatifs à 
             la gestion de compte ou toute réclamation doivent être adressés 
-            à l’adresse électronique officielle suivante : 
+            à l’adresse électronique officielle suivante : info@savoircoaching.com.
           `,
-        },
-        {
-          type: 'mail',
-          desc: `victorien@savoircoaching.com`,
         },
         {
           type: 'string',

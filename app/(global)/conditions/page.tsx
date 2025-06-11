@@ -1,5 +1,5 @@
 import React from 'react';
-import ConditionsComponent from '@/components/role/user/conditions/ConditionsComponent';
+import ConditionsComponent from '@/components/conditions/ConditionsComponent';
 
 import { Metadata } from 'next';
 

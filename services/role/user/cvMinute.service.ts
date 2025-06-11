@@ -129,6 +129,16 @@ const updateCvMinuteProfileService = async (id: number, formData: FormData) => {
   }
 };
 
+// DELETE CVMINUTE
+const deleteCvMinuteService = async (id: number) => {
+  try {
+    const res = await api.delete(`${cvMinutePrefix}/${id}`);
+    return res.data;
+  } catch (error) {
+    return { error: `DELETE CVMINUTE ERROR: ${error}` };
+  }
+};
+
 // UPDATE CVMINUTESECTION
 const updateCvMinuteSectionService = async (data: {
   id: number;
@@ -263,6 +273,7 @@ export {
   optimizeCvMinuteService,
   updateCvMinuteProfileService,
   generateNewCvMinuteSectionsService,
+  deleteCvMinuteService,
 
   // CVMINUTE SECTION
   generateCvMinuteSectionAdvicesService,

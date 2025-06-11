@@ -121,7 +121,7 @@ export default function CvOffresComponent() {
         </button>
       </div>
 
-      <div className="space-y-2 mb-8">
+      {/* <div className="space-y-2 mb-8">
         {infos.map((item, index) => (
           <div
             key={`cv-offre-section-${index}`}
@@ -131,7 +131,7 @@ export default function CvOffresComponent() {
             <span>{item.label}</span>
           </div>
         ))}
-      </div>
+      </div> */}
 
       <div className="grid md:grid-cols-3 gap-6">
         {isLoading ? (

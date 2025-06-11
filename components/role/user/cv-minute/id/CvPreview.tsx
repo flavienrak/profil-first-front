@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import Popup from '@/components/utils/Popup';
 import Guide from '@/components/utils/role/user/Guide';
@@ -11,6 +10,9 @@ import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
 import TextEditor from '@/components/utils/TextEditor';
 import LucideIcon from '@/components/utils/LucideIcon';
 
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -45,6 +47,7 @@ import {
   updateCvMinuteSectionScoreService,
   optimizeCvMinuteService,
   generateNewCvMinuteSectionsService,
+  updateCvMinuteNameService,
 } from '@/services/role/user/cvMinute.service';
 import {
   updateCvMinuteSectionReducer,
@@ -56,10 +59,20 @@ import {
   setCvMinuteReducer,
   updateCvMinuteProfileReducer,
 } from '@/redux/slices/role/user/cvMinute.slice';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { backendUri, videoUri } from '@/providers/User.provider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
 import { handleVideo } from '@/lib/function';
+import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
 
 export interface FieldInterface {
   key: string;
@@ -174,9 +187,16 @@ const optimizeOptions = [
 
 type CvMinuteSectionType = 'contact' | 'editableSection' | 'experience';
 
+const formSchema = z.object({
+  name: z.string().trim().min(1, 'Nom requis'),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 export default function CvPreview() {
   const cvRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const { user } = useSelector((state: RootState) => state.user);
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
@@ -217,13 +237,29 @@ export default function CvPreview() {
   const [showGuide, setShowGuide] = React.useState(false);
   const [showVideo, setShowVideo] = React.useState(false);
   const [review, setReview] = React.useState(false);
-  const [redirectLoading, setRedirectLoading] = React.useState(false);
   const [showMatching, setShowMatching] = React.useState(false);
   const [showOptimize, setShowOptimize] = React.useState(false);
+  const [showCvMinuteSave, setShowCvMinuteSave] = React.useState(false);
 
   const [currentGuideStep, setCurrentGuideStep] = React.useState(0);
   const [loadingGlobal, setLoadingGlobal] = React.useState(false);
   const [loadingOptimize, setLoadingOptimize] = React.useState(false);
+  const [isLoadingSave, setIsLoadingSave] = React.useState(false);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+    },
+  });
+
+  React.useEffect(() => {
+    if (cvMinute?.name) {
+      form.reset({
+        name: cvMinute.name,
+      });
+    }
+  }, [cvMinute?.name]);
 
   const increaseFontSize = () => {
     dispatch(updatePersistReducer({ fontSize: fontSize + 1 }));
@@ -300,6 +336,24 @@ export default function CvPreview() {
     event.preventDefault();
   };
 
+  // SAVE CVMINUTE
+  const handleSaveCvMinute = async (data: FormValues) => {
+    const parseRes = formSchema.safeParse(data);
+
+    if (cvMinute && parseRes.success) {
+      setIsLoadingSave(true);
+
+      if (parseRes.data.name !== cvMinute.name) {
+        await updateCvMinuteNameService({
+          id: cvMinute.id,
+          name: parseRes.data.name,
+        });
+      }
+
+      router.push('/cv-offres');
+    }
+  };
+
   // CVMINUTE SECTION ORDER
   const handleDropCvMinuteSection = async (data: {
     event: React.DragEvent<HTMLDivElement>;
@@ -353,6 +407,7 @@ export default function CvPreview() {
     }
   };
 
+  // DELETE CVMINUTE SECTION
   const handleDeleteCvMinuteSection = async (id: number) => {
     if (cvMinute) {
       const res = await deleteCvMinuteSectionService({
@@ -538,36 +593,12 @@ export default function CvPreview() {
             >
               Optimiser en un clic
             </button>
-            <Link
-              href="/cv-offres"
-              onClick={() => setRedirectLoading(true)}
-              className={`step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-sm text-sm font-semibold text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] select-none ${
-                redirectLoading
-                  ? 'opacity-80 pointer-events-none'
-                  : 'hover:opacity-80'
-              }`}
+            <button
+              onClick={() => setShowCvMinuteSave(true)}
+              className="step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-sm text-sm font-semibold text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] select-none hover:opacity-80 cursor-pointer"
             >
-              {redirectLoading && (
-                <svg
-                  aria-hidden="true"
-                  role="status"
-                  className="inline w-5 h-5 animate-spin"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="#E5E7EB"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              )}
               <span>Enregistrer le CV et l’offre</span>
-            </Link>
+            </button>
             <button
               onClick={handleDownload}
               className="step-6 flex justify-center items-center gap-2 h-12 py-3 ps-4 pe-6 font-semibold rounded-sm text-sm text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer select-none"
@@ -1803,6 +1834,65 @@ export default function CvPreview() {
             onPrevious={handlePreviousGuide}
             onClose={() => setShowGuide(false)}
           />
+        )}
+
+        {showCvMinuteSave && (
+          <Popup onClose={() => setShowCvMinuteSave(false)}>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSaveCvMinute)}>
+                <div className="flex flex-col gap-8 rounded-xl p-8 max-w-lg w-full text-center">
+                  <h2 className="text-2xl text-[var(--u-primary-color)] font-bold">
+                    Enregistrer le CV
+                  </h2>
+
+                  <div className="flex flex-col gap-4">
+                    <p className="text-[var(--text-primary-color)]">
+                      Votre CV est prêt à être enregistré. Vous pouvez modifier
+                      le titre ici si vous souhaitez le changer.
+                    </p>
+                    <FormField
+                      name="name"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel
+                            htmlFor="name"
+                            className="text-base text-[var(--text-primary-color)]"
+                          >
+                            Titre du CV
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative flex items-center">
+                              <Input
+                                id="name"
+                                {...field}
+                                autoComplete="off"
+                                className="h-12 px-4 text-[var(--text-primary-color)] border-[var(--text-primary-color)]/25 placeholder:text-[var(--text-tertiary-gray)]"
+                                placeholder={cvMinute.name}
+                                required
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-xs">
+                            {form.formState.errors.name?.message}
+                          </FormMessage>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex justify-center gap-4">
+                    <PrimaryButton
+                      type="submit"
+                      label="Confirmer"
+                      isLoading={isLoadingSave}
+                      className="h-12 px-8 text-base rounded-full"
+                    />
+                  </div>
+                </div>
+              </form>
+            </Form>
+          </Popup>
         )}
       </div>
     );

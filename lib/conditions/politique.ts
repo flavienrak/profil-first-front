@@ -24,12 +24,8 @@ const politique = {
           type: 'string',
           desc: `
             Le responsable du traitement des données est l’entité exploitante 
-            de la plateforme accessible à l’adresse suivante : 
+            de la plateforme accessible à l’adresse suivante : https://profilfirst.com
           `,
-        },
-        {
-          type: 'link',
-          desc: `https://profilfirst.com`,
         },
         {
           type: 'string',
@@ -52,12 +48,8 @@ const politique = {
         {
           type: 'string',
           desc: `Les échanges relatifs à la gestion des données personnelles 
-            peuvent être adressés par voie électronique à l’adresse suivante : 
+            peuvent être adressés par voie électronique à l’adresse suivante : info@savoircoaching.com
           `,
-        },
-        {
-          type: 'mail',
-          desc: `victorien@savoircoaching.com`,
         },
         {
           type: 'string',
@@ -307,15 +299,9 @@ const politique = {
         },
         {
           type: 'string',
-          desc: `Ces droits peuvent être exercés en contactant l’adresse :`,
-        },
-        {
-          type: 'mail',
-          desc: `victorien@savoircoaching.com`,
-        },
-        {
-          type: 'string',
-          desc: `accompagnée d’un justificatif d’identité si nécessaire.`,
+          desc: `Ces droits peuvent être exercés en contactant l’adresse : info@savoircoaching.com 
+            accompagnée d’un justificatif d’identité si nécessaire.
+          `,
         },
       ],
     },

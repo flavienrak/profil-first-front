@@ -152,20 +152,11 @@ const cgv = {
             à l’adresse suivante : 6 rue Ferragus, 93300 Aubervilliers, France. 
             Le titulaire légal et exploitant unique de ladite entité est 
             M. Victorien Amarouche, exerçant à titre personnel. 
-            Les échanges électroniques doivent être adressés à 
+            Les échanges électroniques doivent être adressés à info@savoircoaching.com 
+            (SIRET :  807 804 703). Le site Internet utilisé comme support 
+            contractuel est accessible via l’URL suivante : https://profilfirst.com 
+            lequel centralise les interfaces de commande, contact et documentation.
           `,
-        },
-        { type: 'mail', desc: 'victorien@savoircoaching.com' },
-        {
-          type: 'string',
-          desc: `(SIRET :  807 804 703). Le site Internet utilisé comme support 
-            contractuel est accessible via l’URL suivante : 
-          `,
-        },
-        { type: 'link', desc: 'https://profilfirst.com' },
-        {
-          type: 'string',
-          desc: `lequel centralise les interfaces de commande, contact et documentation.`,
         },
       ],
     },

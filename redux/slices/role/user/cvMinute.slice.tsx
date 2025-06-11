@@ -146,6 +146,13 @@ const cvMinuteSlice = createSlice({
           );
       }
     },
+    deleteCvMinuteReducer: (state, action) => {
+      const data: { cvMinute: CvMinuteInterface } = action.payload;
+
+      state.cvMinutes = state.cvMinutes.filter(
+        (c) => c.id !== data.cvMinute.id,
+      );
+    },
   },
 });
 
@@ -160,6 +167,7 @@ export const {
   updateCvMinuteSectionAdvicesReducer,
   updateCvMinuteSectionOrderReducer,
   deleteCvMinuteSectionReducer,
+  deleteCvMinuteReducer,
 } = cvMinuteSlice.actions;
 
 export default cvMinuteSlice.reducer;
