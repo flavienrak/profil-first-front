@@ -116,14 +116,14 @@ export default function CvMinuteComponent() {
                   2
                 </span>
                 <h2 className="text-lg font-semibold text-[var(--text-primary-color)]">
-                  Collez l'offre d'emploi
+                  Collez l'offre d'emploi ou le titre du poste
                 </h2>
               </div>
               <textarea
                 required
                 onChange={(event) => setPosition(event.target.value)}
                 className="w-full h-52 p-4 text-[var(--text-primary-color)] placeholder:text-[var(--text-secondary-gray)] border-2 border-[var(--text-primary-color)]/25 rounded-xl focus:outline-none focus:border-[var(--u-primary-color)] focus:ring-2 focus:ring-[var(--u-primary-color)]/20 resize-none"
-                placeholder="Copiez-collez ici le contenu de l'offre d'emploi..."
+                placeholder="Collez ici l'offre d'emploi ou le titre du poste..."
               />
             </div>
           </div>
