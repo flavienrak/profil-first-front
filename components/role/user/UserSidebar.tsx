@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Logo from '@/components/utils/Logo';
 import LogoutButton from '@/components/utils/LogoutButton';
 
@@ -11,9 +12,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import { userRoutes } from '@/lib/constants';
 import { RootState } from '@/redux/store';
+import { useUser } from '@/providers/User.provider';
 
 export default function UserSidebar({ showMenu }: { showMenu: boolean }) {
+  const { user } = useSelector((state: RootState) => state.user);
   const { mode } = useSelector((state: RootState) => state.persistInfos);
+  const { credits } = useUser();
 
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -68,6 +72,22 @@ export default function UserSidebar({ showMenu }: { showMenu: boolean }) {
               </Link>
             </li>
           ))}
+          <li
+            className={`h-12 flex items-center gap-3 text-[var(--u-secondary-color)] border-t border-[var(--text-primary-color)]/10 mt-3 ${
+              showMenu ? 'px-4' : 'justify-center px-2'
+            }`}
+          >
+            <Image src="/credit.png" alt="" width={22} height={22} />
+            {showMenu && (
+              <span className="font-medium transition-all duration-150 overflow-hidden whitespace-nowrap text-ellipsis">
+                {user &&
+                user.payments &&
+                user.payments.some((item) => item.status === 'paid')
+                  ? `${credits} Crédits IA`
+                  : 'Version gratuite'}
+              </span>
+            )}
+          </li>
         </ul>
       </nav>
 

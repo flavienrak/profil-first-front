@@ -8,18 +8,20 @@ import { loadStripe } from '@stripe/stripe-js';
 import { jwtService } from '@/services/auth.service';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getUserService } from '@/services/all-user.service';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUserReducer } from '@/redux/slices/user.slice';
 import { recruiterRoutes, userRoutes } from '@/lib/constants';
+import { RootState } from '@/redux/store';
 
 interface CurrentQueryInterface {
   step?: string | number;
   cvMinute?: string | number;
   [key: string]: string | number | boolean | null | undefined;
 }
+
 interface UserProviderContextType {
   isLoading: boolean;
-  currentQuery: CurrentQueryInterface | null;
+  credits: number;
   handleRemoveQuery: (value: string) => void;
 }
 
@@ -47,6 +49,8 @@ export default function UserProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useSelector((state: RootState) => state.user);
+
   const dispatch = useDispatch();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -56,6 +60,7 @@ export default function UserProvider({
     React.useState<CurrentQueryInterface | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [userId, setUserId] = React.useState<string | number | null>(null);
+  const [credits, setCredits] = React.useState(0);
 
   const notProtectedPaths = ['/', '/conditions'];
   const notProtectedPathsRegex = /^\/(payment)\/[^\/]+$/;
@@ -139,6 +144,27 @@ export default function UserProvider({
   }, [userId]);
 
   React.useEffect(() => {
+    if (user && user.payments) {
+      const actualCredits = user.payments.reduce((sum, item) => {
+        if (item.credit && item.credit.value) {
+          if (item.type === 'booster') {
+            return sum + item.credit.value;
+          } else if (
+            item.type === 'premium' &&
+            item.expiredAt &&
+            new Date(item.expiredAt) > new Date()
+          ) {
+            return sum + item.credit.value;
+          }
+        }
+        return sum;
+      }, 0);
+
+      setCredits(actualCredits);
+    }
+  }, [user?.payments]);
+
+  React.useEffect(() => {
     const updateQuery = qs.parse(params.toString());
     setCurrentQuery(updateQuery as CurrentQueryInterface);
   }, [params]);
@@ -160,7 +186,7 @@ export default function UserProvider({
     <UserContext.Provider
       value={{
         isLoading,
-        currentQuery,
+        credits,
         handleRemoveQuery,
       }}
     >

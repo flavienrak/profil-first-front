@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { domains } from '@/lib/constants';
-import { DomainType } from '@/types/Domain.type';
+import { DomainType } from '@/types/domain.type';
 
 export default function CrossSourcingFilterLayout({
   children,

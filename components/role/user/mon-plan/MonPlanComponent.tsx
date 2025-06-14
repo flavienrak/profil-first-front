@@ -18,27 +18,12 @@ import { stripePromise } from '@/providers/User.provider';
 import { PaymentInterface, PaymentType } from '@/interfaces/payment.interface';
 import { updatePaymentReducer } from '@/redux/slices/user.slice';
 
-interface UserSubscription {
-  premiumActive: boolean;
-  premiumExpiry?: Date;
-  boosterCredits: number;
-  qualiCarriereActive: boolean;
-  qualiCarriereExpiry?: Date;
-}
-
 export default function MonPlanComponent() {
   const { user } = useSelector((state: RootState) => state.user);
   const { mode } = useSelector((state: RootState) => state.persistInfos);
 
   const faqRef = React.useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
-
-  const [userSubscription, setUserSubscription] =
-    React.useState<UserSubscription>({
-      premiumActive: false,
-      boosterCredits: 0,
-      qualiCarriereActive: false,
-    });
 
   const [showFAQ, setShowFAQ] = React.useState(false);
   const [paymentLoading, setPaymentLoading] =
@@ -119,7 +104,7 @@ export default function MonPlanComponent() {
   };
 
   return (
-    <div className="max-h-screen w-full overflow-y-auto flex justify-center">
+    <div className="max-h-full w-full overflow-y-auto flex justify-center">
       <div className="max-w-7xl h-max flex flex-col gap-12 py-8 px-4">
         {/* Header Section */}
         <div className="flex flex-col gap-6">
@@ -170,7 +155,7 @@ export default function MonPlanComponent() {
                     / mois
                   </span>
                 </div>
-                <p className="text-sm text-purple-600 font-semibold mt-2">
+                <p className="text-purple-600 font-semibold mt-2">
                   📦 100K crédits IA / mois
                 </p>
               </div>
@@ -287,7 +272,7 @@ export default function MonPlanComponent() {
                     6,99 €
                   </span>
                 </div>
-                <p className="text-sm text-orange-600 font-semibold mt-2">
+                <p className="text-orange-600 font-semibold mt-2">
                   📦 25K crédits IA (one-shot)
                 </p>
               </div>
@@ -389,7 +374,7 @@ export default function MonPlanComponent() {
                     9,99 €
                   </span>
                 </div>
-                <p className="text-sm text-green-600 font-semibold mt-2">
+                <p className="text-green-600 font-semibold mt-2">
                   📅 Accès 6 mois (one-shot)
                 </p>
               </div>

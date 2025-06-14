@@ -1,3 +1,5 @@
+import { CreditInterface } from './credit.interface';
+
 export type PaymentType = 'premium' | 'booster' | 'quali-carriere';
 
 export interface PaymentInterface {
@@ -8,7 +10,10 @@ export interface PaymentInterface {
   sessionId: string;
   status: 'draft' | 'open' | 'paid' | 'uncollectible' | 'void	';
   expiredAt?: Date;
+  paymentId: number;
   userId: number;
+
+  credit?: CreditInterface;
 
   createdAt: Date;
   updatedAt: Date;

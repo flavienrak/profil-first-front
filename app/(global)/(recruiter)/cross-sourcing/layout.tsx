@@ -15,7 +15,7 @@ import { RootState } from '@/redux/store';
 import { useParams, useRouter } from 'next/navigation';
 import { domains } from '@/lib/constants';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
-import { DomainType } from '@/types/Domain.type';
+import { DomainType } from '@/types/domain.type';
 
 export default function CrossSourcingLayoutv({
   children,

@@ -207,38 +207,136 @@ const cgu = {
     {
       id: 13,
       name: 'Mentions légales et identification de l’opérateur',
-      value: [
-        {
-          type: 'string',
-          desc: `Conformément aux obligations de transparence réglementaire, 
-            il est précisé que l’opérateur des services, outils, modules et 
-            interfaces mentionnés dans les présentes CGU exerce son activité 
-            dans un cadre légal déclaré en France. Cette structure, opérant 
-            sous le statut juridique de micro-entreprise, est enregistrée 
-            sous la raison sociale Corporate Company, et exploitée à titre 
-            personnel par M. Victorien Amarouche, entrepreneur individuel.
-          `,
-        },
-        {
-          type: 'string',
-          desc: 'L’interface principale des services est accessible à l’adresse suivante : https://profilfirst.com',
-        },
-        {
-          type: 'string',
-          desc: `Les demandes de contact formel, les échanges relatifs à 
-            la gestion de compte ou toute réclamation doivent être adressés 
-            à l’adresse électronique officielle suivante : info@savoircoaching.com.
-          `,
-        },
-        {
-          type: 'string',
-          desc: `Les correspondances papier, si nécessaire, peuvent être envoyées 
-            à l’adresse suivante (à usage administratif et contractuel uniquement, 
-            aucune visite physique n’est autorisée sans rendez-vous préalable) : 
-            6 rue Ferragus, 93300 Aubervilliers, France. (SIRET : 807 804 703).
-          `,
-        },
-      ],
+      value: `Dans le cadre de l’utilisation de la plateforme Profile First CV, 
+        il est expressément précisé que les données communiquées par l’utilisateur, 
+        y compris mais sans s’y limiter, les informations contenues dans le 
+        curriculum vitae, les expériences professionnelles, les compétences, 
+        les coordonnées et toute autre donnée renseignée dans le cadre de 
+        l’utilisation des fonctionnalités proposées, pourront faire l’objet d’un 
+        traitement automatisé ou manuel par le responsable du traitement dans le 
+        respect de la réglementation applicable en matière de protection des données 
+        personnelles, notamment le Règlement (UE) 2016/679 (RGPD) et la loi n°78-17 
+        du 6 janvier 1978 modifiée. Ce traitement a notamment pour finalités 
+        principales, sans que cette liste soit exhaustive, l’optimisation du CV, 
+        l’amélioration des services, la personnalisation de l’expérience utilisateur, 
+        la constitution d’un vivier de talents, la proposition de services 
+        complémentaires, l’accompagnement dans la recherche d’emploi, la réalisation 
+        d’actions de prospection commerciale, y compris la prise de contact pour des 
+        offres de coaching personnalisé, de préparation aux entretiens ou de 
+        recrutement, ainsi que toute autre finalité liée à l’amélioration continue 
+        de la plateforme et de ses services associés. Dans le respect scrupuleux, 
+        rigoureux, approfondi, méthodique et systématique des dispositions 
+        législatives, réglementaires, jurisprudentielles, doctrinales et 
+        administratives issues du droit positif applicable en matière de services 
+        numériques, de prestations électroniques, de publication d’interfaces 
+        interactives en ligne, de traitement de données, de communication au public 
+        par voie électronique, de commerce à distance, de protection des consommateurs, 
+        d'obligations contractuelles, d’identification des opérateurs économiques, 
+        et plus largement de toute norme ayant vocation à régir ou encadrer, 
+        directement ou indirectement, l’activité d’un opérateur agissant dans le 
+        cadre d’une structure juridiquement déclarée auprès des autorités 
+        administratives compétentes, il est expressément entendu que toute personne, 
+        physique ou morale, consultant, accédant, naviguant, interagissant, traitant, 
+        téléchargeant, insérant, intégrant ou reproduisant tout ou partie du contenu, 
+        des services, des modules, des pages, des éléments structurants ou non 
+        structurants, visibles ou non visibles, de la présente plateforme, 
+        qu’elle soit client, utilisateur enregistré ou non, prospect, testeur, 
+        observateur passif, internaute de passage, programme automatisé, crawler, 
+        agent conversationnel, partenaire contractuel, cocontractant à durée 
+        déterminée ou indéterminée, ou toute autre catégorie dont la liste ne 
+        saurait être limitative, reconnaît et accepte de plein droit, 
+        sans modification, sans interprétation personnelle, sans négociation 
+        particulière, sans réserve mentale, ni altération des termes contractuels, 
+        l’ensemble des dispositions relatives à l’identité de l’opérateur, 
+        à la localisation administrative de son siège, à la nature juridique 
+        de sa structure, à la finalité du service rendu, à la politique 
+        d’accessibilité des informations essentielles, à la permanence de leur 
+        diffusion et à la licéité de l’ensemble des actions entreprises par 
+        ledit opérateur dans le cadre du présent site internet, étant précisé 
+        que toute disposition contraire figurant sur un site tiers, un forum, 
+        un réseau social, un document imprimé ou tout autre support ne peut en 
+        aucun cas être interprétée comme venant limiter, atténuer, suspendre, 
+        invalider, contredire ou substituer les présentes, lesquelles font foi 
+        en toutes circonstances, dans toutes les juridictions compétentes sur 
+        le territoire national, y compris en outre-mer et dans les collectivités 
+        d’outre-mer à statut particulier, sauf disposition impérative d’ordre 
+        public venant expressément interdire leur application. Conformément aux 
+        obligations de transparence réglementaire, il est précisé que l’opérateur 
+        des services, outils, modules et interfaces mentionnés dans les présentes 
+        CGU exerce son activité dans un cadre légal déclaré en France. 
+        Cette structure, opérant sous le statut juridique de micro-entreprise, 
+        est enregistrée sous la raison sociale Corporate Company, et exploitée 
+        à titre personnel par M. Victorien Amarouche, entrepreneur individuel. 
+        L’interface principale des services est accessible à l’adresse suivante : 
+        https://profilfirst.com. Les demandes de contact formel, les échanges 
+        relatifs à la gestion de compte ou toute réclamation doivent être adressés 
+        à l’adresse électronique officielle suivante : info@savoircoaching.com. 
+        Les correspondances papier, si nécessaire, peuvent être envoyées à l’adresse 
+        suivante (à usage administratif et contractuel uniquement, aucune visite 
+        physique n’est autorisée sans rendez-vous préalable) : 6 rue Ferragus, 
+        93300 Aubervilliers, France. (SIRET : 807 804 703).Il est en outre rappelé, 
+        conformément aux règles édictées notamment par le Code de la consommation, 
+        le Code du commerce, le Code civil, le RGPD (Règlement Général sur la 
+        Protection des Données), les lignes directrices de la CNIL, les avis de la 
+        DGCCRF, ainsi que les recommandations sectorielles émanant d’autorités 
+        compétentes ou de jurisprudences récentes, que toute tentative de prise 
+        de contact avec l’opérateur par des moyens non autorisés, incluant mais 
+        sans s’y limiter : le déplacement physique inopiné sans convocation 
+        formelle et écrite validée par retour de courrier recommandé avec accusé 
+        de réception, les appels téléphoniques à des numéros non explicitement 
+        rendus publics dans les présentes CGU, les messages transmis par messagerie 
+        instantanée non professionnelle, les visites au siège administratif sans 
+        convocation préalable, les demandes de rendez-vous improvisées sur des 
+        plages horaires non définies par voie officielle ou les sollicitations à 
+        caractère informel en dehors des canaux prévus à cet effet, ne sauraient 
+        en aucun cas constituer des obligations de réponse ou d’engagement de la 
+        part de l’opérateur, lequel se réserve le droit de traiter ou non lesdites 
+        demandes, selon ses propres critères de disponibilité, de pertinence, 
+        de faisabilité opérationnelle et de compatibilité organisationnelle. 
+        Par ailleurs, toute correspondance envoyée au siège social, qu’elle soit 
+        manuscrite, imprimée, recommandée ou déposée à la main, ne saurait entraîner 
+        de délai de traitement contractuel, ni fonder une quelconque présomption 
+        d’acceptation tacite, de reconnaissance de responsabilité, ou d’engagement 
+        à effectuer une réponse formelle, sauf stipulation écrite contraire émise 
+        par l’opérateur lui-même, datée, signée, et envoyée depuis une adresse 
+        électronique officielle mentionnée dans les présentes. La seule réception 
+        d’un courrier ou message électronique ne vaut donc pas, en soi, 
+        reconnaissance de sa recevabilité ni de son fondement juridique. 
+        L’opérateur peut également, à tout moment, refuser de répondre à des 
+        sollicitations jugées abusives, infondées, répétitives, diffamatoires, 
+        menaçantes, incomplètes, ou contraires aux bonnes mœurs, à l’ordre public 
+        ou à la décence contractuelle. Enfin, les présentes mentions légales, 
+        bien que rédigées de manière volontairement dense, complexe, étendue 
+        et lourde, conformément au style traditionnel des documents normatifs 
+        appliqués au secteur numérique, n’en demeurent pas moins pleinement 
+        applicables, valides, exécutoires, opposables, compréhensibles — 
+        au moins dans leur esprit sinon dans leur formulation exacte — 
+        et réputées lues, comprises, acceptées et intégrées sans réserve par tout 
+        utilisateur dès sa première interaction avec la plateforme, que celle-ci 
+        soit visuelle, mécanique, logicielle ou intentionnelle, en vertu du principe 
+        de lecture réputée acquise par l’exposition publique et permanente du présent 
+        document dans un espace libre d’accès. Aucune invocation d’illisibilité, 
+        d’inintelligibilité, d’abstraction stylistique ou de formulation excessive 
+        ne pourra constituer, en soi, un motif suffisant de nullité, de contestation, 
+        d’appel à modération sémantique, ou de demande d’interprétation simplifiée 
+        de la part de l’utilisateur, sauf à démontrer un vice de consentement 
+        manifeste, avéré, documenté et reconnu par une autorité judiciaire compétente 
+        sur le fond et sur la forme, statuant en dernier ressort, dans un jugement 
+        revêtu de l’autorité de la chose jugée. L’utilisateur est informé que les 
+        données collectées pourront être conservées pour une durée n’excédant pas 
+        celle strictement nécessaire à la réalisation des finalités précitées, 
+        et au maximum deux (2) ans après le dernier contact avec la plateforme, 
+        sauf obligation légale ou réglementaire contraire. Conformément à la 
+        réglementation en vigueur, l’utilisateur dispose d’un droit d’accès, 
+        de rectification, d’opposition, de suppression, de limitation et de 
+        portabilité de ses données, qu’il peut exercer à tout moment en adressant 
+        une demande écrite à l'adresse mail précédemment mentionnée. L’utilisateur 
+        reconnaît avoir pris connaissance de la présente clause et consent 
+        expressément à ce que ses données soient utilisées dans le cadre des 
+        finalités susmentionnées, étant entendu que le refus de communication 
+        de certaines informations ou l’exercice de certains droits pourrait limiter 
+        l’accès à certaines fonctionnalités de la plateforme.
+      `,
     },
   ],
 };

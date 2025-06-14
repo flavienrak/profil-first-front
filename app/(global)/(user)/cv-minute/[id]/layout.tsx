@@ -82,7 +82,7 @@ export default function CvMinuteLayout({
   };
 
   return (
-    <div>
+    <div className="h-full">
       {isLoading ? (
         <div>
           <Skeleton />

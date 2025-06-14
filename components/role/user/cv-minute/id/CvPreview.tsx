@@ -67,7 +67,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { backendUri, videoUri } from '@/providers/User.provider';
+import { backendUri, useUser, videoUri } from '@/providers/User.provider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
 import { handleVideo } from '@/lib/function';
@@ -201,6 +201,7 @@ export default function CvPreview() {
   const { user } = useSelector((state: RootState) => state.user);
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
   const { cvMinute } = useSelector((state: RootState) => state.cvMinute);
+  const { credits } = useUser();
 
   const getCvMinuteSection = (value: string) => {
     return cvMinute?.cvMinuteSections?.find((c) => c.name === value);
@@ -551,7 +552,7 @@ export default function CvPreview() {
 
   if (cvMinute)
     return (
-      <div className="flex justify-center flex-col">
+      <div className="h-full flex justify-center flex-col">
         <div className="w-full px-8 h-20 border-b border-[var(--text-primary-color)]/15 flex items-center">
           <div className="w-full flex justify-center items-center gap-5">
             <button
@@ -609,16 +610,37 @@ export default function CvPreview() {
           </div>
         </div>
 
-        <div className="relative h-[calc(100vh-5rem)] w-full">
-          <div className="absolute top-0 left-0 flex items-center gap-2 p-1 text-[var(--text-primary-color)]">
-            <Image
-              src="/credit.png"
-              alt="Crédit"
-              width={30}
-              height={30}
-              className="rounded-full"
-            />
-            <span className="text-sm font-bold">25000 Crédits</span>
+        <div className="relative h-[calc(100%-5rem)] w-full">
+          <div className="absolute top-0 left-0 min-w-40 p-1">
+            {user &&
+            user.payments &&
+            user.payments.some((item) => item.status === 'paid') ? (
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1 text-[var(--text-primary-color)]">
+                  <Image
+                    src="/credit.png"
+                    alt="Crédit"
+                    width={30}
+                    height={30}
+                    className="rounded-full"
+                  />
+                  <span className="text-sm font-bold">
+                    {credits} Crédits IA
+                  </span>
+                </div>
+                <div className="w-full flex justify-center items-center p-1 rounded-md bg-yellow-400/10">
+                  <span className="font-bold text-yellow-500">
+                    Profil Premium
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="w-full flex justify-center items-center p-1 rounded-md bg-yellow-400/10">
+                <span className="font-bold text-yellow-500">
+                  Version gratuite
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="w-full h-full overflow-y-auto">
