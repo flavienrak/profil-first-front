@@ -43,7 +43,7 @@ const cvMinuteSlice = createSlice({
       const data: { cvMinuteSection: CvMinuteSectionInterface } =
         action.payload;
 
-      if (state.cvMinute) {
+      if (state.cvMinute && state.cvMinute.cvMinuteSections) {
         const index = state.cvMinute.cvMinuteSections.findIndex(
           (c) => c.id === data.cvMinuteSection.id,
         );
@@ -58,12 +58,12 @@ const cvMinuteSlice = createSlice({
     updateCvMinuteProfileReducer: (state, action) => {
       const data: { file: FileInterface } = action.payload;
 
-      if (state.cvMinute) {
+      if (state.cvMinute && state.cvMinute.cvMinuteSections) {
         state.cvMinute = {
           ...state.cvMinute,
           cvMinuteSections: state.cvMinute.cvMinuteSections.map((c) =>
             c.id === data.file.cvMinuteSectionId
-              ? { ...c, files: [...c.files, data.file] }
+              ? { ...c, files: c.files ? [...c.files, data.file] : [data.file] }
               : c,
           ),
         };
@@ -101,7 +101,7 @@ const cvMinuteSlice = createSlice({
         cvMinuteSection: CvMinuteSectionInterface;
       } = action.payload;
 
-      if (state.cvMinute) {
+      if (state.cvMinute && state.cvMinute.cvMinuteSections) {
         state.cvMinute.cvMinuteSections = state.cvMinute.cvMinuteSections.map(
           (c) => {
             if (c.id === data.cvMinuteSection.id) {

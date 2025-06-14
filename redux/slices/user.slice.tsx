@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { UserInterface } from '@/interfaces/user.interface';
+import { PaymentInterface } from '@/interfaces/payment.interface';
 
 const initialState: { user: UserInterface | null; cvMinuteCount: number } = {
   user: null,
@@ -35,9 +36,35 @@ const userSlice = createSlice({
         state.cvMinuteCount = cvMinuteCount;
       }
     },
+    updatePaymentReducer: (state, action) => {
+      const data: { payment: PaymentInterface } = action.payload;
+
+      if (state.user) {
+        if (state.user.payments) {
+          const paymentIndex = state.user.payments?.findIndex(
+            (item) => item.id === data.payment.id,
+          );
+
+          if (paymentIndex !== -1) {
+            state.user.payments[paymentIndex] = data.payment;
+          } else {
+            state.user = {
+              ...state.user,
+              payments: [...state.user.payments, data.payment],
+            };
+          }
+        } else {
+          state.user = {
+            ...state.user,
+            payments: [data.payment],
+          };
+        }
+      }
+    },
   },
 });
 
-export const { setUserReducer, updateUserReducer } = userSlice.actions;
+export const { setUserReducer, updateUserReducer, updatePaymentReducer } =
+  userSlice.actions;
 
 export default userSlice.reducer;

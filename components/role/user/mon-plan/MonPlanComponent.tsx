@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 import { Crown, Zap, Brain, X, HelpCircle, Archive } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { faqData } from '@/data/faq.data';
 import {
@@ -13,6 +13,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { stripeService } from '@/services/payment.service';
+import { stripePromise } from '@/providers/User.provider';
+import { PaymentInterface, PaymentType } from '@/interfaces/payment.interface';
+import { updatePaymentReducer } from '@/redux/slices/user.slice';
 
 interface UserSubscription {
   premiumActive: boolean;
@@ -23,9 +27,11 @@ interface UserSubscription {
 }
 
 export default function MonPlanComponent() {
+  const { user } = useSelector((state: RootState) => state.user);
   const { mode } = useSelector((state: RootState) => state.persistInfos);
 
   const faqRef = React.useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
   const [userSubscription, setUserSubscription] =
     React.useState<UserSubscription>({
@@ -35,6 +41,17 @@ export default function MonPlanComponent() {
     });
 
   const [showFAQ, setShowFAQ] = React.useState(false);
+  const [paymentLoading, setPaymentLoading] =
+    React.useState<PaymentType | null>(null);
+  const [premiumCards, setPremiumCards] = React.useState<PaymentInterface[]>(
+    [],
+  );
+  const [boosterCards, setBoosterCards] = React.useState<PaymentInterface[]>(
+    [],
+  );
+  const [qualiCarriereCards, setQualiCarriereCards] = React.useState<
+    PaymentInterface[]
+  >([]);
 
   React.useEffect(() => {
     if (showFAQ && faqRef.current) {
@@ -42,44 +59,63 @@ export default function MonPlanComponent() {
     }
   }, [showFAQ]);
 
-  const handlePremiumSubscribe = () => {
-    // Simulate payment and activation
-    const expiry = new Date();
-    expiry.setMonth(expiry.getMonth() + 1);
+  React.useEffect(() => {
+    if (user?.payments) {
+      const actualPremiumCard = user.payments?.filter(
+        (item) => item.type === 'premium',
+      );
+      setPremiumCards(actualPremiumCard);
 
-    setUserSubscription((prev) => ({
-      ...prev,
-      premiumActive: true,
-      premiumExpiry: expiry,
-    }));
+      const actualBoosterCard = user.payments?.filter(
+        (item) => item.type === 'booster',
+      );
+      setBoosterCards(actualBoosterCard);
+
+      const actualQualiCarriereCard = user.payments?.filter(
+        (item) => item.type === 'quali-carriere',
+      );
+      setQualiCarriereCards(actualQualiCarriereCard);
+    }
+  }, [user?.payments]);
+
+  const formatDate = (date: Date | string | undefined): string | null => {
+    if (date) {
+      const parsedDate = typeof date === 'string' ? new Date(date) : date;
+
+      return parsedDate.toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    }
+
+    return null;
   };
 
-  const handleBoosterPurchase = () => {
-    // Simulate payment and credit addition
-    setUserSubscription((prev) => ({
-      ...prev,
-      boosterCredits: prev.boosterCredits + 25000,
-    }));
-  };
-
-  const handleQualiCarrierePurchase = () => {
-    // Simulate payment and activation
-    const expiry = new Date();
-    expiry.setMonth(expiry.getMonth() + 6);
-
-    setUserSubscription((prev) => ({
-      ...prev,
-      qualiCarriereActive: true,
-      qualiCarriereExpiry: expiry,
-    }));
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
+  const handleCheckout = async (data: {
+    amount: number;
+    name: string;
+    type: PaymentType;
+  }) => {
+    const res = await stripeService({
+      amount: data.amount,
+      name: data.name,
+      type: data.type,
     });
+
+    if (res.payment) {
+      dispatch(updatePaymentReducer({ payment: res.payment }));
+
+      const stripe = await stripePromise;
+
+      if (stripe) {
+        await stripe.redirectToCheckout({
+          sessionId: res.payment.sessionId,
+        });
+      }
+    }
+
+    setPaymentLoading(null);
   };
 
   return (
@@ -175,23 +211,49 @@ export default function MonPlanComponent() {
                   </span>
                 </div>
 
-                {userSubscription.premiumActive ? (
+                {premiumCards.length > 0 &&
+                premiumCards[premiumCards.length - 1].status === 'paid' ? (
                   <div className="text-center">
                     <div className="bg-green-100 text-green-800 px-4 py-3 rounded-xl mb-3 font-semibold">
                       ✅ Abonnement actif
                     </div>
-                    <p className="text-sm text-gray-600">
-                      Renouvellement le{' '}
-                      {userSubscription.premiumExpiry &&
-                        formatDate(userSubscription.premiumExpiry)}
-                    </p>
                   </div>
                 ) : (
                   <button
-                    onClick={handlePremiumSubscribe}
-                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-3 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    onClick={() => {
+                      setPaymentLoading('premium');
+                      handleCheckout({
+                        amount: 1999,
+                        name: 'Profil Premium CV',
+                        type: 'premium',
+                      });
+                    }}
+                    className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-bold py-3 rounded-xl transition-all duration-200 transform shadow-lg ${
+                      paymentLoading === 'premium'
+                        ? 'opacity-80 pointer-events-none'
+                        : 'hover:opacity-80 hover:scale-105 cursor-pointer'
+                    }`}
                   >
-                    Je m'abonne
+                    {paymentLoading === 'premium' && (
+                      <svg
+                        aria-hidden="true"
+                        role="status"
+                        className="inline w-5 h-5 animate-spin"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="#E5E7EB"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    )}
+                    <span>Je m'abonne</span>
                   </button>
                 )}
               </div>
@@ -258,19 +320,50 @@ export default function MonPlanComponent() {
                   </span>
                 </div>
 
-                {!userSubscription.premiumActive ? (
+                {premiumCards.length > 0 &&
+                premiumCards[premiumCards.length - 1].status === 'paid' ? (
+                  <button
+                    onClick={() => {
+                      setPaymentLoading('booster');
+                      handleCheckout({
+                        amount: 699,
+                        name: 'Profil Booster',
+                        type: 'booster',
+                      });
+                    }}
+                    className={`w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 transform shadow-lg ${
+                      paymentLoading === 'booster'
+                        ? 'opacity-80 pointer-events-none'
+                        : 'hover:opacity-80 hover:scale-105 cursor-pointer'
+                    }`}
+                  >
+                    {paymentLoading === 'booster' && (
+                      <svg
+                        aria-hidden="true"
+                        role="status"
+                        className="inline w-5 h-5 animate-spin"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="#E5E7EB"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    )}
+                    <span>Je prends un booster</span>
+                  </button>
+                ) : (
                   <div className="text-center">
                     <div className="bg-gray-100 text-gray-600 px-4 py-3 rounded-xl font-semibold">
                       🔒 Abonnement Premium requis
                     </div>
                   </div>
-                ) : (
-                  <button
-                    onClick={handleBoosterPurchase}
-                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
-                  >
-                    Je prends un booster
-                  </button>
                 )}
               </div>
             </div>
@@ -345,23 +438,49 @@ export default function MonPlanComponent() {
                   </span>
                 </div>
 
-                {userSubscription.qualiCarriereActive ? (
+                {qualiCarriereCards.length > 0 &&
+                qualiCarriereCards.every((item) => item.status === 'paid') ? (
                   <div className="text-center">
                     <div className="bg-green-100 text-green-800 px-4 py-3 rounded-xl mb-3 font-semibold">
                       ✅ Accès actif
                     </div>
-                    <p className="text-sm text-gray-600">
-                      Expire le{' '}
-                      {userSubscription.qualiCarriereExpiry &&
-                        formatDate(userSubscription.qualiCarriereExpiry)}
-                    </p>
                   </div>
                 ) : (
                   <button
-                    onClick={handleQualiCarrierePurchase}
-                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    onClick={() => {
+                      setPaymentLoading('quali-carriere');
+                      handleCheckout({
+                        amount: 999,
+                        name: 'Quali Carrière',
+                        type: 'quali-carriere',
+                      });
+                    }}
+                    className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-bold py-3 rounded-xl transition-all duration-200 transform shadow-lg ${
+                      paymentLoading === 'quali-carriere'
+                        ? 'opacity-80 pointer-events-none'
+                        : 'hover:opacity-80 hover:scale-105 cursor-pointer'
+                    }`}
                   >
-                    Je débloque Quali Carrière
+                    {paymentLoading === 'quali-carriere' && (
+                      <svg
+                        aria-hidden="true"
+                        role="status"
+                        className="inline w-5 h-5 animate-spin"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="#E5E7EB"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    )}
+                    <span>Je débloque Quali Carrière</span>
                   </button>
                 )}
               </div>
@@ -455,55 +574,73 @@ export default function MonPlanComponent() {
                 <AccordionContent className="px-8 text-[var(--text-secondary-gray)]">
                   <div className="flex flex-col gap-8">
                     <div className="flex gap-4">
-                      {/* {userSubscription.premiumActive && ( */}
-                      <div className="max-w-1/3 w-full flex items-center justify-between p-4 bg-purple-50 rounded-xl">
-                        <div>
-                          <p className="font-semibold text-purple-800">
-                            Premium CV
-                          </p>
-                          <p className="text-sm text-purple-600">
-                            Renouvellement le{' '}
-                            {/* {userSubscription.premiumExpiry &&
-                            formatDate(userSubscription.premiumExpiry)} */}
-                          </p>
-                        </div>
-                        <button
-                          // onClick={handleCancelPremium}
-                          className="text-sm text-red-600 hover:text-red-800 underline cursor-pointer"
-                        >
-                          Annuler
-                        </button>
-                      </div>
-                      {/* )} */}
+                      {premiumCards.length > 0 &&
+                        premiumCards[premiumCards.length - 1].status ===
+                          'paid' && (
+                          <div className="max-w-1/3 w-full flex items-center justify-between p-4 bg-purple-50 rounded-xl group">
+                            <div>
+                              <p className="font-semibold text-purple-800">
+                                Premium CV
+                              </p>
+                              {
+                                <p className="text-sm text-purple-600">
+                                  Renouvellement le{' '}
+                                  {formatDate(
+                                    premiumCards[premiumCards.length - 1]
+                                      .expiredAt,
+                                  )}
+                                </p>
+                              }
+                            </div>
+                            <button
+                              // onClick={handleCancelPremium}
+                              className="text-sm text-red-600 hover:text-red-800 underline cursor-pointer opacity-0 group-hover:opacity-100"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+                        )}
 
-                      {/* {userSubscription.boosterCredits > 0 && ( */}
-                      <div className="max-w-1/3 w-full flex items-center justify-between p-4 bg-orange-50 rounded-xl">
-                        <div>
-                          <p className="font-semibold text-orange-800">
-                            Crédits Booster
-                          </p>
-                          <p className="text-sm text-orange-600">
-                            {/* {userSubscription.boosterCredits.toLocaleString()}{' '} */}
-                            crédits disponibles
-                          </p>
-                        </div>
-                      </div>
-                      {/* )} */}
+                      {boosterCards.length > 0 &&
+                        boosterCards.some((item) => item.status === 'paid') && (
+                          <div className="max-w-1/3 w-full flex items-center justify-between p-4 bg-orange-50 rounded-xl">
+                            <div>
+                              <p className="font-semibold text-orange-800">
+                                Crédits Booster
+                              </p>
+                              <p className="text-sm text-orange-600">
+                                Nombre d'abonnements booster effectués :{' '}
+                                {
+                                  boosterCards.filter(
+                                    (item) => item.status === 'paid',
+                                  ).length
+                                }
+                              </p>
+                            </div>
+                          </div>
+                        )}
 
-                      {/* {userSubscription.qualiCarriereActive && ( */}
-                      <div className="max-w-1/3 w-full flex items-center justify-between p-4 bg-green-50 rounded-xl">
-                        <div>
-                          <p className="font-semibold text-green-800">
-                            Quali Carrière
-                          </p>
-                          <p className="text-sm text-green-600">
-                            Expire le{' '}
-                            {/* {userSubscription.qualiCarriereExpiry &&
-                            formatDate(userSubscription.qualiCarriereExpiry)} */}
-                          </p>
-                        </div>
-                      </div>
-                      {/* )} */}
+                      {qualiCarriereCards.length > 0 &&
+                        qualiCarriereCards[qualiCarriereCards.length - 1]
+                          .status === 'paid' && (
+                          <div className="max-w-1/3 w-full flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                            <div>
+                              <p className="font-semibold text-green-800">
+                                Quali Carrière
+                              </p>
+                              {
+                                <p className="text-sm text-green-600">
+                                  Expire le{' '}
+                                  {formatDate(
+                                    qualiCarriereCards[
+                                      qualiCarriereCards.length - 1
+                                    ].expiredAt,
+                                  )}
+                                </p>
+                              }
+                            </div>
+                          </div>
+                        )}
                     </div>
 
                     <p className="text-xs text-[var(--text-secondary-gray)] text-center">

@@ -31,7 +31,7 @@ export default function CrossSourcingCvPreview({
   }, [showFilter]);
 
   const getCvMinuteSection = (value: string) => {
-    return cvMinute?.cvMinuteSections.find((c) => c.name === value);
+    return cvMinute?.cvMinuteSections?.find((c) => c.name === value);
   };
 
   const profile = getCvMinuteSection('profile');
@@ -41,15 +41,15 @@ export default function CrossSourcingCvPreview({
   const presentation = getCvMinuteSection('presentation');
 
   const contacts = cvMinute?.cvMinuteSections
-    .filter((c) => c.name === 'contacts')
+    ?.filter((c) => c.name === 'contacts')
     .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
 
   const experiences = cvMinute?.cvMinuteSections
-    .filter((c) => c.name === 'experiences')
+    ?.filter((c) => c.name === 'experiences')
     .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
 
   const editableSections = cvMinute?.cvMinuteSections
-    .filter((s) => s.editable)
+    ?.filter((s) => s.editable)
     .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
 
   if (cvMinute)
@@ -71,7 +71,7 @@ export default function CrossSourcingCvPreview({
                       htmlFor="cvMinute-profile"
                       className="step-10 w-[10em] h-[10em] rounded-full bg-white flex items-center justify-center select-none"
                     >
-                      {profile && profile.files.length > 0 ? (
+                      {profile && profile.files && profile.files.length > 0 ? (
                         <Image
                           src={`${backendUri}/uploads/files/user-${
                             cvMinute.userId

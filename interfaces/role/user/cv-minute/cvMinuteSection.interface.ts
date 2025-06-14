@@ -19,11 +19,11 @@ export interface CvMinuteSectionInterface {
   cvMinuteId: number;
   editable: boolean;
 
-  evaluation: EvaluationInterface | null;
-  files: FileInterface[];
-  advices: AdviceInterface[];
-  qualiCarriereCompetences: QualiCarriereCompetenceInteface[];
-  qualiCarriereResumes: QualiCarriereResumeInterface[];
+  evaluation?: EvaluationInterface | null;
+  files?: FileInterface[];
+  advices?: AdviceInterface[];
+  qualiCarriereCompetences?: QualiCarriereCompetenceInteface[];
+  qualiCarriereResumes?: QualiCarriereResumeInterface[];
 
   createdAt: Date;
   updatedAt: Date;

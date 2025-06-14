@@ -4,6 +4,7 @@ import React from 'react';
 import qs from 'query-string';
 import Loading from '@/app/loading';
 
+import { loadStripe } from '@stripe/stripe-js';
 import { jwtService } from '@/services/auth.service';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getUserService } from '@/services/all-user.service';
@@ -22,8 +23,12 @@ interface UserProviderContextType {
   handleRemoveQuery: (value: string) => void;
 }
 
-export const videoUri = process.env.NEXT_PUBLIC_VIDEO_URI;
-export const backendUri = process.env.NEXT_PUBLIC_API_URL;
+export const videoUri = process.env.NEXT_PUBLIC_VIDEO_URI as string;
+export const backendUri = process.env.NEXT_PUBLIC_API_URL as string;
+export const stripePublishableKey = process.env
+  .NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string;
+
+export const stripePromise = loadStripe(stripePublishableKey);
 
 const UserContext = React.createContext<UserProviderContextType | undefined>(
   undefined,
@@ -53,6 +58,7 @@ export default function UserProvider({
   const [userId, setUserId] = React.useState<string | number | null>(null);
 
   const notProtectedPaths = ['/', '/conditions'];
+  const notProtectedPathsRegex = /^\/(payment)\/[^\/]+$/;
   const globalPaths = ['/conditions'];
 
   React.useEffect(() => {
@@ -67,23 +73,27 @@ export default function UserProvider({
           if (res.user.role === 'user') {
             if (
               !userRoutes.some((r) => pathname.startsWith(r.href)) &&
-              !globalPaths.includes(pathname)
+              !globalPaths.includes(pathname) &&
+              !notProtectedPathsRegex.test(pathname)
             ) {
               window.location.href =
                 userRoutes.find((item) => item.ref)?.href ?? '/';
             } else {
               setIsLoading(false);
             }
+            setIsLoading(false);
           } else {
             if (
               !recruiterRoutes.some((r) => pathname.startsWith(r.href)) &&
-              !globalPaths.includes(pathname)
+              !globalPaths.includes(pathname) &&
+              !notProtectedPathsRegex.test(pathname)
             ) {
               window.location.href =
                 recruiterRoutes.find((item) => item.ref)?.href ?? '/';
             } else {
               setIsLoading(false);
             }
+            setIsLoading(false);
           }
         } else {
           if (

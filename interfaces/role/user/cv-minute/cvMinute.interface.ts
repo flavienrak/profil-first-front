@@ -19,12 +19,12 @@ export interface CvMinuteInterface {
   userId: number;
   cvThequeCritereId: number | null;
 
-  files: FileInterface[];
-  advices: AdviceInterface[];
-  cvMinuteSections: CvMinuteSectionInterface[];
-  evaluation: EvaluationInterface;
-  cvThequeViews: CvThequeViewInterface[];
-  cvThequeContacts: CvThequeContactInterface[];
+  files?: FileInterface[];
+  advices?: AdviceInterface[];
+  cvMinuteSections?: CvMinuteSectionInterface[];
+  evaluation?: EvaluationInterface;
+  cvThequeViews?: CvThequeViewInterface[];
+  cvThequeContacts?: CvThequeContactInterface[];
 
   createdAt: Date;
   updatedAt: Date;

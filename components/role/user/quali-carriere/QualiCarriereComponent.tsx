@@ -21,8 +21,6 @@ export default function QualiCarriereComponent() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [redirectLoading, setRedirectLoading] = React.useState(false);
 
-  console.log('cvMinuteCount:', cvMinuteCount);
-
   const handleContinue = async () => {
     if (cvMinuteCount < 1) {
       setShowError(true);

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import TextEditor from '@/components/utils/TextEditor';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -10,7 +11,6 @@ import { getCvAnonymService } from '@/services/role/recruiter/cvtheque.service';
 import { setCvAnonymReducer } from '@/redux/slices/role/recruiter/cvtheque.slice';
 import { useParams, useRouter } from 'next/navigation';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
-import TextEditor from '@/components/utils/TextEditor';
 
 export default function CvAnonymComponent() {
   const { fontSize, showCritere } = useSelector(
@@ -68,16 +68,18 @@ export default function CvAnonymComponent() {
   }, [showCritere]);
 
   const getCvMinuteSection = (value: string) => {
-    return cvAnonym?.cvMinuteSections.find((c) => c.name === value);
+    return cvAnonym?.cvMinuteSections?.find((c) => c.name === value);
   };
 
   const title = getCvMinuteSection('title');
   const presentation = getCvMinuteSection('presentation');
 
-  const experiences = cvAnonym?.cvMinuteSections.filter(
+  const experiences = cvAnonym?.cvMinuteSections?.filter(
     (c) => c.name === 'experiences',
   );
-  const editableSections = cvAnonym?.cvMinuteSections.filter((s) => s.editable);
+  const editableSections = cvAnonym?.cvMinuteSections?.filter(
+    (s) => s.editable,
+  );
 
   const getParagraphCount = (html: string) => {
     const matches = html.match(/<p\b[^>]*>/g);

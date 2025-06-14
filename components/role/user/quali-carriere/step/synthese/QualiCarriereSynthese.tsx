@@ -91,7 +91,7 @@ export default function QualiCarriereSynthese() {
   }, [lastMessage.current, messages]);
 
   React.useEffect(() => {
-    if (cvMinute) {
+    if (cvMinute && cvMinute.cvMinuteSections) {
       const experiences = cvMinute.cvMinuteSections.filter(
         (c) => c.name === 'experiences',
       );

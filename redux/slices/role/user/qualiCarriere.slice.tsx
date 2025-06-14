@@ -55,7 +55,7 @@ const qualiCarriereSlice = createSlice({
       const data: { qualiCarriereResume: QualiCarriereResumeInterface } =
         action.payload;
 
-      if (state.cvMinute) {
+      if (state.cvMinute && state.cvMinute.cvMinuteSections) {
         state.cvMinute = {
           ...state.cvMinute,
           cvMinuteSections: state.cvMinute.cvMinuteSections.map((c) =>
@@ -80,22 +80,23 @@ const qualiCarriereSlice = createSlice({
         qualiCarriereCompetences: QualiCarriereCompetenceInteface[];
       } = action.payload;
 
-      if (state.cvMinute) {
+      if (state.cvMinute && state.cvMinute.cvMinuteSections) {
         state.cvMinute = {
           ...state.cvMinute,
-          cvMinuteSections: state.cvMinute.cvMinuteSections.map((experience) =>
-            experience.id === data.qualiCarriereCompetences[0].cvMinuteSectionId
+          cvMinuteSections: state.cvMinute.cvMinuteSections.map((item) =>
+            item.id === data.qualiCarriereCompetences[0].cvMinuteSectionId
               ? {
-                  ...experience,
-                  qualiCarriereCompetences:
-                    experience.qualiCarriereCompetences.map((c) => {
-                      const updated = data.qualiCarriereCompetences.find(
-                        (up) => up.id === c.id,
-                      );
-                      return updated ? { ...c, ...updated } : c;
-                    }),
+                  ...item,
+                  qualiCarriereCompetences: item.qualiCarriereCompetences
+                    ? item.qualiCarriereCompetences.map((c) => {
+                        const updated = data.qualiCarriereCompetences.find(
+                          (up) => up.id === c.id,
+                        );
+                        return updated ? { ...c, ...updated } : c;
+                      })
+                    : [],
                 }
-              : experience,
+              : item,
           ),
         };
       }

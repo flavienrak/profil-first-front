@@ -85,7 +85,7 @@ export default function EditPopup({
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
   const { cvMinute } = useSelector((state: RootState) => state.cvMinute);
 
-  const experiences = cvMinute?.cvMinuteSections.filter(
+  const experiences = cvMinute?.cvMinuteSections?.filter(
     (c) => c.name === 'experiences',
   );
 
@@ -148,16 +148,22 @@ export default function EditPopup({
   React.useEffect(() => {
     if (cvMinute) {
       if (popup.suggestionKey === 'title') {
-        setSuggestions(cvMinute.advices.filter((a) => a.type === 'suggestion'));
-      } else if (popup.suggestionKey === 'content') {
-        const cvMinuteSection = cvMinute.cvMinuteSections.find(
-          (s) => s.id === popup.cvMinuteSectionId,
-        );
-
-        if (cvMinuteSection) {
+        if (cvMinute.advices) {
           setSuggestions(
-            cvMinuteSection.advices.filter((a) => a.type === 'suggestion'),
+            cvMinute.advices.filter((a) => a.type === 'suggestion'),
           );
+        }
+      } else if (popup.suggestionKey === 'content') {
+        if (cvMinute.cvMinuteSections) {
+          const cvMinuteSection = cvMinute.cvMinuteSections.find(
+            (s) => s.id === popup.cvMinuteSectionId,
+          );
+
+          if (cvMinuteSection && cvMinuteSection.advices) {
+            setSuggestions(
+              cvMinuteSection.advices.filter((a) => a.type === 'suggestion'),
+            );
+          }
         }
       }
     }
