@@ -55,7 +55,7 @@ export default function Header({
 
         <div className="flex-1 flex justify-center">
           <Button
-            onClick={() => handleShowAuth('user', 'login', false)}
+            onClick={() => handleShowAuth('candidat', 'login', false)}
             variant="secondary"
             size="sm"
             className="!bg-[#03E3F8] border border-[#03E3F8]/70 hover:opacity-90 shadow-[0_2px_4px_rgba(0,0,0,0.2)] cursor-pointer"
@@ -85,7 +85,7 @@ export default function Header({
             FAQ
           </a>
           <Button
-            onClick={() => handleShowAuth('user', 'register', true)}
+            onClick={() => handleShowAuth('candidat', 'register', true)}
             variant="primary"
             size="sm"
             className="cursor-pointer"

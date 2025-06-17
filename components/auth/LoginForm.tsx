@@ -24,7 +24,7 @@ const loginSchema = z.object({
   email: z.string().trim().min(1, 'Email requis').email('Email invalide'),
   password: z.string().min(1, 'Mot de passe requis'),
   remember: z.boolean().default(false),
-  role: z.enum(['user', 'recruiter', 'admin']),
+  role: z.enum(['candidat', 'recruiter', 'admin']),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -61,7 +61,7 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
           description: 'Accès à la plateforme',
         });
 
-        if (res.user.role === 'user') {
+        if (res.user.role === 'candidat') {
           window.location.href = '/cv-minute';
         } else {
           window.location.href = '/cross-sourcing';

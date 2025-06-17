@@ -7,11 +7,12 @@ import Loading from '@/app/loading';
 import { loadStripe } from '@stripe/stripe-js';
 import { jwtService } from '@/services/auth.service';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { getUserService } from '@/services/all-user.service';
+import { getUserService } from '@/services/user.service';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserReducer } from '@/redux/slices/user.slice';
 import { recruiterRoutes, userRoutes } from '@/lib/constants';
 import { RootState } from '@/redux/store';
+import { PaymentInterface, PaymentType } from '@/interfaces/payment.interface';
 
 interface CurrentQueryInterface {
   step?: string | number;
@@ -22,6 +23,7 @@ interface CurrentQueryInterface {
 interface UserProviderContextType {
   isLoading: boolean;
   credits: number;
+  cvPlantType: PaymentType;
   handleRemoveQuery: (value: string) => void;
 }
 
@@ -44,6 +46,32 @@ export const useUser = (): UserProviderContextType => {
   return context;
 };
 
+const getCVPlanType = (payments: PaymentInterface[]): PaymentType => {
+  const now = new Date();
+
+  // Vérifie s’il existe un premium actif
+  const hasActivePremium = payments.some(
+    (item) =>
+      item.type === 'premium' &&
+      item.expiredAt &&
+      new Date(item.expiredAt) > now,
+  );
+
+  if (hasActivePremium) {
+    return 'premium';
+  }
+
+  // Vérifie s’il existe un booster
+  const hasBooster = payments.some((item) => item.type === 'booster');
+
+  if (hasBooster) {
+    return 'booster';
+  }
+
+  // Sinon c’est free
+  return 'free';
+};
+
 export default function UserProvider({
   children,
 }: {
@@ -61,6 +89,7 @@ export default function UserProvider({
   const [isLoading, setIsLoading] = React.useState(true);
   const [userId, setUserId] = React.useState<string | number | null>(null);
   const [credits, setCredits] = React.useState(0);
+  const [cvPlantType, setCVPlanType] = React.useState<PaymentType>('free');
 
   const notProtectedPaths = ['/', '/conditions'];
   const notProtectedPathsRegex = /^\/(payment)\/[^\/]+$/;
@@ -75,7 +104,7 @@ export default function UserProvider({
         if (res.user) {
           setUserId(res.user.id);
 
-          if (res.user.role === 'user') {
+          if (res.user.role === 'candidat') {
             if (
               !userRoutes.some((r) => pathname.startsWith(r.href)) &&
               !globalPaths.includes(pathname) &&
@@ -144,25 +173,25 @@ export default function UserProvider({
   }, [userId]);
 
   React.useEffect(() => {
-    if (user && user.payments) {
+    if (user && user.role && user.role === 'candidat' && user.payments) {
       const actualCredits = user.payments.reduce((sum, item) => {
-        if (item.credit && item.credit.value) {
-          if (item.type === 'booster') {
-            return sum + item.credit.value;
-          } else if (
+        if (item.credit) {
+          if (
             item.type === 'premium' &&
             item.expiredAt &&
             new Date(item.expiredAt) > new Date()
           ) {
             return sum + item.credit.value;
           }
+          return sum + item.credit.value;
         }
         return sum;
       }, 0);
 
+      setCVPlanType(getCVPlanType(user.payments));
       setCredits(actualCredits);
     }
-  }, [user?.payments]);
+  }, [user?.role, user?.payments]);
 
   React.useEffect(() => {
     const updateQuery = qs.parse(params.toString());
@@ -187,6 +216,7 @@ export default function UserProvider({
       value={{
         isLoading,
         credits,
+        cvPlantType,
         handleRemoveQuery,
       }}
     >

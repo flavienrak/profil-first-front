@@ -57,7 +57,7 @@ export default function Cta({
             transition={{ duration: 0.4, delay: 0.3 }}
           >
             <Button
-              onClick={() => handleShowAuth('user', 'register', true)}
+              onClick={() => handleShowAuth('candidat', 'register', true)}
               variant="primary"
               size="lg"
               className="bg-white text-primary-600 hover:bg-gray-100 shadow-xl cursor-pointer"

@@ -1,4 +1,4 @@
-import { CvMinuteInterface } from '../../user/cv-minute/cvMinute.interface';
+import { CvMinuteInterface } from '../../candidat/cv-minute/cvMinute.interface';
 import { CvThequeCompetenceInterface } from './cvtheque-competence.interface';
 import { CvThequeUserInterface } from './cvtheque-user.interface';
 import { CvThequeViewInterface } from './cvtheque-view.interface';

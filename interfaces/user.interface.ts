@@ -1,21 +1,26 @@
-import { CvMinuteInterface } from './role/user/cv-minute/cvMinute.interface';
+import { CvMinuteInterface } from './role/candidat/cv-minute/cvMinute.interface';
 import { FileInterface } from './file.interface';
 import { CvThequeCritereInterface } from './role/recruiter/cvtheque/cvtheque-critere.interface';
 import { CvThequeUserInterface } from './role/recruiter/cvtheque/cvtheque-user.interface';
-import { CvMinuteDomainInterface } from './role/user/cv-minute/cvMinuteDomain.interface';
+import { CvMinuteDomainInterface } from './role/candidat/cv-minute/cvMinuteDomain.interface';
 import { PaymentInterface } from './payment.interface';
+import { UserInfosInterface } from './userInfos.interface';
+import { UserActionInterface } from './userAction.interface';
+import { CreditInterface } from './credit.interface';
 
 export interface UserInterface {
   id: number;
   name: string;
   email: string;
-  acceptConditions: boolean;
-  role: 'user' | 'recruiter' | 'admin';
+  role: 'candidat' | 'recruiter' | 'admin';
   qualiCarriere: string;
 
-  cvMinuteDomains?: CvMinuteDomainInterface[];
+  userInfos?: UserInfosInterface;
+  credits?: CreditInterface[];
   files?: FileInterface[];
+  userActions?: UserActionInterface;
   cvMinutes?: CvMinuteInterface[];
+  cvMinuteDomains?: CvMinuteDomainInterface[];
   cvThequeCriteres?: CvThequeCritereInterface[];
   cvThequeUsers?: CvThequeUserInterface[];
   payments?: PaymentInterface[];

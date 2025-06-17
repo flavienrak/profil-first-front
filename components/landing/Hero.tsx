@@ -45,7 +45,7 @@ export default function Hero({
               <br />→ puis télécharge ton CV.
             </p>
             <Button
-              onClick={() => handleShowAuth('user', 'register', true)}
+              onClick={() => handleShowAuth('candidat', 'register', true)}
               variant="primary"
               size="lg"
               className="shadow-xl hover:shadow-2xl cursor-pointer"

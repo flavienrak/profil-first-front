@@ -1,6 +1,6 @@
 import { CreditInterface } from './credit.interface';
 
-export type PaymentType = 'premium' | 'booster' | 'quali-carriere';
+export type PaymentType = 'free' | 'premium' | 'booster' | 'quali-carriere';
 
 export interface PaymentInterface {
   id: number;

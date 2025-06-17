@@ -4,8 +4,8 @@ import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import persistSlice from './slices/persist.slice';
 import userSlice from './slices/user.slice';
-import cvMinuteSlice from './slices/role/user/cvMinute.slice';
-import qualiCarriereSlice from './slices/role/user/qualiCarriere.slice';
+import cvMinuteSlice from './slices/role/candidat/cvMinute.slice';
+import qualiCarriereSlice from './slices/role/candidat/qualiCarriere.slice';
 
 import cvThequeSlice from './slices/role/recruiter/cvtheque.slice';
 import crossSourcingSlice from './slices/role/recruiter/cross-sourcing.slice';

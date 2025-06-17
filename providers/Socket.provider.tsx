@@ -5,15 +5,15 @@ import io, { Socket } from 'socket.io-client';
 
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { QualiCarriereChatInterface } from '@/interfaces/role/user/quali-carriere/chatInterface';
+import { QualiCarriereChatInterface } from '@/interfaces/role/candidat/quali-carriere/chatInterface';
 import {
   newMessageReducer,
   setQuestionReducer,
-} from '@/redux/slices/role/user/qualiCarriere.slice';
-import { QualiCarriereQuestionInteface } from '@/interfaces/role/user/quali-carriere/questionInterface';
+} from '@/redux/slices/role/candidat/qualiCarriere.slice';
+import { QualiCarriereQuestionInteface } from '@/interfaces/role/candidat/quali-carriere/questionInterface';
 import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-critere.interface';
 import { setCvThequeCritereReducer } from '@/redux/slices/role/recruiter/cvtheque.slice';
-import { CvMinuteSectionInterface } from '@/interfaces/role/user/cv-minute/cvMinuteSection.interface';
+import { CvMinuteSectionInterface } from '@/interfaces/role/candidat/cv-minute/cvMinuteSection.interface';
 
 interface SocketContextType {
   isSocketReady: boolean;

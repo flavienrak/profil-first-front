@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { UserInterface } from '@/interfaces/user.interface';
-import { CvMinuteInterface } from '@/interfaces/role/user/cv-minute/cvMinute.interface';
+import { CvMinuteInterface } from '@/interfaces/role/candidat/cv-minute/cvMinute.interface';
 
 const initialState: {
   users: UserInterface[];

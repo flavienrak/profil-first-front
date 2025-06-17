@@ -93,7 +93,7 @@ export default function Advantages({
 
         <motion.div className="text-center" variants={itemVariants}>
           <Button
-            onClick={() => handleShowAuth('user', 'register', true)}
+            onClick={() => handleShowAuth('candidat', 'register', true)}
             variant="primary"
             size="lg"
             className="shadow-xl hover:shadow-2xl cursor-pointer"

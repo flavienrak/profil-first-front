@@ -9,7 +9,7 @@ import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import { RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { backendUri } from '@/providers/User.provider';
-import { CvMinuteInterface } from '@/interfaces/role/user/cv-minute/cvMinute.interface';
+import { CvMinuteInterface } from '@/interfaces/role/candidat/cv-minute/cvMinute.interface';
 
 export default function CrossSourcingCvPreview({
   cvMinute,

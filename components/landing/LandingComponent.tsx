@@ -22,7 +22,7 @@ export default function LandingComponent() {
     show: '',
     empty: false,
   });
-  const [role, setRole] = React.useState<UserInterface['role']>('user');
+  const [role, setRole] = React.useState<UserInterface['role']>('candidat');
 
   const handleShowAuth = (
     value: UserInterface['role'],
