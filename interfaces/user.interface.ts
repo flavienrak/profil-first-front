@@ -1,7 +1,7 @@
 import { CvMinuteInterface } from './role/candidat/cv-minute/cvMinute.interface';
 import { FileInterface } from './file.interface';
-import { CvThequeCritereInterface } from './role/recruiter/cvtheque/cvtheque-critere.interface';
-import { CvThequeUserInterface } from './role/recruiter/cvtheque/cvtheque-user.interface';
+import { CvThequeCritereInterface } from './role/recruiter/cvtheque/cvthequeCritere.interface';
+import { CvThequeUserInterface } from './role/recruiter/cvtheque/cvthequeUser.interface';
 import { CvMinuteDomainInterface } from './role/candidat/cv-minute/cvMinuteDomain.interface';
 import { PaymentInterface } from './payment.interface';
 import { UserInfosInterface } from './userInfos.interface';
@@ -13,7 +13,9 @@ export interface UserInterface {
   name: string;
   email: string;
   role: 'candidat' | 'recruiter' | 'admin';
+  password: string;
   qualiCarriere: string;
+  deleted: boolean;
 
   userInfos?: UserInfosInterface;
   credits?: CreditInterface[];

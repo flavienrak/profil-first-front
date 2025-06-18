@@ -61,10 +61,31 @@ const userSlice = createSlice({
         }
       }
     },
+    updatePaymentsReducer: (state, action) => {
+      const data: { payments: PaymentInterface[] } = action.payload;
+
+      if (state.user) {
+        if (state.user.payments) {
+          for (const payment of data.payments) {
+            const paymentIndex = state.user.payments?.findIndex(
+              (item) => item.id === payment.id,
+            );
+
+            if (paymentIndex !== -1) {
+              state.user.payments[paymentIndex] = payment;
+            }
+          }
+        }
+      }
+    },
   },
 });
 
-export const { setUserReducer, updateUserReducer, updatePaymentReducer } =
-  userSlice.actions;
+export const {
+  setUserReducer,
+  updateUserReducer,
+  updatePaymentReducer,
+  updatePaymentsReducer,
+} = userSlice.actions;
 
 export default userSlice.reducer;

@@ -46,6 +46,8 @@ import { IconInterface } from '@/interfaces/icon.interface';
 import { AdviceInterface } from '@/interfaces/advice.interface';
 import { CvMinuteSectionInterface } from '@/interfaces/role/candidat/cv-minute/cvMinuteSection.interface';
 import { formatTextWithStrong } from '@/lib/function';
+import { toast } from 'sonner';
+import { updatePaymentsReducer } from '@/redux/slices/user.slice';
 
 const guides = [
   {
@@ -70,16 +72,18 @@ export default function EditPopup({
   popup,
   cvMinuteId,
   currentPosition,
-  handleClosePopup,
+  setShowPlan,
   setCurrentPosition,
+  onClose,
 }: {
   popup: PopupInterface;
   cvMinuteId: number;
   currentPosition: { x: number; y: number };
-  handleClosePopup: () => void;
+  setShowPlan: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentPosition: React.Dispatch<
     React.SetStateAction<{ x: number; y: number }>
   >;
+  onClose: () => void;
 }) {
   const dispatch = useDispatch();
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
@@ -240,7 +244,7 @@ export default function EditPopup({
         popup.compare !== false &&
         isSameData(defaultValues, parseRes.data)
       ) {
-        handleClosePopup();
+        onClose();
         return;
       }
 
@@ -288,16 +292,22 @@ export default function EditPopup({
         newExperience: popup.newExperience,
       });
 
-      if (res.cvMinute) {
+      if (res.notAvailable) {
+        toast.warning('Crédits insuffisants', {
+          description: 'Vérifier vos abonnements',
+        });
+        setShowPlan(true);
+      } else if (res.cvMinute) {
         dispatch(updateCvMinuteReducer({ cvMinute: res.cvMinute }));
-        handleClosePopup();
+        onClose();
       } else if (res.cvMinuteSection) {
         dispatch(
           updateCvMinuteSectionReducer({
             cvMinuteSection: res.cvMinuteSection,
           }),
         );
-        handleClosePopup();
+        dispatch(updatePaymentsReducer({ payments: res.payments }));
+        onClose();
       } else if (res.sectionAlreadyExist) {
         form.setError('title', {
           type: 'manual',
@@ -323,7 +333,7 @@ export default function EditPopup({
         className="p-2.5 flex items-center justify-end bg-[var(--bg-purple)] rounded-t-md cursor-move"
       >
         <button
-          onClick={handleClosePopup}
+          onClick={onClose}
           className="text-[var(--text-primary-color)] hover:opacity-80 cursor-pointer"
         >
           <X size={22} />

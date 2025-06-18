@@ -15,7 +15,7 @@ const ThemeContext = React.createContext<ThemeProviderContextType | undefined>(
 export const useTheme = (): ThemeProviderContextType => {
   const context = React.useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
 };

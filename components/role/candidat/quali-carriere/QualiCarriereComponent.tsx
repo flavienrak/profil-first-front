@@ -10,23 +10,35 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { handleVideo } from '@/lib/function';
+import { useCandidat } from '@/providers/Candidat.provider';
+import { toast } from 'sonner';
+import PlanPopup from '../PlanPopup';
 
 export default function QualiCarriereComponent() {
   const { cvMinuteCount } = useSelector((state: RootState) => state.user);
+  const { qualiCarrierePlan } = useCandidat();
 
   const router = useRouter();
 
   const [showModal, setShowModal] = React.useState(false);
   const [showError, setShowError] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showPlan, setShowPlan] = React.useState(false);
   const [redirectLoading, setRedirectLoading] = React.useState(false);
 
   const handleContinue = async () => {
     if (cvMinuteCount < 1) {
       setShowError(true);
     } else {
-      setRedirectLoading(true);
-      router.push('/quali-carriere/1');
+      if (!qualiCarrierePlan) {
+        toast.warning('Abonnement manquant ou expiré', {
+          description: 'Vérifier vos abonnements ou changer de plan',
+        });
+        setShowPlan(true);
+      } else {
+        setRedirectLoading(true);
+        router.push('/quali-carriere/1');
+      }
     }
   };
 
@@ -261,6 +273,8 @@ export default function QualiCarriereComponent() {
           </div>
         </Popup>
       )}
+
+      {showPlan && <PlanPopup onClose={() => setShowPlan(false)} />}
     </div>
   );
 }

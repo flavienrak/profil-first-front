@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import StepLoader from '@/components/role/candidat/quali-carriere/step/StepLoader';
 import Popup from '@/components/utils/Popup';
+import PlanPopup from '@/components/role/candidat/PlanPopup';
 
 import { useParams, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +12,7 @@ import { getQuestionService } from '@/services/role/candidat/qualiCarriere.servi
 import { setQuestionReducer } from '@/redux/slices/role/candidat/qualiCarriere.slice';
 import { RootState } from '@/redux/store';
 import { useSocket } from '@/providers/Socket.provider';
+import { toast } from 'sonner';
 
 export default function StepLayout({
   children,
@@ -27,6 +29,7 @@ export default function StepLayout({
   const [showModal, setShowModal] = React.useState(false);
   const [questionLoaded, setQuestionLoaded] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showPlan, setShowPlan] = React.useState(false);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -41,7 +44,12 @@ export default function StepLayout({
           const res = await getQuestionService();
 
           if (isMounted) {
-            if (res.nextStep) {
+            if (res.notAvailable) {
+              toast.warning('Abonnement manquant ou expiré', {
+                description: 'Vérifier vos abonnements',
+              });
+              setShowPlan(true);
+            } else if (res.nextStep) {
               dispatch(
                 setQuestionReducer({
                   cvMinute: res.cvMinute,
@@ -118,6 +126,8 @@ export default function StepLayout({
           <StepLoader />
         </div>
       )}
+
+      {showPlan && <PlanPopup onClose={() => setShowPlan(false)} />}
     </div>
   );
 }

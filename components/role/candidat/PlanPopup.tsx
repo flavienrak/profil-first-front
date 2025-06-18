@@ -5,29 +5,28 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Popup from '@/components/utils/Popup';
 
-export default function PlanPopup() {
+export default function PlanPopup({ onClose }: { onClose: () => void }) {
   const [isLoading, setIsLoading] = React.useState(false);
 
   return (
-    <Popup large>
-      <div className="h-4/5 flex flex-col justify-between gap-5 px-4 pb-4">
+    <Popup large onClose={onClose}>
+      <div className="w-[40rem] h-[75vh] flex flex-col justify-between gap-5 px-4 pb-4">
         <h2 className="font-bold text-center text-5xl leading-14 text-[var(--u-primary-color)]">
           Décrochez des entretiens <br /> pour 19,99 € !
         </h2>
-        <div className="max-h-[40vh] flex justify-center select-none">
+        <div className="flex justify-center select-none">
           <Image
             src="/change-plan.png"
-            alt="Free Use"
-            height={300}
-            width={300}
-            className=""
+            alt="Changer de Plan"
+            height={320}
+            width={320}
           />
         </div>
         <div className="flex justify-center">
           <Link
             href="/mon-plan"
             onClick={() => setIsLoading(true)}
-            className={`h-14 w-1/2 flex justify-center items-center gap-2 text-white font-semibold text-lg bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] rounded-md ${
+            className={`h-14 w-1/2 flex justify-center items-center gap-2 text-white font-semibold text-lg bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] rounded-full ${
               isLoading ? 'opacity-80 pointer-events-none' : 'hover:opacity-80'
             }`}
           >

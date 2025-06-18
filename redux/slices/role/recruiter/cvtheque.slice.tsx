@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-critere.interface';
+import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvthequeCritere.interface';
 import { CvMinuteInterface } from '@/interfaces/role/candidat/cv-minute/cvMinute.interface';
-import { CvThequeContactInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-contact.interface';
+import { CvThequeContactInterface } from '@/interfaces/role/recruiter/cvtheque/cvthequeContact.interface';
 
 const initialState: {
   cvThequeCritere: CvThequeCritereInterface | null;

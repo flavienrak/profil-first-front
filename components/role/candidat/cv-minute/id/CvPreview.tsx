@@ -6,9 +6,11 @@ import Popup from '@/components/utils/Popup';
 import Guide from '@/components/utils/role/user/Guide';
 import EditPopup from './EditPopup';
 import PdfTempldate from './PdfTempldate';
+import LimitedAccess from './LimitedAccess';
 import PrimaryButton from '@/components/utils/role/user/button/PrimaryButton';
 import TextEditor from '@/components/utils/TextEditor';
 import LucideIcon from '@/components/utils/LucideIcon';
+import PlanPopup from '@/components/role/candidat/PlanPopup';
 
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -67,12 +69,15 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { backendUri, useUser, videoUri } from '@/providers/User.provider';
+import { backendUri, videoUri } from '@/providers/User.provider';
 import { StepInterface } from '@/interfaces/step.interface';
 import { pdf } from '@react-pdf/renderer';
 import { handleVideo } from '@/lib/function';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
+import { useCandidat } from '@/providers/Candidat.provider';
+import { toast } from 'sonner';
+import { updatePaymentsReducer } from '@/redux/slices/user.slice';
 
 export interface FieldInterface {
   key: string;
@@ -201,7 +206,7 @@ export default function CvPreview() {
   const { user } = useSelector((state: RootState) => state.user);
   const { fontSize } = useSelector((state: RootState) => state.persistInfos);
   const { cvMinute } = useSelector((state: RootState) => state.cvMinute);
-  const { credits, cvPlantType } = useUser();
+  const { credits, cvPlan, isFree } = useCandidat();
 
   const getCvMinuteSection = (value: string) => {
     return cvMinute?.cvMinuteSections?.find((c) => c.name === value);
@@ -241,6 +246,7 @@ export default function CvPreview() {
   const [showMatching, setShowMatching] = React.useState(false);
   const [showOptimize, setShowOptimize] = React.useState(false);
   const [showCvMinuteSave, setShowCvMinuteSave] = React.useState(false);
+  const [showPlan, setShowPlan] = React.useState(false);
 
   const [currentGuideStep, setCurrentGuideStep] = React.useState(0);
   const [loadingGlobal, setLoadingGlobal] = React.useState(false);
@@ -443,31 +449,46 @@ export default function CvPreview() {
     }
   };
 
+  // OPTIMIZE CVMINUTE
   const handleOptimizeCvMinute = async () => {
     if (cvMinute) {
       setLoadingOptimize(true);
       const res = await optimizeCvMinuteService(cvMinute.id);
 
-      if (res.cvMinute) {
+      if (res.notAvailable) {
+        toast.warning('Crédits insuffisants', {
+          description: 'Vérifier vos abonnements',
+        });
+        setShowPlan(true);
+      } else if (res.cvMinute) {
         dispatch(setCvMinuteReducer({ cvMinute: res.cvMinute }));
+        dispatch(updatePaymentsReducer({ payments: res.payments }));
       }
       setLoadingOptimize(false);
       setShowOptimize(false);
     }
   };
 
+  // GENERATE NEW CVMINUTE SECTIONS
   const handleGenerateNewCvMinuteSections = async () => {
     if (cvMinute) {
       const res = await generateNewCvMinuteSectionsService(cvMinute.id);
 
-      if (res.cvMinute) {
+      if (res.notAvailable) {
+        toast.warning('Crédits insuffisants', {
+          description: 'Vérifier vos abonnements',
+        });
+        setShowPlan(true);
+      } else if (res.cvMinute) {
         dispatch(updateCvMinuteAdvicesReducer({ cvMinute: res.cvMinute }));
+        dispatch(updatePaymentsReducer({ payments: res.payments }));
       }
     }
 
     return;
   };
 
+  // GENERATE CVMINUTE SECTION ADVICES
   const handleGenerateCvMinuteSectionAdvices = async (
     cvMinuteSectionId: number,
   ) => {
@@ -477,25 +498,38 @@ export default function CvPreview() {
         cvMinuteSectionId: cvMinuteSectionId,
       });
 
-      if (res.cvMinuteSection) {
+      if (res.notAvailable) {
+        toast.warning('Crédits insuffisants', {
+          description: 'Vérifier vos abonnements',
+        });
+        setShowPlan(true);
+      } else if (res.cvMinuteSection) {
         dispatch(
           updateCvMinuteSectionAdvicesReducer({
             cvMinuteSection: res.cvMinuteSection,
           }),
         );
+        dispatch(updatePaymentsReducer({ payments: res.payments }));
       }
     }
 
     return;
   };
 
+  // RECALCULATE GLOBAL MATCHING
   const handleRecalculateGlobalMatching = async () => {
     if (cvMinute) {
       setLoadingGlobal(true);
       const res = await updateCvMinuteScoreService(cvMinute.id);
 
-      if (res.evaluation) {
+      if (res.notAvailable) {
+        toast.warning('Crédits insuffisants', {
+          description: 'Vérifier vos abonnements',
+        });
+        setShowPlan(true);
+      } else if (res.evaluation) {
         dispatch(updateCvMinuteScoreReducer({ evaluation: res.evaluation }));
+        dispatch(updatePaymentsReducer({ payments: res.payments }));
       }
       setLoadingGlobal(false);
     }
@@ -503,6 +537,7 @@ export default function CvPreview() {
     return;
   };
 
+  // RECALCULATE EXPERIENCE MATCHING
   const handleRecalculateExperienceMatching = async (value: number) => {
     if (cvMinute) {
       const res = await updateCvMinuteSectionScoreService({
@@ -510,12 +545,18 @@ export default function CvPreview() {
         cvMinuteSectionId: value,
       });
 
-      if (res.cvMinuteSection) {
+      if (res.notAvailable) {
+        toast.warning('Crédits insuffisants', {
+          description: 'Vérifier vos abonnements',
+        });
+        setShowPlan(true);
+      } else if (res.cvMinuteSection) {
         dispatch(
           updateCvMinuteSectionReducer({
             cvMinuteSection: res.cvMinuteSection,
           }),
         );
+        dispatch(updatePaymentsReducer({ payments: res.payments }));
       }
     }
 
@@ -577,28 +618,61 @@ export default function CvPreview() {
               Guide de rédaction du CV
             </button>
             <button
-              onClick={() => setReview(true)}
-              className="step-2 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
+              onClick={() => {
+                if (isFree) {
+                  setShowPlan(true);
+                } else {
+                  setReview(true);
+                }
+              }}
+              className="relative step-2 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
             >
-              Relire l’offre
+              <span>Relire l’offre</span>
+              {isFree && (
+                <label className="absolute -top-2">
+                  <LimitedAccess />
+                </label>
+              )}
             </button>
             <button
-              onClick={() => setShowMatching(true)}
-              className="step-3 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
+              onClick={() => {
+                if (isFree) {
+                  setShowPlan(true);
+                } else {
+                  setShowMatching(true);
+                }
+              }}
+              className="relative step-3 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
             >
-              Matching score
+              <span>Matching score</span>
+              {isFree && (
+                <label className="absolute -top-2">
+                  <LimitedAccess />
+                </label>
+              )}
             </button>
             <button
-              onClick={() => setShowOptimize(true)}
-              className="step-4 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
+              onClick={() => {
+                if (isFree) {
+                  setShowPlan(true);
+                } else {
+                  setShowOptimize(true);
+                }
+              }}
+              className="relative step-4 flex justify-center items-center gap-2 h-12 px-6 font-semibold rounded-sm text-sm text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] hover:opacity-80 cursor-pointer select-none"
             >
-              Optimiser en un clic
+              <span>Optimiser en un clic</span>
+              {isFree && (
+                <label className="absolute -top-2">
+                  <LimitedAccess />
+                </label>
+              )}
             </button>
             <button
               onClick={() => setShowCvMinuteSave(true)}
               className="step-5 flex justify-center items-center gap-2 h-12 px-6 rounded-sm text-sm font-semibold text-[var(--text-primary-color)] bg-[var(--bg-primary-color)] select-none hover:opacity-80 cursor-pointer"
             >
-              <span>Enregistrer le CV et l’offre</span>
+              Enregistrer le CV et l’offre
             </button>
             <button
               onClick={handleDownload}
@@ -612,31 +686,29 @@ export default function CvPreview() {
 
         <div className="relative h-[calc(100%-5rem)] w-full">
           <div className="absolute top-0 left-0 p-1">
-            {user &&
-              user.payments &&
-              user.payments.some((item) => item.status === 'paid') && (
-                <div className="flex flex-col items-center gap-1">
-                  <div className="flex items-center gap-1 text-[var(--text-primary-color)]">
-                    <Image
-                      src="/credit.png"
-                      alt="Crédit"
-                      width={30}
-                      height={30}
-                      className="rounded-full"
-                    />
-                    <span className="font-bold">{credits} Crédits IA</span>
-                  </div>
-                  <div className="w-full flex justify-center items-center py-1 px-4 rounded-md bg-yellow-400/10">
-                    <span className="font-bold text-yellow-500">
-                      {cvPlantType === 'premium'
-                        ? 'Profil Premium CV'
-                        : cvPlantType === 'booster'
-                        ? 'Profil Booster'
-                        : 'Version gratuite'}
-                    </span>
-                  </div>
+            {user && user.payments && (
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1 text-[var(--text-primary-color)]">
+                  <Image
+                    src="/credit.png"
+                    alt="Crédit"
+                    width={30}
+                    height={30}
+                    className="rounded-full"
+                  />
+                  <span className="font-bold">{credits} Crédits IA</span>
                 </div>
-              )}
+                <div className="w-full flex justify-center items-center py-1 px-4 rounded-md bg-yellow-400/10">
+                  <span className="font-bold text-yellow-500">
+                    {cvPlan === 'premium'
+                      ? 'Profil Premium CV'
+                      : cvPlan === 'booster'
+                      ? 'Profil Booster'
+                      : 'Version gratuite'}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="w-full h-full overflow-y-auto">
@@ -696,59 +768,71 @@ export default function CvPreview() {
                   ref={cvRef}
                   className="relative flex bg-white w-[50em] min-h-[70em] rounded-[0.75em] shadow-md"
                 >
-                  <div className="absolute -left-14 top-0 flex flex-col gap-2">
+                  <div className="absolute -left-[3.5em] top-0 flex flex-col gap-2">
                     <TooltipProvider>
                       <Tooltip delayDuration={700}>
-                        <TooltipTrigger>
-                          <i
-                            onClick={(event) => {
-                              const data: PopupInterface = {
-                                title: 'Ajouter une rubrique',
-                                large: true,
-                                openly: true,
-                                conseil: cvMinute.advices?.find(
-                                  (a) => a.type === 'cvMinuteAdvice',
-                                )?.content,
-                                suggestionTitle: 'Idées de rubrique :',
-                                suggestionKey: 'title',
-                                onGenerate: async () =>
-                                  await handleGenerateNewCvMinuteSections(),
-                                newEditableSection: true,
-                                fields: [
-                                  {
-                                    label: 'Nom de la rubrique',
-                                    type: 'input',
-                                    key: 'title',
-                                    placeholder: 'Nom...',
-                                    requiredError: 'Nom de la rubrique requise',
-                                    value: '',
-                                    initialValue: '',
-                                  },
-                                  {
-                                    label: 'Description',
-                                    type: 'textarea',
-                                    key: 'content',
-                                    placeholder: 'Description...',
-                                    requiredError:
-                                      'Description de la rubrique requise',
-                                    value: '',
-                                    initialValue: '',
-                                  },
-                                ],
-                              };
+                        <TooltipTrigger asChild>
+                          <label className="relative flex items-center">
+                            <i
+                              onClick={(event) => {
+                                if (isFree) {
+                                  setShowPlan(true);
+                                } else {
+                                  const data: PopupInterface = {
+                                    title: 'Ajouter une rubrique',
+                                    large: true,
+                                    openly: true,
+                                    conseil: cvMinute.advices?.find(
+                                      (a) => a.type === 'cvMinuteAdvice',
+                                    )?.content,
+                                    suggestionTitle: 'Idées de rubrique :',
+                                    suggestionKey: 'title',
+                                    onGenerate: async () =>
+                                      await handleGenerateNewCvMinuteSections(),
+                                    newEditableSection: true,
+                                    fields: [
+                                      {
+                                        label: 'Nom de la rubrique',
+                                        type: 'input',
+                                        key: 'title',
+                                        placeholder: 'Nom...',
+                                        requiredError:
+                                          'Nom de la rubrique requise',
+                                        value: '',
+                                        initialValue: '',
+                                      },
+                                      {
+                                        label: 'Description',
+                                        type: 'textarea',
+                                        key: 'content',
+                                        placeholder: 'Description...',
+                                        requiredError:
+                                          'Description de la rubrique requise',
+                                        value: '',
+                                        initialValue: '',
+                                      },
+                                    ],
+                                  };
 
-                              handleGetPosition(event, 'left', { y: 80 });
-                              if (isOpen) {
-                                handleClosePopup();
-                                setTempData(data);
-                              } else {
-                                handleOpenPopup(data);
-                              }
-                            }}
-                            className="step-11 h-10 w-10 flex justify-center items-center shadow rounded-full bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white hover:opacity-80 cursor-pointer"
-                          >
-                            <Plus size={24} />
-                          </i>
+                                  handleGetPosition(event, 'left', { y: 80 });
+                                  if (isOpen) {
+                                    handleClosePopup();
+                                    setTempData(data);
+                                  } else {
+                                    handleOpenPopup(data);
+                                  }
+                                }
+                              }}
+                              className="step-11 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white hover:opacity-80 cursor-pointer"
+                            >
+                              <Plus size={(fontSize + 10) * (fontSize / 16)} />
+                            </i>
+                            {isFree && (
+                              <label className="absolute right-[110%]">
+                                <LimitedAccess />
+                              </label>
+                            )}
+                          </label>
                         </TooltipTrigger>
                         <TooltipContent
                           side="left"
@@ -791,9 +875,9 @@ export default function CvPreview() {
                                 handleOpenPopup(data);
                               }
                             }}
-                            className="step-12 h-10 w-10 flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
+                            className="step-12 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
                           >
-                            <UserPlus size={24} />
+                            <UserPlus size={(fontSize + 8) * (fontSize / 16)} />
                           </i>
                         </TooltipTrigger>
                         <TooltipContent
@@ -806,56 +890,67 @@ export default function CvPreview() {
                     </TooltipProvider>
                     <TooltipProvider>
                       <Tooltip delayDuration={700}>
-                        <TooltipTrigger>
-                          <i
-                            onClick={(event) => {
-                              const data: PopupInterface = {
-                                title: 'Choisir les couleurs de fond',
-                                hidden: false,
-                                updateBg: true,
-                                fields: [
-                                  {
-                                    label: 'Primaire',
-                                    type: 'color',
-                                    key: 'primaryBg',
-                                    requiredError: '',
-                                    placeholder: '',
-                                    value: cvMinute.primaryBg,
-                                    initialValue: cvMinute.primaryBg,
-                                  },
-                                  {
-                                    label: 'Secondaire',
-                                    type: 'color',
-                                    key: 'secondaryBg',
-                                    requiredError: '',
-                                    placeholder: '',
-                                    value: cvMinute.secondaryBg,
-                                    initialValue: cvMinute.secondaryBg,
-                                  },
-                                  {
-                                    label: 'Tertiaire',
-                                    type: 'color',
-                                    key: 'tertiaryBg',
-                                    requiredError: '',
-                                    placeholder: '',
-                                    value: cvMinute.tertiaryBg,
-                                    initialValue: cvMinute.tertiaryBg,
-                                  },
-                                ],
-                              };
+                        <TooltipTrigger asChild>
+                          <label className="relative flex items-center">
+                            <i
+                              onClick={(event) => {
+                                if (isFree) {
+                                  setShowPlan(true);
+                                } else {
+                                  const data: PopupInterface = {
+                                    title: 'Choisir les couleurs de fond',
+                                    hidden: false,
+                                    updateBg: true,
+                                    fields: [
+                                      {
+                                        label: 'Primaire',
+                                        type: 'color',
+                                        key: 'primaryBg',
+                                        requiredError: '',
+                                        placeholder: '',
+                                        value: cvMinute.primaryBg,
+                                        initialValue: cvMinute.primaryBg,
+                                      },
+                                      {
+                                        label: 'Secondaire',
+                                        type: 'color',
+                                        key: 'secondaryBg',
+                                        requiredError: '',
+                                        placeholder: '',
+                                        value: cvMinute.secondaryBg,
+                                        initialValue: cvMinute.secondaryBg,
+                                      },
+                                      {
+                                        label: 'Tertiaire',
+                                        type: 'color',
+                                        key: 'tertiaryBg',
+                                        requiredError: '',
+                                        placeholder: '',
+                                        value: cvMinute.tertiaryBg,
+                                        initialValue: cvMinute.tertiaryBg,
+                                      },
+                                    ],
+                                  };
 
-                              handleGetPosition(event, 'left');
-                              if (isOpen) {
-                                handleClosePopup();
-                                setTempData(data);
-                              } else {
-                                handleOpenPopup(data);
-                              }
-                            }}
-                            className="step-13 h-10 w-10 flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
-                          >
-                            <Brush size={24} />
-                          </i>
+                                  handleGetPosition(event, 'left');
+                                  if (isOpen) {
+                                    handleClosePopup();
+                                    setTempData(data);
+                                  } else {
+                                    handleOpenPopup(data);
+                                  }
+                                }
+                              }}
+                              className="step-13 h-[2.5em] w-[2.5em] flex justify-center items-center shadow rounded-full text-white bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] hover:opacity-80 cursor-pointer"
+                            >
+                              <Brush size={(fontSize + 8) * (fontSize / 16)} />
+                            </i>
+                            {isFree && (
+                              <label className="absolute right-[110%]">
+                                <LimitedAccess />
+                              </label>
+                            )}
+                          </label>
                         </TooltipTrigger>
                         <TooltipContent
                           side="left"
@@ -1082,51 +1177,55 @@ export default function CvPreview() {
                                 })
                               }
                               onClick={(event) => {
-                                const data: PopupInterface = {
-                                  title: 'Modifier ou supprimer la rubrique',
-                                  conseil: s.advices?.find(
-                                    (a) => a.type === 'cvMinuteSectionAdvice',
-                                  )?.content,
-                                  suggestionTitle: 'Idées de rubrique :',
-                                  actionLabel: 'Supprimer la rubrique',
-                                  onClick: async () =>
-                                    await handleDeleteCvMinuteSection(s.id),
-                                  cvMinuteSectionId: s.id,
-                                  updateEditableSection: true,
-                                  fields: [
-                                    {
-                                      label: 'Nom de la rubrique',
-                                      type: 'input',
-                                      key: 'name',
-                                      requiredError:
-                                        'Nom de la rubrique requis',
-                                      placeholder: s.name ?? 'Nom...',
-                                      value: s.name ?? '',
-                                      initialValue: s.name ?? '',
-                                    },
-                                    {
-                                      label: 'Description',
-                                      type: 'textarea',
-                                      key: 'content',
-                                      requiredError:
-                                        'Description de la rubrique requise',
-                                      placeholder:
-                                        s.content ?? 'Description...',
-                                      value: s.content ?? '',
-                                      initialValue: s.content ?? '',
-                                    },
-                                  ],
-                                };
-
-                                handleGetPosition(event, 'left', {
-                                  y: 80,
-                                  x: 80,
-                                });
-                                if (isOpen) {
-                                  handleClosePopup();
-                                  setTempData(data);
+                                if (isFree && s.restricted) {
+                                  setShowPlan(true);
                                 } else {
-                                  handleOpenPopup(data);
+                                  const data: PopupInterface = {
+                                    title: 'Modifier ou supprimer la rubrique',
+                                    conseil: s.advices?.find(
+                                      (a) => a.type === 'cvMinuteSectionAdvice',
+                                    )?.content,
+                                    suggestionTitle: 'Idées de rubrique :',
+                                    actionLabel: 'Supprimer la rubrique',
+                                    onClick: async () =>
+                                      await handleDeleteCvMinuteSection(s.id),
+                                    cvMinuteSectionId: s.id,
+                                    updateEditableSection: true,
+                                    fields: [
+                                      {
+                                        label: 'Nom de la rubrique',
+                                        type: 'input',
+                                        key: 'name',
+                                        requiredError:
+                                          'Nom de la rubrique requis',
+                                        placeholder: s.name ?? 'Nom...',
+                                        value: s.name ?? '',
+                                        initialValue: s.name ?? '',
+                                      },
+                                      {
+                                        label: 'Description',
+                                        type: 'textarea',
+                                        key: 'content',
+                                        requiredError:
+                                          'Description de la rubrique requise',
+                                        placeholder:
+                                          s.content ?? 'Description...',
+                                        value: s.content ?? '',
+                                        initialValue: s.content ?? '',
+                                      },
+                                    ],
+                                  };
+
+                                  handleGetPosition(event, 'left', {
+                                    y: 80,
+                                    x: 80,
+                                  });
+                                  if (isOpen) {
+                                    handleClosePopup();
+                                    setTempData(data);
+                                  } else {
+                                    handleOpenPopup(data);
+                                  }
                                 }
                               }}
                               className="relative flex-1 w-full mt-[1em] hover:bg-[#f3f4f6]/25 p-[0.25em]"
@@ -1149,13 +1248,24 @@ export default function CvPreview() {
                                 )}
                               </div>
 
-                              <div className="absolute -left-15 top-0 flex flex-col gap-2">
+                              <div className="absolute -left-[3.75em] top-0 flex flex-col gap-2">
                                 <TooltipProvider>
                                   <Tooltip delayDuration={700}>
-                                    <TooltipTrigger>
-                                      <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
-                                        <Zap size={28} />
-                                      </i>
+                                    <TooltipTrigger asChild>
+                                      <label className="relative flex items-center">
+                                        <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
+                                          <Zap
+                                            size={
+                                              (fontSize + 16) * (fontSize / 16)
+                                            }
+                                          />
+                                        </i>
+                                        {isFree && s.restricted && (
+                                          <label className="absolute right-[110%]">
+                                            <LimitedAccess />
+                                          </label>
+                                        )}
+                                      </label>
                                     </TooltipTrigger>
                                     <TooltipContent
                                       side="left"
@@ -1283,67 +1393,71 @@ export default function CvPreview() {
                     <div className="flex-1 flex flex-col gap-[0.5em]">
                       <div
                         onClick={(event) => {
-                          const data: PopupInterface = {
-                            align: 'right',
-                            title: 'Ajouter une expérience',
-                            newExperience: true,
-                            fields: [
-                              {
-                                label: 'Titre du poste',
-                                type: 'input',
-                                key: 'title',
-                                requiredError: 'Titre du poste requis',
-                                placeholder: 'Titre...',
-                                value: '',
-                                initialValue: '',
-                              },
-                              {
-                                label: "Nom de l'entreprise",
-                                type: 'input',
-                                key: 'company',
-                                requiredError: "Nom de l'entreprise requis",
-                                placeholder: 'Entreprise...',
-                                value: '',
-                                initialValue: '',
-                              },
-                              {
-                                label: 'Mois début - Mois fin',
-                                example: 'Ex : 03-2023 05-2025',
-                                type: 'input',
-                                key: 'date',
-                                requiredError: 'Mois requis',
-                                placeholder: 'Mois...',
-                                value: '',
-                                initialValue: '',
-                              },
-                              {
-                                label: 'Type de contrat',
-                                example: 'Ex : CDI, CDD, Intérim...',
-                                type: 'input',
-                                key: 'contrat',
-                                requiredError: 'Type de contrat requis',
-                                placeholder: 'Contrat...',
-                                value: '',
-                                initialValue: '',
-                              },
-                              {
-                                label: 'Description',
-                                type: 'text',
-                                key: 'content',
-                                requiredError: 'Description requise',
-                                placeholder: 'Description...',
-                                value: '',
-                                initialValue: '',
-                              },
-                            ],
-                          };
-
-                          handleGetPosition(event, 'right', { y: 80 });
-                          if (isOpen) {
-                            handleClosePopup();
-                            setTempData(data);
+                          if (isFree) {
+                            setShowPlan(true);
                           } else {
-                            handleOpenPopup(data);
+                            const data: PopupInterface = {
+                              align: 'right',
+                              title: 'Ajouter une expérience',
+                              newExperience: true,
+                              fields: [
+                                {
+                                  label: 'Titre du poste',
+                                  type: 'input',
+                                  key: 'title',
+                                  requiredError: 'Titre du poste requis',
+                                  placeholder: 'Titre...',
+                                  value: '',
+                                  initialValue: '',
+                                },
+                                {
+                                  label: "Nom de l'entreprise",
+                                  type: 'input',
+                                  key: 'company',
+                                  requiredError: "Nom de l'entreprise requis",
+                                  placeholder: 'Entreprise...',
+                                  value: '',
+                                  initialValue: '',
+                                },
+                                {
+                                  label: 'Mois début - Mois fin',
+                                  example: 'Ex : 03-2023 05-2025',
+                                  type: 'input',
+                                  key: 'date',
+                                  requiredError: 'Mois requis',
+                                  placeholder: 'Mois...',
+                                  value: '',
+                                  initialValue: '',
+                                },
+                                {
+                                  label: 'Type de contrat',
+                                  example: 'Ex : CDI, CDD, Intérim...',
+                                  type: 'input',
+                                  key: 'contrat',
+                                  requiredError: 'Type de contrat requis',
+                                  placeholder: 'Contrat...',
+                                  value: '',
+                                  initialValue: '',
+                                },
+                                {
+                                  label: 'Description',
+                                  type: 'text',
+                                  key: 'content',
+                                  requiredError: 'Description requise',
+                                  placeholder: 'Description...',
+                                  value: '',
+                                  initialValue: '',
+                                },
+                              ],
+                            };
+
+                            handleGetPosition(event, 'right', { y: 80 });
+                            if (isOpen) {
+                              handleClosePopup();
+                              setTempData(data);
+                            } else {
+                              handleOpenPopup(data);
+                            }
                           }
                         }}
                         className="relative p-[0.25em]"
@@ -1358,26 +1472,28 @@ export default function CvPreview() {
                           Expériences professionnelles
                         </h2>
 
-                        <div className="absolute -right-[4em] top-[0.125em]">
-                          <TooltipProvider>
-                            <Tooltip delayDuration={700}>
-                              <TooltipTrigger>
-                                <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
-                                  <Triangle
-                                    size={(fontSize + 16) * (fontSize / 16)}
-                                    fill={'currentColor'}
-                                  />
-                                </i>
-                              </TooltipTrigger>
-                              <TooltipContent
-                                side="right"
-                                className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
-                              >
-                                <p>Ajouter expérience</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
+                        {!isFree && (
+                          <div className="absolute -right-[4em] top-[0.125em]">
+                            <TooltipProvider>
+                              <Tooltip delayDuration={700}>
+                                <TooltipTrigger>
+                                  <i className="text-[var(--u-primary-color)] opacity-80 hover:opacity-100 transition-opacity duration-150 cursor-pointer">
+                                    <Triangle
+                                      size={(fontSize + 16) * (fontSize / 16)}
+                                      fill={'currentColor'}
+                                    />
+                                  </i>
+                                </TooltipTrigger>
+                                <TooltipContent
+                                  side="right"
+                                  className="text-white text-[0.75em] shadow bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] px-[0.5em] py-[0.25em] ms-[0.25em] rounded-[0.25em]"
+                                >
+                                  <p>Ajouter expérience</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                        )}
                       </div>
 
                       {experiences && experiences.length > 0 ? (
@@ -1403,115 +1519,35 @@ export default function CvPreview() {
                                 })
                               }
                               onClick={(event) => {
-                                const data: PopupInterface = {
-                                  align: 'right',
-                                  section: 'experiences',
-                                  title: "Optimiser l'expérience",
-                                  actionLabel:
-                                    'Recalculer le score de  matching',
-                                  large: true,
-                                  openly: true,
-                                  withScore: true,
-                                  suggestionTitle: 'Idées de redactions :',
-                                  suggestionKey: 'content',
-                                  onClick: async () =>
-                                    await handleRecalculateExperienceMatching(
-                                      item.id,
-                                    ),
-                                  onGenerate: async () =>
-                                    await handleGenerateCvMinuteSectionAdvices(
-                                      item.id,
-                                    ),
-                                  cvMinuteSectionId: item.id,
-                                  updateExperience: true,
-                                  fields: [
-                                    {
-                                      label: 'Description',
-                                      type: 'text',
-                                      key: 'content',
-                                      requiredError: 'Description requise',
-                                      placeholder:
-                                        item.content ?? 'Description...',
-                                      value: item.content ?? '',
-                                      initialValue: item.content ?? '',
-                                    },
-                                  ],
-                                };
-
-                                handleGetPosition(event, 'right', {
-                                  y: 80,
-                                  x: 255,
-                                });
-                                if (isOpen) {
-                                  handleClosePopup();
-                                  setTempData(data);
+                                if (isFree && item.restricted) {
+                                  setShowPlan(true);
                                 } else {
-                                  handleOpenPopup(data);
-                                }
-                              }}
-                              className="flex-1 flex flex-col gap-[0.5em] p-[0.25em] hover:bg-[#f3f4f6]"
-                            >
-                              <div
-                                onClick={(event) => {
-                                  event.stopPropagation();
-
                                   const data: PopupInterface = {
                                     align: 'right',
-                                    title: "Modifier ou supprimer l'expérience",
-                                    actionLabel: "Supprimer l'expérience",
+                                    section: 'experiences',
+                                    title: "Optimiser l'expérience",
+                                    actionLabel:
+                                      'Recalculer le score de  matching',
+                                    large: true,
+                                    openly: true,
+                                    withScore: true,
+                                    suggestionTitle: 'Idées de redactions :',
+                                    suggestionKey: 'content',
                                     onClick: async () =>
-                                      await handleDeleteCvMinuteSection(
+                                      await handleRecalculateExperienceMatching(
+                                        item.id,
+                                      ),
+                                    onGenerate: async () =>
+                                      await handleGenerateCvMinuteSectionAdvices(
                                         item.id,
                                       ),
                                     cvMinuteSectionId: item.id,
                                     updateExperience: true,
                                     fields: [
                                       {
-                                        label: 'Titre du poste',
-                                        type: 'input',
-                                        key: 'title',
-                                        requiredError: 'Titre du poste requis',
-                                        placeholder: item.title ?? 'Titre...',
-                                        value: item.title ?? '',
-                                        initialValue: item.title ?? '',
-                                      },
-                                      {
-                                        label: "Nom de l'entreprise",
-                                        type: 'input',
-                                        key: 'company',
-                                        requiredError:
-                                          "Nom de l'entreprise requis",
-                                        placeholder:
-                                          item.company ?? 'Entreprise...',
-                                        value: item.company ?? '',
-                                        initialValue: item.company ?? '',
-                                      },
-                                      {
-                                        label: 'Mois début - Mois fin',
-                                        example: 'Ex : 03-2023 05-2025',
-                                        type: 'input',
-                                        key: 'date',
-                                        requiredError: 'Mois requis',
-                                        placeholder: item.date ?? 'Mois...',
-                                        value: item.date ?? '',
-                                        initialValue: item.date ?? '',
-                                      },
-                                      {
-                                        label: 'Type de contrat',
-                                        example: 'Ex : CDI, CDD, Intérim...',
-                                        type: 'input',
-                                        key: 'contrat',
-                                        requiredError: 'Type de contrat requis',
-                                        placeholder:
-                                          item.contrat ?? 'Contrat...',
-                                        value: item.contrat ?? '',
-                                        initialValue: item.contrat ?? '',
-                                      },
-                                      {
                                         label: 'Description',
                                         type: 'text',
                                         key: 'content',
-                                        show: false,
                                         requiredError: 'Description requise',
                                         placeholder:
                                           item.content ?? 'Description...',
@@ -1521,12 +1557,105 @@ export default function CvPreview() {
                                     ],
                                   };
 
-                                  handleGetPosition(event, 'center', { y: 80 });
+                                  handleGetPosition(event, 'right', {
+                                    y: 80,
+                                    x: 255,
+                                  });
                                   if (isOpen) {
                                     handleClosePopup();
                                     setTempData(data);
                                   } else {
                                     handleOpenPopup(data);
+                                  }
+                                }
+                              }}
+                              className="flex-1 flex flex-col gap-[0.5em] p-[0.25em] hover:bg-[#f3f4f6]"
+                            >
+                              <div
+                                onClick={(event) => {
+                                  event.stopPropagation();
+
+                                  if (isFree && item.restricted) {
+                                    setShowPlan(true);
+                                  } else {
+                                    const data: PopupInterface = {
+                                      align: 'right',
+                                      title:
+                                        "Modifier ou supprimer l'expérience",
+                                      actionLabel: "Supprimer l'expérience",
+                                      onClick: async () =>
+                                        await handleDeleteCvMinuteSection(
+                                          item.id,
+                                        ),
+                                      cvMinuteSectionId: item.id,
+                                      updateExperience: true,
+                                      fields: [
+                                        {
+                                          label: 'Titre du poste',
+                                          type: 'input',
+                                          key: 'title',
+                                          requiredError:
+                                            'Titre du poste requis',
+                                          placeholder: item.title ?? 'Titre...',
+                                          value: item.title ?? '',
+                                          initialValue: item.title ?? '',
+                                        },
+                                        {
+                                          label: "Nom de l'entreprise",
+                                          type: 'input',
+                                          key: 'company',
+                                          requiredError:
+                                            "Nom de l'entreprise requis",
+                                          placeholder:
+                                            item.company ?? 'Entreprise...',
+                                          value: item.company ?? '',
+                                          initialValue: item.company ?? '',
+                                        },
+                                        {
+                                          label: 'Mois début - Mois fin',
+                                          example: 'Ex : 03-2023 05-2025',
+                                          type: 'input',
+                                          key: 'date',
+                                          requiredError: 'Mois requis',
+                                          placeholder: item.date ?? 'Mois...',
+                                          value: item.date ?? '',
+                                          initialValue: item.date ?? '',
+                                        },
+                                        {
+                                          label: 'Type de contrat',
+                                          example: 'Ex : CDI, CDD, Intérim...',
+                                          type: 'input',
+                                          key: 'contrat',
+                                          requiredError:
+                                            'Type de contrat requis',
+                                          placeholder:
+                                            item.contrat ?? 'Contrat...',
+                                          value: item.contrat ?? '',
+                                          initialValue: item.contrat ?? '',
+                                        },
+                                        {
+                                          label: 'Description',
+                                          type: 'text',
+                                          key: 'content',
+                                          show: false,
+                                          requiredError: 'Description requise',
+                                          placeholder:
+                                            item.content ?? 'Description...',
+                                          value: item.content ?? '',
+                                          initialValue: item.content ?? '',
+                                        },
+                                      ],
+                                    };
+
+                                    handleGetPosition(event, 'center', {
+                                      y: 80,
+                                    });
+                                    if (isOpen) {
+                                      handleClosePopup();
+                                      setTempData(data);
+                                    } else {
+                                      handleOpenPopup(data);
+                                    }
                                   }
                                 }}
                                 className="flex flex-col gap-[0.25em] hover:bg-[#f3f4f6]"
@@ -1565,30 +1694,41 @@ export default function CvPreview() {
 
                               {item.evaluation && (
                                 <div className="absolute -right-[13em] w-[12em] flex flex-col gap-[0.5em]">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-[0.875em] font-medium text-[var(--text-secondary-gray)] truncate">
-                                      {item.title}
-                                    </span>
-                                    <span className="text-[0.875em] font-semibold text-[var(--text-primary-color)]">
-                                      {item.evaluation.actualScore ??
-                                        item.evaluation.initialScore}
-                                      %
-                                    </span>
-                                  </div>
-                                  <div className="relative h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
-                                    <div
-                                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
-                                      style={{
-                                        width: `${
-                                          item.evaluation.actualScore ??
-                                          item.evaluation.initialScore
-                                        }%`,
-                                      }}
+                                  {isFree && item.restricted ? (
+                                    <Image
+                                      src="/evaluation.png"
+                                      alt="Evaluation"
+                                      width={500}
+                                      height={300}
                                     />
-                                  </div>
-                                  <button className="w-full text-[0.75em] font-semibold text-[var(--text-primary-color)] hover:text-[var(--u-primary-color)] cursor-pointer">
-                                    Optimiser cette expérience
-                                  </button>
+                                  ) : (
+                                    <>
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-[0.875em] font-medium text-[var(--text-secondary-gray)] truncate">
+                                          {item.title}
+                                        </span>
+                                        <span className="text-[0.875em] font-semibold text-[var(--text-primary-color)]">
+                                          {item.evaluation.actualScore ??
+                                            item.evaluation.initialScore}
+                                          %
+                                        </span>
+                                      </div>
+                                      <div className="relative h-[0.5em] bg-[#e5e7eb] rounded-full overflow-hidden">
+                                        <div
+                                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#ffccd3] to-[#8B5CF6] rounded-full transition-all duration-300"
+                                          style={{
+                                            width: `${
+                                              item.evaluation.actualScore ??
+                                              item.evaluation.initialScore
+                                            }%`,
+                                          }}
+                                        />
+                                      </div>
+                                      <button className="w-full text-[0.75em] font-semibold text-[var(--text-primary-color)] hover:text-[var(--u-primary-color)] cursor-pointer">
+                                        Optimiser cette expérience
+                                      </button>
+                                    </>
+                                  )}
                                 </div>
                               )}
                             </div>
@@ -1625,8 +1765,9 @@ export default function CvPreview() {
                   popup={popup}
                   cvMinuteId={cvMinute.id}
                   currentPosition={currentPosition}
+                  setShowPlan={setShowPlan}
                   setCurrentPosition={setCurrentPosition}
-                  handleClosePopup={handleClosePopup}
+                  onClose={handleClosePopup}
                 />
               </div>
             )}
@@ -1648,7 +1789,7 @@ export default function CvPreview() {
             </Popup>
           )}
 
-          {review && (
+          {review && !isFree && (
             <Popup large onClose={() => setReview(false)}>
               <div
                 className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
@@ -1661,7 +1802,7 @@ export default function CvPreview() {
             </Popup>
           )}
 
-          {showOptimize && (
+          {showOptimize && !isFree && (
             <Popup large onClose={() => setShowOptimize(false)}>
               <div
                 className="max-h-[80vh] p-5 overflow-y-auto [&::-webkit-scrollbar]:w-[0.325rem] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300"
@@ -1735,7 +1876,7 @@ export default function CvPreview() {
             </Popup>
           )}
 
-          {showMatching && (
+          {showMatching && !isFree && (
             <Popup large onClose={() => setShowMatching(false)}>
               <div
                 style={{ fontSize: '1rem' }}
@@ -1863,6 +2004,8 @@ export default function CvPreview() {
               </div>
             </Popup>
           )}
+
+          {showPlan && <PlanPopup onClose={() => setShowPlan(false)} />}
         </div>
 
         {showGuide && (

@@ -100,7 +100,7 @@ export default function UserSideLayout({
                     label="Valider"
                     isLoading={conditionsLoading}
                     onClick={handleAcceptConditions}
-                    className={`w-1/2 h-12 px-8 text-base rounded-lg ${
+                    className={`w-1/2 h-12 px-8 text-base rounded-full ${
                       !acceptConditions
                         ? 'pointer-events-none opacity-80 bg-[var(--bg-primary-color)] text-[var(--text-primary-color)]'
                         : ''
@@ -132,7 +132,7 @@ export default function UserSideLayout({
                   label="Démarrer"
                   isLoading={freeUseLoading}
                   onClick={handleAcceptFreeUse}
-                  className="w-1/2 h-12 px-8 text-base rounded-lg"
+                  className="w-1/2 h-12 px-8 text-base rounded-full"
                 />
               </div>
             </div>

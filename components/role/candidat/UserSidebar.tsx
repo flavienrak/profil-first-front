@@ -12,12 +12,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
 import { userRoutes } from '@/lib/constants';
 import { RootState } from '@/redux/store';
-import { useUser } from '@/providers/User.provider';
+import { useCandidat } from '@/providers/Candidat.provider';
 
 export default function UserSidebar({ showMenu }: { showMenu: boolean }) {
   const { user } = useSelector((state: RootState) => state.user);
   const { mode } = useSelector((state: RootState) => state.persistInfos);
-  const { credits } = useUser();
+  const { credits } = useCandidat();
 
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -80,9 +80,7 @@ export default function UserSidebar({ showMenu }: { showMenu: boolean }) {
             <Image src="/credit.png" alt="" width={22} height={22} />
             {showMenu && (
               <span className="font-medium transition-all duration-150 overflow-hidden whitespace-nowrap text-ellipsis">
-                {user &&
-                user.payments &&
-                user.payments.some((item) => item.status === 'paid')
+                {user && user.payments
                   ? `${credits} Crédits IA`
                   : 'Version gratuite'}
               </span>

@@ -17,8 +17,10 @@ export interface CvMinuteSectionInterface {
   contrat: string | null;
   icon: IconInterface | null;
   iconSize: number | null;
-  cvMinuteId: number;
+  restricted: boolean;
+  deleted: boolean;
   editable: boolean;
+  cvMinuteId: number;
 
   evaluation?: EvaluationInterface | null;
   files?: FileInterface[];

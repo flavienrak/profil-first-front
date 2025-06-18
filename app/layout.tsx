@@ -6,6 +6,7 @@ import ThemeProvider from '@/providers/Theme.provider';
 import SocketProvider from '@/providers/Socket.provider';
 import ToastProvider from '@/providers/Toast.provider';
 import UserProvider from '@/providers/User.provider';
+import CandidatProvider from '@/providers/Candidat.provider';
 
 export const metadata: Metadata = {
   title: 'Profil First',
@@ -24,7 +25,9 @@ export default function RootLayout({
           <ThemeProvider>
             <SocketProvider>
               <ToastProvider>
-                <UserProvider>{children}</UserProvider>
+                <UserProvider>
+                  <CandidatProvider>{children}</CandidatProvider>
+                </UserProvider>
               </ToastProvider>
             </SocketProvider>
           </ThemeProvider>

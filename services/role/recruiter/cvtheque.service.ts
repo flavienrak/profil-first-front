@@ -2,7 +2,7 @@ import api from '@/axios/axios.instance';
 import {
   AddCvThequeCritereInterface,
   UpdateCvThequeCritereInterface,
-} from '@/interfaces/role/recruiter/cvtheque-form';
+} from '@/interfaces/role/recruiter/cvthequeForm';
 
 const cvThequePrefix = '/role/recruiter/cvtheque';
 

@@ -11,7 +11,7 @@ import {
   setQuestionReducer,
 } from '@/redux/slices/role/candidat/qualiCarriere.slice';
 import { QualiCarriereQuestionInteface } from '@/interfaces/role/candidat/quali-carriere/questionInterface';
-import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvtheque-critere.interface';
+import { CvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque/cvthequeCritere.interface';
 import { setCvThequeCritereReducer } from '@/redux/slices/role/recruiter/cvtheque.slice';
 import { CvMinuteSectionInterface } from '@/interfaces/role/candidat/cv-minute/cvMinuteSection.interface';
 

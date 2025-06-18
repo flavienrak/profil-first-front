@@ -50,7 +50,7 @@ import {
   CvThequeCritereFormValues,
   cvThequeCritereSchema,
 } from '@/components/role/recruiter/cvtheque/CvThequeComponent';
-import { UpdateCvThequeCritereInterface } from '@/interfaces/role/recruiter/cvtheque-form';
+import { UpdateCvThequeCritereInterface } from '@/interfaces/role/recruiter/cvthequeForm';
 import { useParams, useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -66,6 +66,7 @@ export default function CvThequeDetailsLayout({
     (state: RootState) => state.cvTheque,
   );
   const { showCritere } = useSelector((state: RootState) => state.persistInfos);
+
   const dispatch = useDispatch();
   const router = useRouter();
   const params = useParams();

@@ -10,13 +10,14 @@ import { motion } from 'framer-motion';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { addCvMinuteService } from '@/services/role/candidat/cvMinute.service';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateUserReducer } from '@/redux/slices/user.slice';
-import { RootState } from '@/redux/store';
+import { useDispatch } from 'react-redux';
+import {
+  updatePaymentsReducer,
+  updateUserReducer,
+} from '@/redux/slices/user.slice';
+import { toast } from 'sonner';
 
 export default function CvMinuteComponent() {
-  const { user } = useSelector((state: RootState) => state.user);
-
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -24,6 +25,7 @@ export default function CvMinuteComponent() {
   const [message, setMessage] = React.useState('');
   const [position, setPosition] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showPlan, setShowPlan] = React.useState(false);
 
   const handleChangeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -48,12 +50,17 @@ export default function CvMinuteComponent() {
       formData.append('position', position.trim());
 
       const res = await addCvMinuteService(formData);
-
-      if (res.cvMinuteId) {
-        dispatch(updateUserReducer({ cvMinuteCount: res.cvMinuteCount }));
-        router.push(`/cv-minute/${res.cvMinuteId}`);
-      } else if (res.invalidDocument) {
+      if (res.invalidDocument) {
         setMessage('Le CV doit être en format PDF ou WORD seulement');
+      } else if (res.notAvailable) {
+        toast.warning('Crédits insuffisants', {
+          description: 'Vérifier vos abonnements',
+        });
+        setShowPlan(true);
+      } else if (res.cvMinuteId) {
+        dispatch(updateUserReducer({ cvMinuteCount: res.cvMinuteCount }));
+        dispatch(updatePaymentsReducer({ payments: res.payments }));
+        router.push(`/cv-minute/${res.cvMinuteId}`);
       }
     } else if (!file) {
       setMessage('Merci de mettre votre CV dans le champs dédié');
@@ -158,7 +165,7 @@ export default function CvMinuteComponent() {
         </Popup>
       )}
 
-      {/* <PlanPopup /> */}
+      {showPlan && <PlanPopup onClose={() => setShowPlan(false)} />}
     </div>
   );
 }

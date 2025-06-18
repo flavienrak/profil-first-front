@@ -2,8 +2,8 @@ import { AdviceInterface } from '../../../advice.interface';
 import { CvMinuteSectionInterface } from './cvMinuteSection.interface';
 import { EvaluationInterface } from '../../../evaluation.interface';
 import { FileInterface } from '../../../file.interface';
-import { CvThequeViewInterface } from '../../recruiter/cvtheque/cvtheque-view.interface';
-import { CvThequeContactInterface } from '../../recruiter/cvtheque/cvtheque-contact.interface';
+import { CvThequeViewInterface } from '../../recruiter/cvtheque/cvthequeView.interface';
+import { CvThequeContactInterface } from '../../recruiter/cvtheque/cvthequeContact.interface';
 import { UserActionInterface } from '@/interfaces/userAction.interface';
 
 export interface CvMinuteInterface {
@@ -17,6 +17,7 @@ export interface CvMinuteInterface {
   qualiCarriereRef: boolean;
   generated: string | null;
   score: number | null;
+  deleted: boolean;
   userId: number;
   cvThequeCritereId: number | null;
 
