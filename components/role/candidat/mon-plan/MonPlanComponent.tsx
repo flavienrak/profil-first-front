@@ -94,11 +94,9 @@ export default function MonPlanComponent() {
       const stripe = await stripePromise;
 
       if (stripe) {
-        await stripe
-          .redirectToCheckout({
-            sessionId: res.payment.sessionId,
-          })
-          .catch((error) => console.log('stripe redirect error:', error));
+        await stripe.redirectToCheckout({
+          sessionId: res.payment.sessionId,
+        });
       }
     }
 
