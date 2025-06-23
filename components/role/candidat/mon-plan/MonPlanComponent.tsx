@@ -142,14 +142,18 @@ export default function MonPlanComponent() {
               {/* Icon and Title */}
               <div className="flex flex-col gap-2">
                 <div className="flex flex-col justify-center items-center">
-                  <div className="w-12 h-12 text-white bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 text-white bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-2">
                     <Crown size={22} />
                   </div>
                 </div>
 
-                <h2 className="text-xl text-center font-bold text-purple-700">
-                  💜 Optimise ton CV comme un pro en 5 minutes
+                <h2 className="text-center text-3xl font-bold bg-gradient-to-br from-purple-500 to-purple-600 bg-clip-text text-transparent">
+                  Profil Premium
                 </h2>
+
+                <h3 className="text-center font-bold text-purple-700">
+                  💜 Optimise ton CV comme un pro en 5 minutes
+                </h3>
 
                 <div className="text-center">
                   <span className="text-3xl font-bold text-[var(--text-primary-color))]">
@@ -264,13 +268,16 @@ export default function MonPlanComponent() {
               </div>
 
               {/* Icon and Title */}
-              <div className="text-center">
-                <div className="w-12 h-12 text-white bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="flex flex-col gap-2">
+                <div className="w-12 h-12 text-white bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-2">
                   <Zap size={22} />
                 </div>
-                <h2 className="text-xl font-bold text-orange-700 mb-2">
-                  🟠 Boost ton CV sans limite
+                <h2 className="text-3xl text-center font-bold bg-gradient-to-br from-orange-500 to-orange-600 bg-clip-text text-transparent">
+                  Profil Booster
                 </h2>
+                <h3 className="text-center font-bold text-orange-700">
+                  🟠 Boost ton CV sans limite
+                </h3>
                 <div className="text-center">
                   <span className="text-3xl font-bold text-[var(--text-primary-color)]">
                     6,99 €
@@ -366,19 +373,22 @@ export default function MonPlanComponent() {
           >
             <div className="px-8 pt-4 pb-8 flex flex-col gap-6 h-full">
               {/* Icon and Title */}
-              <div className="text-center">
-                <div className="w-12 h-12 text-white bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="flex flex-col gap-2">
+                <div className="w-12 h-12 text-white bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-2">
                   <Brain size={22} />
                 </div>
-                <h2 className="text-xl font-bold text-green-700 mb-2">
-                  🧠 Tu racontes. On augmente ta valeur perçue pour les RH.
+                <h2 className="text-3xl text-center font-bold bg-gradient-to-br from-green-500 to-green-600 bg-clip-text text-transparent">
+                  Quali-Carrière
                 </h2>
+                <h3 className="font-bold text-center text-green-700">
+                  🧠 Tu racontes. On augmente ta valeur perçue pour les RH.
+                </h3>
                 <div className="text-center">
                   <span className="text-3xl font-bold text-[var(--text-primary-color)]">
                     9,99 €
                   </span>
                 </div>
-                <p className="text-green-600 font-semibold mt-2">
+                <p className="text-green-600 text-center font-semibold mt-2">
                   📅 Accès 6 mois (one-shot)
                 </p>
               </div>

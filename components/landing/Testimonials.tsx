@@ -71,7 +71,7 @@ export default function Testimonials() {
       <MovingDots />
       <div className="max-w-7xl container relative z-10 flex flex-col gap-24">
         <h2 className="text-3xl md:text-4xl text-center font-bold text-[var(--text-primary-color)]">
-          Ce qu'en disent nos utilisateurs
+          Ce qu’ils diraient si on leur demandait
         </h2>
 
         <div className="relative">

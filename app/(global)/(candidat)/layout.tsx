@@ -73,7 +73,7 @@ export default function UserSideLayout({
         {showConditions ? (
           <Popup>
             <div className="h-[26rem] w-[30rem] flex flex-col justify-between gap-6 px-4 pb-4">
-              <h2 className="font-bold text-5xl text-center leading-16 text-[var(--u-primary-color)]">
+              <h2 className="font-bold text-4xl text-center leading-16 text-[var(--u-primary-color)]">
                 Bienvenue sur Profil First CV !
               </h2>
               <div className="max-h-[55vh] flex flex-col gap-4 text-[var(--text-primary-color)] rounded-md overflow-y-auto">
@@ -111,9 +111,9 @@ export default function UserSideLayout({
             </div>
           </Popup>
         ) : showFreeUse ? (
-          <Popup large>
+          <Popup large dark>
             <div className="w-[40rem] h-[75vh] flex flex-col justify-between gap-5 px-4 pb-4">
-              <h2 className="font-bold text-center text-5xl leading-14 text-[var(--u-primary-color)]">
+              <h2 className="font-bold text-center text-4xl leading-12 text-white">
                 Utiliser gratuitement vos <br />
                 10 000 crédits IA <br />
                 pour tester Profil First
@@ -132,7 +132,7 @@ export default function UserSideLayout({
                   label="Démarrer"
                   isLoading={freeUseLoading}
                   onClick={handleAcceptFreeUse}
-                  className="w-1/2 h-12 px-8 text-base rounded-full"
+                  className="w-1/2 h-12 px-8 text-base rounded-full bg-white text-[#1a1e2e]"
                 />
               </div>
             </div>

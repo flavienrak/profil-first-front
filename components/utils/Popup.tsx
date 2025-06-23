@@ -6,11 +6,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function Popup({
   large,
   full,
+  dark,
   onClose,
   children,
 }: {
   large?: boolean;
   full?: boolean;
+  dark?: boolean;
   onClose?: () => void;
   children: React.ReactNode;
 }) {
@@ -23,9 +25,9 @@ export default function Popup({
         className="fixed top-0 left-0 z-[100] w-screen h-screen bg-black/40 flex justify-center items-center"
       >
         <div
-          className={`bg-[var(--bg-secondary-color)] border border-[var(--text-primary-color)]/10 p-5 rounded-xl relative shadow ${
+          className={`border border-[var(--text-primary-color)]/10 p-5 rounded-xl relative shadow ${
             full ? '' : large ? 'max-w-[52rem]' : 'max-w-[32rem]'
-          }`}
+          } ${dark ? 'bg-[#1a1e2e]' : 'bg-[var(--bg-secondary-color)]'}`}
         >
           {children}
           {onClose && (
