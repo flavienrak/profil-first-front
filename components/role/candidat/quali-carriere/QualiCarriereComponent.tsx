@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import PlanPopup from '../PlanPopup';
 import Popup from '@/components/utils/Popup';
 import Title from '@/components/utils/role/user/Title';
 
@@ -12,7 +14,32 @@ import { useRouter } from 'next/navigation';
 import { handleVideo } from '@/lib/function';
 import { useCandidat } from '@/providers/Candidat.provider';
 import { toast } from 'sonner';
-import PlanPopup from '../PlanPopup';
+
+const steps = [
+  {
+    id: 1,
+    title: 'Étape 1',
+    content: 'Tu passes un entretien avec l’IA pour tout poser à plat.',
+  },
+  {
+    id: 2,
+    title: 'Étape 2',
+    content:
+      'Tu reçois ton storytelling :  ta synthèse pro + 30 compétences clés révélées.',
+  },
+  {
+    id: 3,
+    title: 'Étape 3',
+    content:
+      'Tu échanges avec Profiler Coach AI pour clarifier ou améliorer ton discours.',
+  },
+  {
+    id: 4,
+    title: 'Étape 4',
+    content:
+      'Tu enrichis ton CV avec des suggestions intelligentes sur-mesure.',
+  },
+];
 
 export default function QualiCarriereComponent() {
   const { cvMinuteCount } = useSelector((state: RootState) => state.user);
@@ -37,16 +64,16 @@ export default function QualiCarriereComponent() {
         setShowPlan(true);
       } else {
         setRedirectLoading(true);
-        router.push('/quali-carriere/1');
+        router.push('/quali-carriere/step/1');
       }
     }
   };
 
   return (
     <div className="relative h-full w-full max-h-full overflow-y-auto p-8">
-      <div className="flex justify-center">
-        <div className="max-w-6xl flex flex-col gap-10">
-          <div className="flex flex-col gap-8">
+      <div className="w-full flex justify-center">
+        <div className="w-full max-w-6xl flex flex-col gap-10">
+          <div className="w-full flex flex-col gap-8">
             <Title value={'Quali Carrière CV'} />
             <div className="flex items-center justify-between mb-4">
               <p className="text-lg text-[var(--text-primary-gray)]">
@@ -59,69 +86,39 @@ export default function QualiCarriereComponent() {
                 En savoir plus
               </button>
             </div>
-            <div className="bg-[var(--bg-secondary-color)] rounded-2xl p-6 shadow-lg">
+            <div className="w-full bg-[var(--bg-secondary-color)] rounded-2xl p-6 shadow-lg">
               <div className="space-y-8">
-                <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-[var(--u-primary-color)] text-white rounded-full flex items-center justify-center flex-shrink-0">
-                    1
+                {steps.map((item) => (
+                  <div key={`step-${item.id}`} className="flex gap-4">
+                    <div className="w-8 h-8 bg-[var(--u-primary-color)] text-white rounded-full flex items-center justify-center flex-shrink-0">
+                      {item.id}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <h3 className="font-semibold text-[var(--text-primary-color)]">
+                        {item.title}
+                      </h3>
+                      <p className="text-[var(--text-secondary-gray)]">
+                        {item.content}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <h3 className="font-semibold text-[var(--text-primary-color)]">
-                      Étape 1
-                    </h3>
-                    <p className="text-[var(--text-secondary-gray)]">
-                      Vous démarrez la discussion avec Profiler Coach Ai
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-[var(--u-primary-color)] text-white rounded-full flex items-center justify-center flex-shrink-0">
-                    2
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <h3 className="font-semibold text-[var(--text-primary-color)]">
-                      Étape 2
-                    </h3>
-                    <p className="text-[var(--text-secondary-gray)]">
-                      Vous validez les éléments de votre parcours. Vous pouvez
-                      en discuter dans le Chat de Profiler Coach.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-[var(--u-primary-color)] text-white rounded-full flex items-center justify-center flex-shrink-0">
-                    ✓
-                  </div>
-                  <div>
-                    <p className="font-semibold text-[var(--text-primary-color)]">
-                      Et Hop Vous êtes contacté par un recruteur ! Nous activons
-                      Quali Carrière pour proposer la meilleur version de votre
-                      parcours en CV aux recruteurs selon les offres d'emploi.
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-center gap-10">
-            <h2 className="text-2xl font-bold text-center text-[var(--text-primary-gray)]">
-              Parlez-nous de vous ! On s'occupe du reste !
-            </h2>
 
-            <div className="flex flex-col gap-7 bg-[var(--bg-secondary-color)] p-6 rounded-xl shadow-md text-center w-full max-w-xl">
+          <div className="flex gap-10">
+            <div className="w-1/2 flex flex-col justify-between gap-8 bg-[var(--bg-secondary-color)] py-6 px-12 rounded-xl shadow-md text-center">
               <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
-                Partagez votre parcours avec Profiler Coach Ai
+                Partage ton parcours avec Profiler Coach Ai
               </h3>
               <p className="text-[var(--text-secondary-gray)]">
-                Profiler Coach Ai vous questionnera sur votre parcours
-                professionnel pour faire ressortir les meilleures informations
-                de votre profil.
+                Profiler Coach Ai te pose quelques questions simples sur ton
+                parcours.
               </p>
               <button
                 onClick={handleContinue}
-                className={`w-full flex items-center justify-center gap-3 px-6 py-3 text-base tracking-wide font-semibold bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white rounded-full select-none ${
+                className={`w-full flex items-center justify-center gap-3 px-6 py-3 text-lg tracking-wide font-semibold bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white rounded-full select-none ${
                   redirectLoading
                     ? 'opacity-80 pointer-events-none'
                     : 'hover:opacity-80 transition-opacity duration-150 cursor-pointer'
@@ -146,8 +143,33 @@ export default function QualiCarriereComponent() {
                     />
                   </svg>
                 )}
-                <span>Démarrer</span>
+                <span>Démarrer mon entretien maintenant</span>
               </button>
+            </div>
+
+            <div className="w-1/2 flex flex-col gap-8 text-[var(--u-primary-color)]">
+              <h2 className="text-4xl font-bold text-center leading-14 italic">
+                « Parle moi de toi ! Je m’occupe du reste ! »
+              </h2>
+              <div className="flex items-center justify-center gap-4">
+                <Image
+                  src="/coach.png"
+                  alt="Profiler Coach Ai"
+                  height={80}
+                  width={80}
+                  className="rounded-full"
+                />
+                <p className="text-3xl font-semibold">Profiler Coach Ai</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <div className="w-1/2">
+              <p>
+                * sous réserve de crédits disponibles via la souscription à
+                l'offre Profil Premium
+              </p>
             </div>
           </div>
         </div>

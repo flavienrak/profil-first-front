@@ -27,6 +27,9 @@ export default function ReservationComponent() {
   const [visibleSections, setVisibleSections] = useState<Set<string>>(
     new Set(),
   );
+  const [showConfirm, setShowConfirm] = React.useState<
+    'confirm' | 'sent' | null
+  >(null);
   const sectionRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   useEffect(() => {
@@ -276,10 +279,14 @@ export default function ReservationComponent() {
     },
   ];
 
+  const handleSendMail = async () => {
+    setShowConfirm('sent');
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="max-h-full w-full overflow-y-auto bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-violet-600 via-purple-600 to-blue-600">
+      <div className="relative min-h-screen bg-gradient-to-r from-violet-600 via-purple-600 to-blue-600">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="text-center">
@@ -375,7 +382,7 @@ export default function ReservationComponent() {
               appel sous 24h pour valider votre créneau.
             </p>
             <button
-              onClick={() => setShowBookingModal(true)}
+              onClick={() => setShowConfirm('confirm')}
               className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-bold rounded-full hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-lg cursor-pointer"
             >
               <svg
@@ -395,24 +402,79 @@ export default function ReservationComponent() {
             </button>
           </div>
         </div>
+
+        {showConfirm && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 transform transition-all duration-300 scale-100">
+              {showConfirm === 'confirm' ? (
+                <>
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Phone className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                      Demande de contact
+                    </h3>
+                    <p className="text-gray-600">
+                      Confirmez-vous votre demande de contact pour une séance de
+                      coaching ?
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={handleSendMail}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                    >
+                      Confirmer ma demande de contact
+                    </button>
+                    <button
+                      onClick={() => setShowConfirm(null)}
+                      className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-full font-medium hover:bg-gray-200 transition-all duration-300"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <div className="w-8 h-8 text-white">✓</div>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                      Demande transmise !
+                    </h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                      Votre demande a été transmise. Restez près de votre
+                      téléphone,
+                      <br />
+                      <strong className="text-gray-900 font-bold text-lg">
+                        vous serez contacté dans les 24h.
+                      </strong>
+                    </p>
+                    <button
+                      onClick={() => setShowConfirm(null)}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Coaching Offers */}
       <div
         id="coaching-offers"
         ref={setSectionRef('coaching-offers')}
-        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 transition-all duration-1000 ${
-          visibleSections.has('coaching-offers')
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 translate-y-10'
-        }`}
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 transition-all duration-1000`}
       >
         <div
-          className={`text-center mb-12 transition-all duration-1000 delay-200 ${
-            visibleSections.has('coaching-offers')
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-10'
-          }`}
+          className={`text-center mb-12 transition-all duration-1000 delay-200`}
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             Offres de coaching

@@ -58,11 +58,11 @@ export default function StepLayout({
               );
 
               if (Number(params.step) !== 2) {
-                router.push('/quali-carriere/2');
+                router.push('/quali-carriere/step/2');
               }
             } else if (res.nextQuestion) {
               if (Number(params.step) !== 1) {
-                router.push('/quali-carriere/1');
+                router.push('/quali-carriere/step/1');
               }
             } else if (res.noExperiences) {
               setShowModal(true);

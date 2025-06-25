@@ -94,7 +94,7 @@ export default function QualiCarriereChat() {
         toast.success('Entretien terminé !', {
           description: 'Génération des synthèses en cours...',
         });
-        router.push('/quali-carriere/2');
+        router.push('/quali-carriere/step/2');
       } else if (res.nextQuestion) {
         setIsLoading(false);
       }
@@ -110,7 +110,7 @@ export default function QualiCarriereChat() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
           <Link
-            href={'/quali-carriere'}
+            href={'/quali-carriere/step'}
             className="p-2 text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] hover:opacity-80 rounded-full cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -121,7 +121,7 @@ export default function QualiCarriereChat() {
         </div>
         <div>
           <Link
-            href={'/quali-carriere'}
+            href={'/quali-carriere/step'}
             className="px-6 py-3 p-[0.5em] bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] rounded-md transition-opacity duration-300 select-none hover:opacity-80 cursor-pointer text-white"
           >
             Enregistrer et revenir plus tard

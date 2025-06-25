@@ -1,17 +1,17 @@
 import React from 'react';
-import QualiCarriereComponent from '@/components/role/candidat/quali-carriere/QualiCarriereComponent';
+import QualiCarrierePresentation from '@/components/role/candidat/quali-carriere/presentation/QualiCarrierePresentation';
 
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Quali Carrière',
-  description: 'Quali Carrière Profil First',
+  title: 'Quali Carrière Présentation',
+  description: 'Quali Carrière Présentation Profil First',
 };
 
 export default function QualiCarriere() {
   return (
     <div className="w-full h-full">
-      <QualiCarriereComponent />
+      <QualiCarrierePresentation />
     </div>
   );
 }

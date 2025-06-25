@@ -18,7 +18,7 @@ const QualiCarriereSuccess = () => {
 
   React.useEffect(() => {
     if (user?.qualiCarriere !== 'active') {
-      router.push('/quali-carriere/2');
+      router.push('/quali-carriere/step/2');
     }
   }, [user?.qualiCarriere]);
 
@@ -28,7 +28,7 @@ const QualiCarriereSuccess = () => {
 
     if (res.user) {
       dispatch(updateUserReducer({ user: res.user }));
-      router.push('/quali-carriere/2');
+      router.push('/quali-carriere/step/2');
     }
   };
 

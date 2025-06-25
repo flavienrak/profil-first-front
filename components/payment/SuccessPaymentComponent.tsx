@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import Fireworks from './Fireworks';
+import CongratulationsContent from './CongratulationsContent';
 
 import { useParams, useRouter } from 'next/navigation';
 import { stripeSessionService } from '@/services/payment.service';
@@ -20,23 +22,7 @@ export default function SuccessPaymentComponent() {
         const res = await stripeSessionService(params.sessionId as string);
 
         if (res.payment) {
-          if (res.payment.status === 'paid') {
-            toast.success('Payement effectué avec succès', {
-              description: 'Retour à la page',
-            });
-          } else if (res.payment.status === 'open') {
-            toast.warning('Payement en attente', {
-              description: 'Retour à la page',
-            });
-          } else if (res.payment.status === 'void') {
-            toast.success('Payement annulé', {
-              description: 'Retour à la page',
-            });
-          }
-
           dispatch(updatePaymentReducer({ payment: res.payment }));
-
-          router.push('/mon-plan');
         } else {
           router.push('/');
         }
@@ -45,6 +31,26 @@ export default function SuccessPaymentComponent() {
   }, [params.sessionId]);
 
   return (
-    <div className="w-full min-h-screen [background-image:var(--bg-primary)]"></div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 relative overflow-hidden">
+      {/* Effet de fond avec dégradé animé */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 animate-gradient-shift"></div>
+
+      {/* Motif de fond subtil */}
+      <div className="absolute inset-0 opacity-10">
+        <div
+          className="absolute inset-0 bg-repeat"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+            backgroundSize: '20px 20px',
+          }}
+        ></div>
+      </div>
+
+      {/* Feu d'artifice */}
+      <Fireworks />
+
+      {/* Contenu principal */}
+      <CongratulationsContent />
+    </div>
   );
 }

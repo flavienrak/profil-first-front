@@ -266,7 +266,7 @@ export default function QualiCarriereSynthese() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
           <Link
-            href={'/quali-carriere'}
+            href={'/quali-carriere/step'}
             className="p-2 text-[var(--text-primary-color)] bg-[var(--bg-secondary-color)] hover:opacity-80 rounded-full transition-colors cursor-pointer"
           >
             <ArrowLeft size={16} />

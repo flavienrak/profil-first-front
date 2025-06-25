@@ -288,3 +288,14 @@ u {
 .readOnlyEditor .tiptap.ProseMirror {
   padding: 0;
 }
+
+/* White shadow effect for images */
+.white-shadow {
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
+    0 0 60px rgba(255, 255, 255, 0.6), 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.white-shadow:hover {
+  box-shadow: 0 0 40px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.8),
+    0 25px 50px rgba(0, 0, 0, 0.4);
+}

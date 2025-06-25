@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ReservationPage() {
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <ReservationComponent />
     </div>
   );
