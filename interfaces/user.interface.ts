@@ -15,7 +15,6 @@ export interface UserInterface {
   role: 'candidat' | 'recruiter' | 'admin';
   password: string;
   qualiCarriere: string;
-  deleted: boolean;
 
   userInfos?: UserInfosInterface;
   credits?: CreditInterface[];
