@@ -48,7 +48,7 @@ const formatDateFr = (dateInput: Date): string => {
 
 const formatTextWithStrong = (value: string): string => {
   return value.replace(/([^:\n]+):\s*(.+)/g, (_, bold, rest) => {
-    return `<p><strong>• ${bold.trim()} :</strong> ${rest.trim()}</p>`;
+    return `<p>${bold.trim()} : ${rest.trim()}</p>`;
   });
 };
 

@@ -154,7 +154,7 @@ const cgv = {
             M. Victorien Amarouche, exerçant à titre personnel. 
             Les échanges électroniques doivent être adressés à info@savoircoaching.com 
             (SIRET :  807 804 703). Le site Internet utilisé comme support 
-            contractuel est accessible via l’URL suivante : https://profilfirst.com 
+            contractuel est accessible via l’URL suivante : https://profilefirst.io 
             lequel centralise les interfaces de commande, contact et documentation.
           `,
         },

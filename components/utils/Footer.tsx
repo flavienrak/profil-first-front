@@ -40,7 +40,7 @@ export default function Footer() {
             <div className="flex items-center gap-8">
               <Logo href={'/'} />
               <div className="text-xs text-[var(--text-secondary-gray)] flex flex-col">
-                <p className="font-medium">© 2025 ProfilFirst</p>
+                <p className="font-medium">© 2025 Profile First</p>
               </div>
               <ul className="flex gap-4 text-xs text-[var(--text-primary-gray)]">
                 {links.map((item, index) => (

@@ -24,7 +24,7 @@ const politique = {
           type: 'string',
           desc: `
             Le responsable du traitement des données est l’entité exploitante 
-            de la plateforme accessible à l’adresse suivante : https://profilfirst.com
+            de la plateforme accessible à l’adresse suivante : https://profilefirst.io
           `,
         },
         {

@@ -268,7 +268,7 @@ const cgu = {
         est enregistrée sous la raison sociale Corporate Company, et exploitée 
         à titre personnel par M. Victorien Amarouche, entrepreneur individuel. 
         L’interface principale des services est accessible à l’adresse suivante : 
-        https://profilfirst.com. Les demandes de contact formel, les échanges 
+        https://profilefirst.io. Les demandes de contact formel, les échanges 
         relatifs à la gestion de compte ou toute réclamation doivent être adressés 
         à l’adresse électronique officielle suivante : info@savoircoaching.com. 
         Les correspondances papier, si nécessaire, peuvent être envoyées à l’adresse 
