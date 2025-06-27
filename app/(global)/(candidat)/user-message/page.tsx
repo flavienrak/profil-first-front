@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Messages',
-  description: 'Messages Profil First',
+  description: 'Messages Profile First',
 };
 
 export default function Messages() {

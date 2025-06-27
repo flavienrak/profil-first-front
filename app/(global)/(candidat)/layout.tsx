@@ -74,7 +74,7 @@ export default function UserSideLayout({
           <Popup>
             <div className="h-[26rem] w-[30rem] flex flex-col justify-between gap-6 px-4 pb-4">
               <h2 className="font-bold text-4xl text-center leading-16 text-[var(--u-primary-color)]">
-                Bienvenue sur Profil First CV !
+                Bienvenue sur Profile First CV !
               </h2>
               <div className="max-h-[55vh] flex flex-col gap-4 text-[var(--text-primary-color)] rounded-md overflow-y-auto">
                 {welcomeMessage.map((item) => (
@@ -116,7 +116,7 @@ export default function UserSideLayout({
               <h2 className="font-bold text-center text-4xl leading-12 text-white">
                 Utiliser gratuitement vos <br />
                 10 000 crédits IA <br />
-                pour tester Profil First
+                pour tester Profile First
               </h2>
               <div className="max-h-[40vh] flex justify-center select-none">
                 <Image

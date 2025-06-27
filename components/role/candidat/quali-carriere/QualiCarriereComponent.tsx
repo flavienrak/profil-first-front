@@ -7,13 +7,12 @@ import PlanPopup from '../PlanPopup';
 import Popup from '@/components/utils/Popup';
 import Title from '@/components/utils/role/user/Title';
 
-import { videoUri } from '@/providers/User.provider';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
-import { handleVideo } from '@/lib/function';
 import { useCandidat } from '@/providers/Candidat.provider';
 import { toast } from 'sonner';
+import { InfoPopup } from './presentation/InfoPopup';
 
 const steps = [
   {
@@ -173,86 +172,11 @@ export default function QualiCarriereComponent() {
         </div>
       </div>
 
-      {showModal && (
-        <Popup large onClose={() => setShowModal(false)}>
-          <div className="h-4/5 flex flex-col justify-between gap-8 p-4">
-            <div>
-              <div className="float-right flex flex-col gap-2 ps-6 h-44 w-64">
-                <p className="text-center font-semibold tracking-tighter text-[var(--text-primary-color)]">
-                  Vidéo explicative
-                </p>
-                {videoUri ? (
-                  <iframe
-                    src={handleVideo(videoUri)}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="h-full w-full rounded-lg shadow"
-                  ></iframe>
-                ) : (
-                  <p className="text-[var(--text-secondary-gray)]">
-                    Vidéo non trouvé
-                  </p>
-                )}
-              </div>
-              <div>
-                <div className="flex flex-col gap-8">
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
-                      100% CV optimisé à l'offre
-                    </h3>
-                    <p className=" text-[var(--text-secondary-gray)]">
-                      Profil First crée votre CV en fonction de l'offre d'emploi
-                      du recruteur
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
-                      100% de contrôle sur votre recherche
-                    </h3>
-                    <p className=" text-[var(--text-secondary-gray)]">
-                      Profil First rend votre CV anonyme, les recruteurs
-                      découvrent votre identité si vous acceptez la prise de
-                      contact.
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold text-[var(--text-primary-color)]">
-                      100% de maîtrise de l'entretien
-                    </h3>
-                    <p className=" text-[var(--text-secondary-gray)]">
-                      Profil First vous donne des conseils personnalisés pour
-                      parler de votre parcours tout en restant aligné avec votre
-                      nouveau CV ia
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-3 mt-8">
-                  <p className=" text-[var(--text-secondary-gray)]">
-                    Quali Carrière permet à Profil First de générer un CV de
-                    votre profil qui est optimisé pour l'offre d'emploi du
-                    recruteur.
-                  </p>
-                  <p className=" text-[var(--text-secondary-gray)]">
-                    Après une discussion approfondie sur vos expériences avec
-                    Profiler Coach Ai, Profil First va créer un CV personnalisé
-                    en fonction de chaque offre d'un recruteur.
-                  </p>
-                  <p className=" text-[var(--text-secondary-gray)]">
-                    Si un recruteur est intéressé par ce CV, alors il vous
-                    enverra un message et vous aurez évidemment accès à ce CV
-                    afin de prépar vos échanges avec le recruteur.
-                  </p>
-                  <p className=" text-[var(--text-secondary-gray)] mt-6 text-sm italic">
-                    Vous pouvez désactiver Quali Carrière quand vous voulez
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Popup>
-      )}
+      <InfoPopup
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        redirect={false}
+      />
 
       {showError && (
         <Popup onClose={() => setShowError(false)}>

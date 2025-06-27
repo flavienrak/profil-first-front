@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Mes opportunités',
-  description: 'Mes opportunités Profil First',
+  description: 'Mes opportunités Profile First',
 };
 
 export default function OpportunitesPage() {

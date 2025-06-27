@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Accueil',
-  description: 'Accueil Profil First',
+  description: 'Accueil Profile First',
 };
 
 export default function Landing() {

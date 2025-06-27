@@ -5,7 +5,7 @@ import CrossSourcingComponent from '@/components/role/recruiter/cross-sourcing/C
 
 export const metadata: Metadata = {
   title: 'Cross Sourcing',
-  description: 'Cross Sourcing Profil First',
+  description: 'Cross Sourcing Profile First',
 };
 
 export default function CrossSourcingFilterPage() {

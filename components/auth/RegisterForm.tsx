@@ -18,6 +18,8 @@ import { Input } from '@/components/ui/input';
 import { registerService } from '@/services/auth.service';
 import { toast } from 'sonner';
 import { UserInterface } from '@/interfaces/user.interface';
+import { useRouter } from 'next/navigation';
+import { LockKeyhole, Mail, UserRound } from 'lucide-react';
 
 export default function RegisterForm({
   role,
@@ -26,6 +28,8 @@ export default function RegisterForm({
   role: UserInterface['role'];
   setIsRegister: (value: boolean) => void;
 }) {
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = React.useState(false);
 
   const registerSchema = z.object({
@@ -67,12 +71,11 @@ export default function RegisterForm({
         role: parseRes.data.role,
       });
 
-      if (res.userId) {
-        toast.success('Inscription réussie!', {
-          description:
-            "Veuillez vous connecter afin d'accéder à la plateforme.",
+      if (res.token) {
+        toast.success('Inscription réussie !', {
+          description: "Validation de l'email en attente.",
         });
-        setIsRegister(false);
+        router.push(`/auth/mail-validation/${res.token}`);
       } else if (res.userAlreadyExist) {
         form.setError('email', {
           type: 'manual',
@@ -110,20 +113,7 @@ export default function RegisterForm({
                         required
                       />
                       <i className="absolute left-4 border-r pe-3 text-[var(--text-primary-color)]">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <circle cx="12" cy="8" r="5" />
-                          <path d="M20 21a8 8 0 0 0-16 0" />
-                        </svg>
+                        <UserRound size={20} strokeWidth={1} />
                       </i>
                     </div>
                   </FormControl>
@@ -155,20 +145,7 @@ export default function RegisterForm({
                         required
                       />
                       <i className="absolute left-4 border-r pe-3 text-[var(--text-primary-color)]">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <rect width="20" height="16" x="2" y="4" rx="2" />
-                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg>
+                        <Mail size={20} strokeWidth={1} />
                       </i>
                     </div>
                   </FormControl>
@@ -201,21 +178,7 @@ export default function RegisterForm({
                         required
                       />
                       <i className="absolute left-4 border-r pe-3 text-[var(--text-primary-color)]">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <circle cx="12" cy="16" r="1" />
-                          <rect x="3" y="10" width="18" height="12" rx="2" />
-                          <path d="M7 10V7a5 5 0 0 1 10 0v3" />
-                        </svg>
+                        <LockKeyhole size={20} strokeWidth={1} />
                       </i>
                     </div>
                   </FormControl>

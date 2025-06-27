@@ -3,8 +3,8 @@ import React from 'react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'CVThèque Details',
-  description: 'CVThèque Details Profil First',
+  title: 'CV Thèque Details',
+  description: 'CV Thèque Details Profile First',
 };
 
 export default function CvThequeDetailsPage() {

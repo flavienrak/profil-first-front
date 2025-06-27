@@ -34,7 +34,7 @@ export default function DashboardComponent() {
     {
       position: 'Développeur Full Stack',
       period: 'Avril 2025',
-      candidate: 'Profil First 127',
+      candidate: 'Profile First 127',
       rdvStatus: 'En attente',
       status: 'Accepté',
       rdvDate: '',
@@ -51,7 +51,7 @@ export default function DashboardComponent() {
     //     period: ['Avril 2025', 'Mars 2025', 'Mai 2025'][i % 3],
     //     candidate:
     //       i % 2 === 0
-    //         ? `Profil First ${i + 128}`
+    //         ? `Profile First ${i + 128}`
     //         : [
     //             'Thomas DUPONT',
     //             'Marie LAURENT',
@@ -238,7 +238,7 @@ export default function DashboardComponent() {
                 <tr
                   key={index}
                   className={`hover:bg-gray-50 transition-colors duration-200 ${
-                    !app.candidate.startsWith('Profil First')
+                    !app.candidate.startsWith('Profile First')
                       ? 'bg-green-50/50'
                       : ''
                   }`}
@@ -250,7 +250,7 @@ export default function DashboardComponent() {
                     {app.period}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900 border-r border-gray-100">
-                    {app.candidate.startsWith('Profil First') ? '🔒 ' : ''}
+                    {app.candidate.startsWith('Profile First') ? '🔒 ' : ''}
                     {app.candidate}
                   </td>
                   <td className="px-6 py-4 border-r border-gray-100">

@@ -9,8 +9,8 @@ import { ChevronRight, ChevronLeft, Moon, Sun } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
-import { recruiterRoutes } from '@/lib/constants';
 import { RootState } from '@/redux/store';
+import { recruiterRoutes } from '@/lib/routes';
 
 export default function RecruiterSidebar({ showMenu }: { showMenu: boolean }) {
   const { mode } = useSelector((state: RootState) => state.persistInfos);

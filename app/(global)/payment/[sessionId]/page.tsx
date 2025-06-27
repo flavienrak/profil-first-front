@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Success Payment',
-  description: 'Success Payment Profil First',
+  description: 'Success Payment Profile First',
 };
 
 export default function SuccessPayementPage() {

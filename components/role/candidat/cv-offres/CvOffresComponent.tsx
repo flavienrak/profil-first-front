@@ -109,17 +109,17 @@ export default function CvOffresComponent() {
       <p className="text-[var(--text-primary-gray)] mb-8">
         Je retrouve ici mes CV et offres enregistrées.
       </p>
-      <div className="flex items-center justify-between mb-8">
+      {/* <div className="flex items-center justify-between mb-8">
         <p className="font-bold text-lg text-[var(--text-primary-color)]">
           Tous vos CV sont anonymes pour les recruteurs
         </p>
-        {/* <button
+        <button
           onClick={() => setShowAnonym(true)}
           className="px-6 py-3 text-sm bg-gradient-to-r from-[var(--u-primary-color)] to-[#8B5CF6] text-white rounded-full transition-opacity duration-150 select-none cursor-pointer hover:opacity-80"
         >
           Voir la version anonyme
-        </button> */}
-      </div>
+        </button>
+      </div> */}
 
       {/* <div className="space-y-2 mb-8">
         {infos.map((item, index) => (

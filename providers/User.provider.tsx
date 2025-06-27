@@ -10,7 +10,14 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getUserService } from '@/services/user.service';
 import { useDispatch } from 'react-redux';
 import { setUserReducer } from '@/redux/slices/user.slice';
-import { recruiterRoutes, userRoutes } from '@/lib/constants';
+import {
+  candidatRoutes,
+  isCandidateRoute,
+  isNotLoggedRoute,
+  isPublicRoute,
+  isRecruiterRoute,
+  recruiterRoutes,
+} from '@/lib/routes';
 
 interface CurrentQueryInterface {
   step?: string | number;
@@ -57,10 +64,6 @@ export default function UserProvider({
   const [isLoading, setIsLoading] = React.useState(true);
   const [userId, setUserId] = React.useState<string | number | null>(null);
 
-  const notProtectedPaths = ['/', '/conditions'];
-  const notProtectedPathsRegex = /^\/(payment)\/[^\/]+$/;
-  const globalPaths = ['/conditions'];
-
   React.useEffect(() => {
     let isMounted = true;
     (async () => {
@@ -71,35 +74,20 @@ export default function UserProvider({
           setUserId(res.user.id);
 
           if (res.user.role === 'candidat') {
-            if (
-              !userRoutes.some((r) => pathname.startsWith(r.href)) &&
-              !globalPaths.includes(pathname) &&
-              !notProtectedPathsRegex.test(pathname)
-            ) {
+            if (!isCandidateRoute(pathname) && !isPublicRoute(pathname)) {
               window.location.href =
-                userRoutes.find((item) => item.ref)?.href ?? '/';
-            } else {
-              setIsLoading(false);
+                candidatRoutes.find((item) => item.ref)?.href ?? '/';
             }
             setIsLoading(false);
           } else {
-            if (
-              !recruiterRoutes.some((r) => pathname.startsWith(r.href)) &&
-              !globalPaths.includes(pathname) &&
-              !notProtectedPathsRegex.test(pathname)
-            ) {
+            if (!isRecruiterRoute(pathname) && !isPublicRoute(pathname)) {
               window.location.href =
                 recruiterRoutes.find((item) => item.ref)?.href ?? '/';
-            } else {
-              setIsLoading(false);
             }
             setIsLoading(false);
           }
         } else {
-          if (
-            !notProtectedPaths.includes(pathname) &&
-            !globalPaths.includes(pathname)
-          ) {
+          if (!isNotLoggedRoute(pathname) && !isPublicRoute(pathname)) {
             window.location.href = '/';
           } else {
             setIsLoading(false);

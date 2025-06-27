@@ -4,8 +4,8 @@ import CvAnonymComponent from '@/components/role/recruiter/cvtheque/cv-anonym/Cv
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'CVThèque Preview',
-  description: 'CVThèque Preview Profil First',
+  title: 'CV Thèque Preview',
+  description: 'CV Thèque Preview Profile First',
 };
 
 export default function CvAnonymPage() {

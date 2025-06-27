@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Mon Plan',
-  description: 'Mon Plan Profil First',
+  description: 'Mon Plan Profile First',
 };
 
 export default function MonPlanPage() {

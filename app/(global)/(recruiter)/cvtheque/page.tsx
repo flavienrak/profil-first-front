@@ -4,8 +4,8 @@ import CvThequeComponent from '@/components/role/recruiter/cvtheque/CvThequeComp
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'CVThèque',
-  description: 'CVThèque Profil First',
+  title: 'CV Thèque',
+  description: 'CV Thèque Profile First',
 };
 
 export default function CvThequePage() {

@@ -24,7 +24,7 @@ const CongratulationsContent: React.FC = () => {
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-30">
         <Image
           src="/logo.png"
-          alt="Logo Profil First"
+          alt="Profile First"
           className="object-contain logo-enhanced"
           height={80}
           width={600}
@@ -49,7 +49,7 @@ const CongratulationsContent: React.FC = () => {
         href={'/mon-plan'}
         className="group relative px-16 py-6 text-xl font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-2xl border-2 border-white transform transition-all duration-300 hover:scale-110 hover:shadow-blue-500/50 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95 animate-button-pulse z-50"
       >
-        <span className="relative z-50">Revenir sur Profil First</span>
+        <span className="relative z-50">Revenir sur Profile First</span>
       </Link>
 
       {/* Particules flottantes pour l'ambiance */}

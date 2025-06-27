@@ -77,16 +77,10 @@ export default function MonPlanComponent() {
     return null;
   };
 
-  const handleCheckout = async (data: {
-    amount: number;
-    name: string;
-    type: PaymentType;
-  }) => {
-    const res = await stripeService({
-      amount: data.amount,
-      name: data.name,
-      type: data.type,
-    });
+  const handleCheckout = async (type: PaymentType) => {
+    setPaymentLoading(type);
+
+    const res = await stripeService(type);
 
     if (res.payment) {
       dispatch(updatePaymentReducer({ payment: res.payment }));
@@ -213,14 +207,7 @@ export default function MonPlanComponent() {
                   </div>
                 ) : (
                   <button
-                    onClick={() => {
-                      setPaymentLoading('premium');
-                      handleCheckout({
-                        amount: 1999,
-                        name: 'Profil Premium CV',
-                        type: 'premium',
-                      });
-                    }}
+                    onClick={() => handleCheckout('premium')}
                     className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-bold py-3 rounded-xl transition-all duration-200 transform shadow-lg ${
                       paymentLoading === 'premium'
                         ? 'opacity-80 pointer-events-none'
@@ -319,14 +306,7 @@ export default function MonPlanComponent() {
                 {premiumCards.length > 0 &&
                 premiumCards[premiumCards.length - 1].status === 'paid' ? (
                   <button
-                    onClick={() => {
-                      setPaymentLoading('booster');
-                      handleCheckout({
-                        amount: 699,
-                        name: 'Profil Booster',
-                        type: 'booster',
-                      });
-                    }}
+                    onClick={() => handleCheckout('booster')}
                     className={`w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 transform shadow-lg ${
                       paymentLoading === 'booster'
                         ? 'opacity-80 pointer-events-none'
@@ -446,14 +426,7 @@ export default function MonPlanComponent() {
                   </div>
                 ) : (
                   <button
-                    onClick={() => {
-                      setPaymentLoading('quali-carriere');
-                      handleCheckout({
-                        amount: 999,
-                        name: 'Quali Carrière',
-                        type: 'quali-carriere',
-                      });
-                    }}
+                    onClick={() => handleCheckout('quali-carriere')}
                     className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-bold py-3 rounded-xl transition-all duration-200 transform shadow-lg ${
                       paymentLoading === 'quali-carriere'
                         ? 'opacity-80 pointer-events-none'

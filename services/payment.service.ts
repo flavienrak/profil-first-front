@@ -2,17 +2,9 @@ import api from '@/axios/axios.instance';
 
 import { PaymentType } from '@/interfaces/payment.interface';
 
-const stripeService = async (data: {
-  amount: number;
-  name: string;
-  type: PaymentType;
-}) => {
+const stripeService = async (type: PaymentType) => {
   try {
-    const res = await api.post('/payment/stripe', {
-      amount: data.amount,
-      name: data.name,
-      type: data.type,
-    });
+    const res = await api.post('/payment/stripe', { type });
     return res.data;
   } catch (error) {
     return { error: `STRIPE PAYMENT ERROR: ${error}` };

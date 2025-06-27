@@ -62,4 +62,44 @@ const logoutService = async () => {
   }
 };
 
-export { jwtService, loginService, registerService, logoutService };
+const sendResetPasswordMailService = async (email: string) => {
+  try {
+    const res = await api.post('/auth/reset-password/mail', { email });
+    return res.data;
+  } catch (error) {
+    return { error: `SEND RESET PASSWORD MAIL ERROR: ${error}` };
+  }
+};
+
+const verifyResetPasswordTokenService = async (token: string) => {
+  try {
+    const res = await api.get(`/auth/reset-password/${token}`);
+    return res.data;
+  } catch (error) {
+    return { error: `VERIFY RESET PASSWORD TOKEN ERROR: ${error}` };
+  }
+};
+
+const resetPasswordService = async (data: {
+  token: string;
+  password: string;
+}) => {
+  try {
+    const res = await api.post(`/auth/reset-password/${data.token}`, {
+      password: data.password,
+    });
+    return res.data;
+  } catch (error) {
+    return { error: `RESET PASSWORD TOKEN ERROR: ${error}` };
+  }
+};
+
+export {
+  jwtService,
+  loginService,
+  registerService,
+  logoutService,
+  sendResetPasswordMailService,
+  verifyResetPasswordTokenService,
+  resetPasswordService,
+};

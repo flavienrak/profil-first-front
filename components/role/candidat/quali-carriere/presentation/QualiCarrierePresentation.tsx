@@ -149,7 +149,7 @@ export default function QualiCarrierePresentation() {
                 <span className="text-2xl mr-3">🎙️</span>
                 <Image
                   src="/coach.png"
-                  alt="Quali Carrière CV Logo"
+                  alt="Quali Carrière"
                   className="mr-3 object-contain"
                   width={48}
                   height={48}

@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Quali Carrière',
-  description: 'Quali Carrière Profil First',
+  description: 'Quali Carrière Profile First',
 };
 
 export default function QualiCarriere() {

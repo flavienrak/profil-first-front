@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Conditions',
-  description: 'Conditions Profil First',
+  description: 'Conditions Profile First',
 };
 
 export default function ConditionsPage() {

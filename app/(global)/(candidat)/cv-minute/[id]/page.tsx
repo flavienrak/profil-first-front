@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'CV Minute Preview',
-  description: 'CV Minute Preview Profil First',
+  description: 'CV Minute Preview Profile First',
 };
 
 export default function CvMinutePage() {

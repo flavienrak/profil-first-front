@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from 'next/link';
+
 import {
   X,
   Brain,
@@ -8,14 +10,18 @@ import {
   Puzzle,
   Settings,
 } from 'lucide-react';
-import Link from 'next/link';
 
 interface InfoPopupProps {
   isOpen: boolean;
+  redirect?: boolean;
   onClose: () => void;
 }
 
-export const InfoPopup: React.FC<InfoPopupProps> = ({ isOpen, onClose }) => {
+export const InfoPopup: React.FC<InfoPopupProps> = ({
+  isOpen,
+  redirect = true,
+  onClose,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -273,6 +279,12 @@ export const InfoPopup: React.FC<InfoPopupProps> = ({ isOpen, onClose }) => {
           <div className="flex justify-center mt-8">
             <Link
               href="/quali-carriere/step"
+              onClick={(event) => {
+                if (!redirect) {
+                  event.preventDefault();
+                  onClose();
+                }
+              }}
               className="bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 hover:from-blue-600 hover:via-indigo-700 hover:to-purple-700 text-white font-bold px-8 py-3 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>

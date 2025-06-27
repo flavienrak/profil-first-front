@@ -16,12 +16,7 @@ export default function ConditionsComponent() {
           href="/"
           className="flex pb-4 border-b border-[var(--text-primary-color)]/10"
         >
-          <Image
-            src="/logo.png"
-            alt="Profil First CV Logo"
-            height={40}
-            width={300}
-          />
+          <Image src="/logo.png" alt="Profile First" height={40} width={300} />
         </Link>
 
         <div className="flex justify-center items-center">

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import TextEditor from '@/components/utils/TextEditor';
-import  LucideIcon  from '@/components/utils/LucideIcon';
+import LucideIcon from '@/components/utils/LucideIcon';
 
 import { addDays, subDays, startOfWeek, isSameDay, format } from 'date-fns';
 import { fr } from 'date-fns/locale';

@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Réservation Séance',
-  description: 'Réservation Séance Profil First',
+  description: 'Réservation Séance Profile First',
 };
 
 export default function ReservationPage() {

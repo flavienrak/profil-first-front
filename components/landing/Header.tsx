@@ -45,12 +45,7 @@ export default function Header({
     <header className="fixed top-0 left-0 right-0 h-14 z-50 flex justify-center bg-[var(--bg-secondary-color)] shadow-md">
       <div className="max-w-7xl container flex items-center">
         <a href="#" className="flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Profil First CV Logo"
-            height={40}
-            width={300}
-          />
+          <Image src="/logo.png" alt="Profile First" height={40} width={300} />
         </a>
 
         <div className="flex-1 flex justify-center">

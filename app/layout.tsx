@@ -9,8 +9,8 @@ import UserProvider from '@/providers/User.provider';
 import CandidatProvider from '@/providers/Candidat.provider';
 
 export const metadata: Metadata = {
-  title: 'Profil First',
-  description: 'Profil First',
+  title: 'Profile First',
+  description: 'Profile First',
 };
 
 export default function RootLayout({

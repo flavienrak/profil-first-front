@@ -10,9 +10,9 @@ import { ChevronRight, ChevronLeft, Moon, Sun } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePersistReducer } from '@/redux/slices/persist.slice';
-import { userRoutes } from '@/lib/constants';
 import { RootState } from '@/redux/store';
 import { useCandidat } from '@/providers/Candidat.provider';
+import { candidatRoutes } from '@/lib/routes';
 
 export default function UserSidebar({ showMenu }: { showMenu: boolean }) {
   const { user } = useSelector((state: RootState) => state.user);
@@ -46,7 +46,7 @@ export default function UserSidebar({ showMenu }: { showMenu: boolean }) {
 
       <nav className="flex-1 p-4">
         <ul className="flex flex-col gap-2">
-          {userRoutes.map((item) => (
+          {candidatRoutes.map((item) => (
             <li
               key={item.name}
               onClick={() => dispatch(updatePersistReducer({ showMenu: true }))}
@@ -77,7 +77,7 @@ export default function UserSidebar({ showMenu }: { showMenu: boolean }) {
               showMenu ? 'px-4' : 'justify-center px-2'
             }`}
           >
-            <Image src="/credit.png" alt="" width={22} height={22} />
+            <Image src="/credit.png" alt="Crédit" width={22} height={22} />
             {showMenu && (
               <span className="font-medium transition-all duration-150 overflow-hidden whitespace-nowrap text-ellipsis">
                 {user && user.payments
