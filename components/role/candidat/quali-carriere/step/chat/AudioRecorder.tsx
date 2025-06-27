@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { AudioLines, Mic, RotateCcw } from 'lucide-react';
+import { AudioLines, Disc, Disc2, Mic, RotateCcw } from 'lucide-react';
 
 export default function AudioRecorder({
   resetForm,
@@ -82,10 +82,8 @@ export default function AudioRecorder({
               onClick={stopRecording}
               className="flex items-center justify-center gap-2 bg-[var(--u-primary-color)] text-sm text-white px-4 py-2 rounded-full select-none cursor-pointer"
             >
-              <i>
-                <AudioLines />
-              </i>
-              <span>Valider</span>
+              <div className="w-2 h-2 bg-red-400 rounded-full ring-offset-2 ring-offset-[var(--u-primary-color)] ring-2 ring-red-400 animate-pulse" />
+              <span>Enregistrement en cours</span>
             </button>
           ) : (
             <button
