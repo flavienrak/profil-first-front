@@ -306,7 +306,9 @@ export default function EditPopup({
             cvMinuteSection: res.cvMinuteSection,
           }),
         );
-        dispatch(updatePaymentsReducer({ payments: res.payments }));
+        if (res.payments) {
+          dispatch(updatePaymentsReducer({ payments: res.payments }));
+        }
         onClose();
       } else if (res.sectionAlreadyExist) {
         form.setError('title', {
