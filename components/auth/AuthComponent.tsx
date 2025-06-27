@@ -26,7 +26,7 @@ export default function AuthComponent({
             {isRegister ? 'Inscription' : 'Connexion'}
           </h1>
           {isRegister ? (
-            <RegisterForm role={role} setIsRegister={setIsRegister} />
+            <RegisterForm role={role} />
           ) : (
             <LoginForm role={role} />
           )}

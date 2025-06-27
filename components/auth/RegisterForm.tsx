@@ -21,35 +21,33 @@ import { UserInterface } from '@/interfaces/user.interface';
 import { useRouter } from 'next/navigation';
 import { LockKeyhole, Mail, UserRound } from 'lucide-react';
 
+const formSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, 'Nom requis')
+    .min(3, 'Nom au moins 3 caractères'),
+  email: z.string().trim().min(1, 'Email requis').email('Email invalide'),
+  password: z
+    .string()
+    .min(1, 'Mot de passe requis')
+    .min(6, 'Mot de passe au moins 6 caractères'),
+  role: z.string(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 export default function RegisterForm({
   role,
-  setIsRegister,
 }: {
   role: UserInterface['role'];
-  setIsRegister: (value: boolean) => void;
 }) {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const registerSchema = z.object({
-    name: z
-      .string()
-      .trim()
-      .min(1, 'Nom requis')
-      .min(3, 'Nom au moins 3 caractères'),
-    email: z.string().trim().min(1, 'Email requis').email('Email invalide'),
-    password: z
-      .string()
-      .min(1, 'Mot de passe requis')
-      .min(6, 'Mot de passe au moins 6 caractères'),
-    role: z.string(),
-  });
-
-  type RegisterFormValues = z.infer<typeof registerSchema>;
-
-  const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -58,8 +56,8 @@ export default function RegisterForm({
     },
   });
 
-  const onSubmit = async (data: RegisterFormValues) => {
-    const parseRes = registerSchema.safeParse(data);
+  const onSubmit = async (data: FormValues) => {
+    const parseRes = formSchema.safeParse(data);
 
     if (parseRes.success) {
       // API CALL

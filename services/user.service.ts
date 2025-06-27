@@ -29,4 +29,17 @@ const updateUserInfosService = async (data: {
   }
 };
 
-export { getUserService, updateUserInfosService };
+const sendReservationContactService = async (phone: string) => {
+  try {
+    const res = await api.post('/user/reservation-contact', { phone });
+    return res.data;
+  } catch (error) {
+    return { error: `SEND RESERVATION CONTACT ERROR: ${error}` };
+  }
+};
+
+export {
+  getUserService,
+  updateUserInfosService,
+  sendReservationContactService,
+};

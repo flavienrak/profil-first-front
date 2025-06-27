@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
+
 import { useEffect, useRef } from 'react';
 import {
   ChevronDown,
@@ -19,7 +21,7 @@ import {
   Shield,
   User,
 } from 'lucide-react';
-import Image from 'next/image';
+import ConctactForm from './ConctactForm';
 
 export default function ReservationComponent() {
   const [showBookingModal, setShowBookingModal] = React.useState(false);
@@ -404,66 +406,10 @@ export default function ReservationComponent() {
         </div>
 
         {showConfirm && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 transform transition-all duration-300 scale-100">
-              {showConfirm === 'confirm' ? (
-                <>
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Phone className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                      Demande de contact
-                    </h3>
-                    <p className="text-gray-600">
-                      Confirmez-vous votre demande de contact pour une séance de
-                      coaching ?
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col gap-3">
-                    <button
-                      onClick={handleSendMail}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                    >
-                      Confirmer ma demande de contact
-                    </button>
-                    <button
-                      onClick={() => setShowConfirm(null)}
-                      className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-full font-medium hover:bg-gray-200 transition-all duration-300"
-                    >
-                      Annuler
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <div className="w-8 h-8 text-white">✓</div>
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                      Demande transmise !
-                    </h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
-                      Votre demande a été transmise. Restez près de votre
-                      téléphone,
-                      <br />
-                      <strong className="text-gray-900 font-bold text-lg">
-                        vous serez contacté dans les 24h.
-                      </strong>
-                    </p>
-                    <button
-                      onClick={() => setShowConfirm(null)}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                    >
-                      Fermer
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+          <ConctactForm
+            showConfirm={showConfirm}
+            setShowConfirm={setShowConfirm}
+          />
         )}
       </div>
 
@@ -554,7 +500,7 @@ export default function ReservationComponent() {
 
         {/* Premium Pack */}
         <div
-          className={`bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 p-8 sm:p-12 border-2 border-gradient-to-r from-violet-500 via-purple-500 to-blue-500 group cursor-pointer relative overflow-hidden ${
+          className={`rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-3 p-8 sm:p-12 border-2 border-gradient-to-r from-violet-500 via-purple-500 to-blue-500 group cursor-pointer relative overflow-hidden ${
             visibleSections.has('coaching-offers')
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-10'
@@ -569,7 +515,7 @@ export default function ReservationComponent() {
           {/* Decorative elements */}
           <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-full -translate-y-20 translate-x-20"></div>
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-purple-500/15 to-blue-500/15 rounded-full translate-y-16 -translate-x-16"></div>
-          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-violet-500 via-purple-500 via-blue-500 to-violet-600 rounded-t-3xl"></div>
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-violet-500 via-purple-500 to-violet-600 rounded-t-3xl"></div>
 
           {/* Premium badge */}
           <div className="absolute -top-3 -right-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg transform rotate-12 border-2 border-white">

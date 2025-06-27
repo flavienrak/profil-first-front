@@ -25,14 +25,14 @@ import { UserInterface } from '@/interfaces/user.interface';
 import { useRouter } from 'next/navigation';
 import { LockKeyhole, Mail } from 'lucide-react';
 
-const loginSchema = z.object({
+const formSchema = z.object({
   email: z.string().trim().min(1, 'Email requis').email('Email invalide'),
   password: z.string().min(1, 'Mot de passe requis'),
   remember: z.boolean().default(false),
   role: z.enum(['candidat', 'recruiter', 'admin']),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type FormValues = z.infer<typeof formSchema>;
 
 export default function LoginForm({ role }: { role: UserInterface['role'] }) {
   const router = useRouter();
@@ -41,8 +41,8 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
   const [showForgot, setShowForgot] = React.useState(false);
   const [resetLoading, setResetLoading] = React.useState(false);
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -51,8 +51,8 @@ export default function LoginForm({ role }: { role: UserInterface['role'] }) {
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    const parseRes = loginSchema.safeParse(data);
+  const onSubmit = async (data: FormValues) => {
+    const parseRes = formSchema.safeParse(data);
 
     if (parseRes.success) {
       // API CALL
