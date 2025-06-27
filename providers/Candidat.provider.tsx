@@ -81,6 +81,14 @@ export default function CandidatProvider({
 
       setIsFree(user.payments.length === 1);
       setCVPlanType(getCVPlanType(user.payments));
+      setQualiCarrierePlan(
+        !!user.payments.find(
+          (item) =>
+            item.type === 'quali-carriere' &&
+            item.expiredAt &&
+            new Date(item.expiredAt) > new Date(),
+        ),
+      );
       setCredits(actualCredits);
     }
   }, [user?.role, user?.payments]);

@@ -37,7 +37,7 @@ const steps = [
     id: 4,
     title: 'Étape 4',
     content:
-      'Tu enrichis ton CV avec des suggestions intelligentes sur-mesure.',
+      'Tu enrichis ton CV avec des suggestions intelligentes sur-mesure*.',
   },
 ];
 
@@ -76,9 +76,7 @@ export default function QualiCarriereComponent() {
           <div className="w-full flex flex-col gap-8">
             <Title value={'Quali Carrière CV'} />
             <div className="flex items-center justify-between mb-4">
-              <p className="text-lg text-[var(--text-primary-gray)]">
-                Candidatez avec un CV adapté aux offres d'emploi sans effort
-              </p>
+              <p className="text-lg text-[var(--text-primary-gray)]"></p>
               <button
                 onClick={() => setShowModal(true)}
                 className="px-6 py-2 bg-[var(--u-secondary-color)] text-white rounded-md hover:bg-[#0052a3] transition-colors select-none cursor-pointer"
@@ -147,26 +145,26 @@ export default function QualiCarriereComponent() {
               </button>
             </div>
 
-            <div className="w-1/2 flex flex-col gap-8 text-[var(--u-primary-color)]">
-              <h2 className="text-4xl font-bold text-center leading-14 italic">
+            <div className="w-1/2 flex flex-col items-center justify-center gap-8 text-[var(--u-primary-color)]">
+              <h2 className="text-2xl font-semibold text-center leading-14 italic">
                 « Parle moi de toi ! Je m’occupe du reste ! »
               </h2>
               <div className="flex items-center justify-center gap-4">
                 <Image
                   src="/coach.png"
                   alt="Profiler Coach Ai"
-                  height={80}
-                  width={80}
+                  height={60}
+                  width={60}
                   className="rounded-full"
                 />
-                <p className="text-3xl font-semibold">Profiler Coach Ai</p>
+                <p className="text-2xl font-semibold">Profiler Coach Ai</p>
               </div>
             </div>
           </div>
 
           <div className="flex justify-end">
-            <div className="w-1/2">
-              <p>
+            <div className="w-1/2 flex justify-end">
+              <p className="text-xs">
                 * sous réserve de crédits disponibles via la souscription à
                 l'offre Profil Premium
               </p>
